@@ -1,99 +1,161 @@
-*{
+* {
     margin: 0;
-    position: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-body{
-    background: rgb(241, 241, 241);
-}
-header{
+body {
     width: 100%;
-    background: black;
-   
-}
-
-.container_header{
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    background: #f5f5f5;
+}
+
+header {
+    width: 100%;
+    height: 10vh;
+    padding: 20px 0;
+    background: #000;
+    text-align: center;
+    color: #fff;
+}
+
+/* main {
+    width: 100%;
+    height: 80vh;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-}
-.div_logo{
-    width: 33%;
+    align-items: center;
+} */
+
+
+
+nav {
+    width: 100%;
+    height: 5vh;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
-.div_logo img{
-    width: 120px;
-}
-
-.div_nav{
-    width: 33%;
-}
-
-.div_nav a{
+a,
+button {
     text-decoration: none;
-    color: white;
-    margin: 10px;
-    font-size: 18px;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-.container{
-    width: 100%;
-    margin-top: 10%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.container_formulario{
-    width: 300px;
-    border: 1px solid rgb(112, 112, 112);
-    padding: 25px;
-    border-radius: 15px;
-}
-
-.container_formulario input{
-    padding: 10px;
-    margin: 5px;
-    width: 250px;
-    border-radius: 15px;
-    border: 1px solid rgb(112, 112, 112);
-}
-
-#btn_login{
-    background: black;
-    color: white;
-}
-
-.div_img img{
-    width: 50px;
-}
-
-.div_img{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-}
-
-.container_formulario_cad_user{
-    width: 800px;
-}
-
-.container_formulario_cad_user input{
-    padding: 10px;
-    margin: 5px;
-    width: 250px;
+    color: #fff;
+    background: #000;
+    padding: 10px 20px;
     border-radius: 5px;
-    border: 1px solid black;
+    transition: 0.2s;
+    cursor: pointer;
 }
 
-#btn_cadastro{
-    background: black;
-    color: white;
-    width: 250px;
+/* div{
+    margin: 10px;
+} */
+
+/* table {
+    max-width: 800px;
+    display: block;
+    max-height: 70vh;
+    border-collapse: collapse;
+    margin: 20px 0;
+    
+} */
+
+thead {
+    width: 100%;
+    display: block;
+    background: #000;
+    color: #fff;
 }
 
-#legend{
-    font-size: 26px;
+thead tr {
+    text-align: left;
+    display: flex;
+    justify-content: space-around;
+}
+
+tbody {
+    max-height: 60vh;
+    display: block;
+}
+
+tr:nth-child(even) {
+    background: #f5f5f5;
+    color: #000;
+}
+
+/* LINHA DA TABELA */
+tr {
+    border-bottom: 1px solid #000;
+}
+
+th,
+td {
+    padding: 10px 20px;
+    text-align: left;
+}
+
+form {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal{
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 15vh;
+    z-index: 10;
+}
+
+.janela{
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    position: relative;
+}
+
+.oculto {
+    display: none;
+}
+
+#saldoEntradas{
+    color: green;
+    font-size: 18px;
+}
+
+#saldoSaidas{
+    color: red;
+    font-size: 18px;
 }

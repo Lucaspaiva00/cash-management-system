@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credito</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Paiva Tech </div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">
+                Páginas
+            </div>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Operações</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Páginas similares</h6>
+                        <a class="collapse-item" href="credito.html">Crédito</a>
+                        <a class="collapse-item" href="debito.html">Débito</a>
+                    </div>
+                </div>
+            </li>
+        
+            <hr class="sidebar-divider d-none d-md-block">
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+
+
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-light border-0 small"
+                            placeholder="Pesquise por um produto" aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <ul class="navbar-nav ml-auto">
+                        <div class="topbar-divider d-none d-sm-block"></div>
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Lucas Paiva</span>
+
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="perfil_do_cliente.html">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Perfil do Cliente
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Sair
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <div class="container-fluid">
+
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Gerencimento de Caixa</h1>
+                    </div>
+                    <table id="tabela_buscar_produto" border="1px">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>DATA</th>
+                                <th>TIPO DE OP</th>
+                                <th>MEIO D PAG</th>
+                                <th>VALOR</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="entradas"></tbody>
+                    </table>
+                    <br>
+                    <h5>TOTAL: R$<label id="saldoEntradas"></label></h5>
+                </div>
+
+
+
+                
+</body>
+<script src="index.js"></script>
+<script src="vendor2/jquery/jquery.min.js"></script>
+<script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+<script src="js2/sb-admin-2.min.js"></script>
+<script src="vendor2/chart.js/Chart.min.js"></script>
+<script src="js2/demo/chart-area-demo.js"></script>
+<script src="js2/demo/chart-pie-demo.js"></script>
+</html>

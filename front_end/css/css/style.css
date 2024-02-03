@@ -1,0 +1,99 @@
+*{
+    margin: 0;
+    position: 0;
+}
+
+body{
+    background: rgb(241, 241, 241);
+}
+header{
+    width: 100%;
+    background: black;
+   
+}
+
+.container_header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.div_logo{
+    width: 33%;
+}
+
+.div_logo img{
+    width: 120px;
+}
+
+.div_nav{
+    width: 33%;
+}
+
+.div_nav a{
+    text-decoration: none;
+    color: white;
+    margin: 10px;
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.container{
+    width: 100%;
+    margin-top: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container_formulario{
+    width: 300px;
+    border: 1px solid rgb(112, 112, 112);
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.container_formulario input{
+    padding: 10px;
+    margin: 5px;
+    width: 250px;
+    border-radius: 15px;
+    border: 1px solid rgb(112, 112, 112);
+}
+
+#btn_login{
+    background: black;
+    color: white;
+}
+
+.div_img img{
+    width: 50px;
+}
+
+.div_img{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.container_formulario_cad_user{
+    width: 800px;
+}
+
+.container_formulario_cad_user input{
+    padding: 10px;
+    margin: 5px;
+    width: 250px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+#btn_cadastro{
+    background: black;
+    color: white;
+    width: 250px;
+}
+
+#legend{
+    font-size: 26px;
+}
