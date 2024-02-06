@@ -11,9 +11,25 @@ datasource db {
 }
 
 model gerenciamentoDcaixa {
-  id Int    @id @default(autoincrement())
-  dataOperacao    String
-  tipoOperacao    String
-  meioPagamento   String
-  valor            Float
+  id            Int    @id @default(autoincrement())
+  dataOperacao  String
+  tipoOperacao  String
+  meioPagamento String
+  valor         Float
+}
+
+model clientes {
+  id                 Int    @id @default(autoincrement())
+  nomeCliente        String
+  cnpjCliente        String
+  cpfCliente         String
+  rgCliente          String
+  enderecoCliente    String
+  telefoneUser       String
+  emailCliente       String
+  cepCliente         String
+  numeroCliente      String
+  complementoCliente String
+  servicoCliente     String
+  produtoCliente     String
 }
