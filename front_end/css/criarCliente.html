@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credito</title>
+    <title>Novo Cliente</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
@@ -111,40 +111,42 @@
                 <div class="container-fluid">
 
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Gerencimento de Caixa</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Novo Cadastro</h1>
                     </div>
 
-                    <p>
-                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
-                            aria-expanded="false" aria-controls="collapseExample">
-                            Nova Operação
-                        </a>
-                    </p>
-                    <div class="collapse" id="collapseExample">
-                        <div class="card card-body">
-                            <h3>Preencha a Operação</h3>
-                            <form id="caixaForm" action="http://localhost:3000/caixa" method="post">
-                                <input type="text" name="valor" placeholder="Valor" required>
-                                <input type="text" name="meioPagamento" placeholder="Meio de Pagamento" required>
-                                <input type="text" name="tipoOperacao" placeholder="Tipo de Operação" required>
-                                <input type="date" name="dataOperacao" placeholder="Data de Operação" required>
-                                <input type="submit" value="Enviar" class='btn btn-success'>
-                            </form>
-                        </div>
+
+                    <div class="card card-body">
+                        <form id="caixaForms" action="http://localhost:3000/cliente" method="post">
+
+
+
+                            <input type="text" name="nomeCliente" placeholder="Nome do Cliente" required>
+
+                            <input type="text" name="cnpjCliente" placeholder="CNPJ" required>
+
+                            <input type="text" name="cpfCliente" placeholder="CPF" required>
+
+                            <input type="text" name="rgCliente" placeholder="RG" required>
+
+                            <input type="text" name="enderecoCliente" placeholder="Endereço do Cliente" required>
+
+                            <input type="text" name="telefoneUser" placeholder="Telefone do Cliente" required>
+
+                            <input type="email" name="emailCliente" placeholder="E-mail" required>
+
+                            <input type="text" name="cepCliente" placeholder="CEP" required>
+
+                            <input type="text" name="numeroCliente" placeholder="Número" required>
+
+                            <input type="text" name="complementoCliente" placeholder="Complemento" required>
+
+                            <input type="text" name="servicoCliente" placeholder="Serviço Contratado" required>
+
+                            <input type="text" name="produtoCliente" placeholder="Produto Contratado" required>
+
+                            <input type="submit" value="Enviar" class='btn btn-success'>
+                        </form>
                     </div>
-                    <table class="table table-dark table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>DATA</th>
-                                <th>TIPO DE OP</th>
-                                <th>MEIO D PAG</th>
-                                <th>VALOR</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody id="entradas"></tbody>
-                    </table>
                     <br>
                 </div>
 
