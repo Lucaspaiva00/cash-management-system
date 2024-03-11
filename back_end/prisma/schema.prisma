@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Login {
+  id       Int    @id @default(autoincrement())
+  email    String
+  password String
+}
+
 model gerenciamentoDcaixa {
   id            Int    @id @default(autoincrement())
   dataOperacao  String
@@ -33,3 +39,28 @@ model clientes {
   servicoCliente     String
   produtoCliente     String
 }
+
+// DAQUI PRA CIMA ESTAVA FUNCIONANDO "ATUALIZAÇÃO 06/02/2024"
+
+model Propostas {
+  id                Int    @id @default(autoincrement())
+  nomeProposta      String
+  descricaoProposta String
+  prazoproposta     String
+  valorProposta     Float
+  custoProposta     Float
+  // Aberta ou Fechada
+  statusproposta    String
+}
+
+model Produtos{
+  id Int @id @default(autoincrement())
+  nomeProduto String
+  descricaoProduto String
+  valorProduto Float
+  custoProduto Float
+  // Aberta ou Fechada
+  statusProduto String
+  quantidadeProduto Int
+}
+

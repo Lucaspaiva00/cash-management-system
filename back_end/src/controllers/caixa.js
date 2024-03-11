@@ -51,6 +51,7 @@ const apagar = async (req, res) => {
 
   });
   res.status(204).json(lancamento).end();
+  console.log("Lançamento excluído com sucesso");
 };
 
 module.exports = {
