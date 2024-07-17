@@ -56,7 +56,7 @@ function excluirPerfil(id) {
             .then((resp) => {
                 if (resp.error == undefined) {
                     window.location.reload();
-                    console.log("teste");
+                    console.log("Caiu no Error");
                 } else {
                     document.querySelector("#msg").innerHTML = resp.error;
                 }
