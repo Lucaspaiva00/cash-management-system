@@ -13,9 +13,9 @@ fetch("http://localhost:3000/caixa")
             if (e.tipoOperacao == "Entrada") {
                 saldoEntradas += e.valor;
                 document.querySelector("#saldoEntradas").innerHTML = saldoEntradas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            }else if(e.tipoOperacao == "Saídas"){
+            }else if(e.tipoOperacao == "Saída"){
                 saldoSaidas += e.valor;
-                document.querySelector("#saldoSaidas").innerHTML = saldoEntradas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                document.querySelector("#saldoSaidas").innerHTML = saldoSaidas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             }else{
                 console.log("Deu ruim");
             }
