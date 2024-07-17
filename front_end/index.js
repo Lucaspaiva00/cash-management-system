@@ -1,6 +1,7 @@
 const saldoEntradas = document.querySelector("#saldoEntradas");
 const saldoSaidas = document.querySelector("#saldoSaidas");
 const totalprop = document.querySelector("#totalprop");
+const saldo = document.querySelector("#saldo");
 const msg = document.querySelector("#msg");
 const uri = "http://localhost:3000";
 
@@ -9,16 +10,23 @@ fetch("http://localhost:3000/caixa")
     .then(resp => {
         let saldoEntradas = 0;
         let saldoSaidas = 0;
+        let saldo = 0;
         resp.forEach(e => {
             if (e.tipoOperacao == "Entrada") {
                 saldoEntradas += e.valor;
                 document.querySelector("#saldoEntradas").innerHTML = saldoEntradas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            }else if(e.tipoOperacao == "Saída"){
+            } else if (e.tipoOperacao == "Saída") {
                 saldoSaidas += e.valor;
                 document.querySelector("#saldoSaidas").innerHTML = saldoSaidas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            }else{
-                console.log("Deu ruim");
+            } else {
+                saldo += e.valor;
+                saldo = saldoEntradas - saldoSaidas;
+                document.querySelector("#saldo").innerHTML =
+                    saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             }
+
+
+
         })
     })
 
