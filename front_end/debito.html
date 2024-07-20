@@ -162,7 +162,6 @@
                     </p>
                     <div class="collapse" id="collapseExample">
                         <div class="card card-body">
-                            <h3>Preencha a Operação</h3>
                             <form id="caixaForm" action="http://localhost:3000/caixa" method="post">
                                 <input type="text" name="valor" placeholder="Valor" required>
                                 <input type="text" name="meioPagamento" placeholder="Meio de Pagamento" required>
@@ -188,27 +187,8 @@
                     <br>
                 </div>
 
-
-
-                <!-- NAO SEI PORQUE NAO FUNCIONOU SEM -->
-                <table hidden>
-                    <thead>
-                        <tr colspan="4">
-                            <th>ENTRADAS</th>
-                        </tr>
-                        <tr>
-                            <th>ID</th>
-                            <th>DATA</th>
-                            <th>MEIO</th>
-                            <th>VALOR</th>
-                        </tr>
-                    </thead>
-                    <tbody id="entradas"></tbody>
-                </table>
-                <!-- ----------------------------------- -->
-
 </body>
-<script src="index.js"></script>
+<script src="js/scriptDebito.js"></script>
 <script src="vendor2/jquery/jquery.min.js"></script>
 <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>

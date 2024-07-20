@@ -24,9 +24,6 @@ fetch("http://localhost:3000/caixa")
                 document.querySelector("#saldo").innerHTML =
                     saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             }
-
-
-
         })
     })
 
