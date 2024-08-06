@@ -5,7 +5,7 @@ const saldo = document.querySelector("#saldo");
 const msg = document.querySelector("#msg");
 const uri = "http://localhost:3000";
 
-fetch("http://localhost:3000/caixa")
+fetch(`${uri}/caixa`)
     .then(resp => resp.json())
     .then(resp => {
         let saldoEntradas = 0;
@@ -19,13 +19,35 @@ fetch("http://localhost:3000/caixa")
                 saldoSaidas += e.valor;
                 document.querySelector("#saldoSaidas").innerHTML = saldoSaidas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             } else {
-                saldo += e.valor;
-                saldo = saldoEntradas - saldoSaidas;
-                document.querySelector("#saldo").innerHTML =
-                    saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                // saldo += e.valor;
+                // saldo = saldoEntradas - saldoSaidas;
+                // document.querySelector("#saldo").innerHTML = 
+                //     saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                // console.log(saldo);
+
             }
         })
+
+        JSC.Chart('chartDiv', {
+            type: 'vertical column',
+            series: [
+                {
+                    name: 'Entrada',
+                    points: [
+                        { x: 'Entrada', y: saldoEntradas }
+                    ]
+                }, {
+                    name: 'Saída',
+                    points: [
+                        { x: 'Saida', y: saldoSaidas }
+                    ]
+                }
+            ]
+        });
+
     })
+
+
 
 // PUXANDO TOTAL EM PROPOSTAS
 fetch("http://localhost:3000/proposta")
@@ -59,13 +81,6 @@ function excluirPerfil(id) {
             });
     }
 }
-
-
-
-
-
-
-
 
 
 

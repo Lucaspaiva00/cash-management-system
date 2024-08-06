@@ -28,9 +28,9 @@ const create = async (req, res) => {
   });
 
   if (produto)
-    res.redirect("http://127.0.0.1:5500/front_end/produtos.html");
+    res.redirect("http://127.0.0.1:5500/produtos.html");
   else
-    res.redirect("http://127.0.0.1:5500/front_end/produtos.html");
+    res.redirect("http://127.0.0.1:5500/produtos.html");
 }
 
 const apagar = async (req, res) => {

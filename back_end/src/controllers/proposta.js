@@ -25,9 +25,9 @@ const create = async (req, res) => {
         }
     })
     if (proposta)
-        res.redirect("http://127.0.0.1:5500/front_end/propostas.html")
+        res.redirect("http://127.0.0.1:5500/propostas.html")
     else
-        res.redirect("http://127.0.0.1:5500/front_end/erro.html")
+        res.redirect("http://127.0.0.1:5500/erro.html")
 }
 
 const apagar = async (req, res) => {

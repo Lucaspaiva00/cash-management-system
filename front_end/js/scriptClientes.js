@@ -23,7 +23,6 @@ fetch("http://localhost:3000/cliente")
                 </td>
             <tr>
             `;
-            console.table(clientesCadastrados)
         });
 
     });

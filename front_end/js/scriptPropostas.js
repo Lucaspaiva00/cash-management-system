@@ -29,7 +29,6 @@ fetch("http://localhost:3000/proposta")
 
         });
        
-        console.log(totalprop);
     })
 
 //Funções CRUD - DELETE

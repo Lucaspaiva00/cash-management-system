@@ -19,12 +19,12 @@ const create = async (req, res) => {
         const cliente = await prisma.clientes.create({
             data: data
         });
-        res.redirect("http://127.0.0.1:5500/front_end/buscarCliente.html");
+        res.redirect("http://127.0.0.1:5500/buscarCliente.html");
         // return res.status(201).json(cliente).end();
 
     } catch (error) {
         // return res.status(400).json(error).end();
-        res.redirect("http://127.0.0.1:5500/front_end/criarCliente.html");
+        res.redirect("http://127.0.0.1:5500/criarCliente.html");
     }
 }
 

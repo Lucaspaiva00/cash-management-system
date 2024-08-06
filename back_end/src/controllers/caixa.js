@@ -25,10 +25,11 @@ const create = async (req, res) => {
   });
 
   if (lancamento)
-    res.redirect("http://127.0.0.1:5500/front_end/index.html");
+    // res.redirect("http://127.0.0.1:5500/front_end/index.html");
+    res.redirect("http://127.0.0.1:5500/index.html");
     
   else
-    res.redirect("http://127.0.0.1:5500/front_end/index.html");
+    res.redirect("http://127.0.0.1:5500/index.html");
 };
 
 
