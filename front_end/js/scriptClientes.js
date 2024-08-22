@@ -31,7 +31,7 @@ fetch("http://localhost:3000/cliente")
 //Funções CRUD - DELETE
 function excluirCliente(id) {
     if (confirm(`Confirma a exclusão do seu Produto?`)) {
-        fetch(uri + "/produtos/" + id, { method: "DELETE" })
+        fetch(uri + "/cliente/" + id, { method: "DELETE" })
             .then((resp) => {
                 if (resp.status != 204) {
                     return {
