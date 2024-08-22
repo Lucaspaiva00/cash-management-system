@@ -29,27 +29,30 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const data = req.body;
-    let cliente = await prisma.clientes.update({
-        data: data,
-        where: {
-            id: parseInt(req.body.id)
-        }
-    });
-    res.status(202).json(cliente).end();
-    console.log("Cliente atualizado com sucesso");
-  }
+    try {
+        const data = req.body;
+        let itens = await prisma.gerenciamentoDcaixa.update({
+            data: data,
+            where: {
+                id: parseInt(req.body.id)
+            }
+        });
+        res.status(202).json(itens).end();
+    } catch (error) {
+        res.status(404).json({ error: error.message }).end();
+    }
+}
 
 const apagar = async (req, res) => {
     const cliente = await prisma.clientes.delete({
-      where: {
-        id: parseInt(req.params.id)
-      }
-  
+        where: {
+            id: parseInt(req.params.id)
+        }
+
     });
     res.status(204).json(cliente).end();
     console.log("Cliente excluído com sucesso");
-  };
+};
 
 module.exports = {
     read,

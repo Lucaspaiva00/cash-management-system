@@ -41,15 +41,18 @@ const apagar = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const data = req.body;
-    let proposta = await prisma.propostas.update({
-        data: data,
-        where: {
-            id: parseInt(req.body.id)
-        }
-    });
-    res.status(202).json(proposta).end();
-    console.log("Cliente atualizado com sucesso");
+    try {
+        const data = req.body;
+        let itens = await prisma.gerenciamentoDcaixa.update({
+            data: data,
+            where: {
+                id: parseInt(req.body.id)
+            }
+        });
+        res.status(202).json(itens).end();
+    } catch (error) {
+        res.status(404).json({ error: error.message }).end();
+    }
 }
 
 module.exports = {

@@ -15,17 +15,17 @@ fetch(`${uri}/caixa`)
             if (e.tipoOperacao == "Entrada") {
                 saldoEntradas += e.valor;
                 document.querySelector("#saldoEntradas").innerHTML = saldoEntradas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                console.log("O valor de entrada no caixa é: R$", saldoEntradas);
+
             } else if (e.tipoOperacao == "Saída") {
                 saldoSaidas += e.valor;
                 document.querySelector("#saldoSaidas").innerHTML = saldoSaidas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            } else {
-                // saldo += e.valor;
-                // saldo = saldoEntradas - saldoSaidas;
-                // document.querySelector("#saldo").innerHTML = 
-                //     saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                // console.log(saldo);
-
+                console.log("O valor de saída no caixa é: R$", saldoSaidas);
             }
+            saldo += e.valor;
+            saldo = saldoEntradas - saldoSaidas;
+            document.querySelector("#saldo").innerHTML = saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            console.log("O valor líquido do caixa é de: R$", saldo);
         })
 
         JSC.Chart('chartDiv', {
@@ -41,7 +41,13 @@ fetch(`${uri}/caixa`)
                     points: [
                         { x: 'Saida', y: saldoSaidas }
                     ]
+                }, {
+                    name: 'Lucro Líquido',
+                    points: [
+                        { x: 'Lucro Líquido', y: saldo }
+                    ]
                 }
+
             ]
         });
 
@@ -50,7 +56,7 @@ fetch(`${uri}/caixa`)
 
 
 // PUXANDO TOTAL EM PROPOSTAS
-fetch("http://localhost:3000/proposta")
+fetch(`${uri}/proposta`)
     .then(resp => resp.json())
     .then(resp => {
         let totalprop = 0;
@@ -58,6 +64,8 @@ fetch("http://localhost:3000/proposta")
             totalprop += e.valorProposta;
             document.querySelector("#totalprop").innerHTML = totalprop.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         });
+
+
     })
 
 //Funções CRUD - DELETE

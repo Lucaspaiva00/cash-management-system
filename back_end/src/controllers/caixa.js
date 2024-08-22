@@ -26,23 +26,27 @@ const create = async (req, res) => {
 
   if (lancamento)
     // res.redirect("http://127.0.0.1:5500/front_end/index.html");
-    res.redirect("http://127.0.0.1:5500/index.html");
-    
+    res.redirect("http://127.0.0.1:5500/credito.html");
+
   else
-    res.redirect("http://127.0.0.1:5500/index.html");
+    res.redirect("http://127.0.0.1:5500/erro.html");
 };
 
-
 const update = async (req, res) => {
-  const data = req.body;
-  let lancamento = await prisma.gerenciamentoDcaixa.update({
+  try {
+    const data = req.body;
+    let itens = await prisma.gerenciamentoDcaixa.update({
       data: data,
       where: {
-          id: parseInt(req.body.id)
+        id: parseInt(req.body.id)
       }
-  });
-  res.status(202).json(lancamento).end();
+    });
+    res.status(202).json(itens).end();
+  } catch (error) {
+    res.status(404).json({ error: error.message }).end();
+  }
 }
+
 
 const apagar = async (req, res) => {
   const lancamento = await prisma.gerenciamentoDcaixa.delete({

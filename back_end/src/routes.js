@@ -26,6 +26,7 @@ router.put('/proposta', proposta.update);
 router.get('/produtos', produtos.read);
 router.post('/produtos', produtos.create);
 router.delete('/produtos/:id', produtos.apagar);
+router.put('/produtos', produtos.update);
 
 
 

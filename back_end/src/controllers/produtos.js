@@ -44,8 +44,24 @@ const apagar = async (req, res) => {
   console.log("Produto excluído com sucesso");
 }
 
+const update = async (req, res) => {
+  try {
+    const data = req.body;
+    let itens = await prisma.gerenciamentoDcaixa.update({
+      data: data,
+      where: {
+        id: parseInt(req.body.id)
+      }
+    });
+    res.status(202).json(itens).end();
+  } catch (error) {
+    res.status(404).json({ error: error.message }).end();
+  }
+}
+
 module.exports = {
   read,
   create,
-  apagar
+  apagar,
+  update
 };
