@@ -43,7 +43,7 @@ const apagar = async (req, res) => {
 const update = async (req, res) => {
     try {
         const data = req.body;
-        let itens = await prisma.gerenciamentoDcaixa.update({
+        let itens = await prisma.propostas.update({
             data: data,
             where: {
                 id: parseInt(req.body.id)

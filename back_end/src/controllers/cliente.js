@@ -31,13 +31,13 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const data = req.body;
-        let itens = await prisma.gerenciamentoDcaixa.update({
+        let cliente = await prisma.clientes.update({
             data: data,
             where: {
                 id: parseInt(req.body.id)
             }
         });
-        res.status(202).json(itens).end();
+        res.status(202).json(cliente).end();
     } catch (error) {
         res.status(404).json({ error: error.message }).end();
     }
