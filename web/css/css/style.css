@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    position: 0;
+}
+
+#caixaForm {
+    height: 300px;
+    width: 400px;
+    padding: 20px 0px 50px 0px;
+}
+
+#caixaForm input {
+    width: 300px;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+
+#caixaForms {
+    height: 300px;
+    width: 100%;
+    padding: 20px 0px 50px 0px;
+    padding: 10px;
+}
+
+#caixaForms input {
+    width: 300px;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+body {
+    background: rgb(255, 255, 255);
+}
+
+header {
+    width: 100%;
+    background: black;
+
+}
+
+.container_header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.div_logo {
+    width: 33%;
+}
+
+.div_logo img {
+    width: 120px;
+}
+
+.div_nav {
+    width: 33%;
+}
+
+.div_nav a {
+    text-decoration: none;
+    color: white;
+    margin: 10px;
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.container {
+    width: 100%;
+    margin-top: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container_formulario {
+    width: 300px;
+    border: 1px solid white;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.container_formulario input {
+    padding: 10px;
+    margin: 5px;
+    width: 250px;
+    border-radius: 15px;
+    border: 1px solid white;
+}
+
+#btn_login {
+    background: black;
+    color: white;
+}
+
+.div_img img {
+    width: 50px;
+}
+
+.div_img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+#legend {
+    font-size: 26px;
+}

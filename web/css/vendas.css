@@ -1,0 +1,19 @@
+.container{
+    width: 100%;
+    border: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container1{
+    width: 100px;
+    height: 100px;
+    background: black;
+}
+
+.container2{
+    width: 100px;
+    height: 100px;
+    background: red;
+}
