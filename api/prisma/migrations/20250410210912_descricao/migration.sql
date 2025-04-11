@@ -11,7 +11,7 @@ CREATE TABLE `login` (
 -- CreateTable
 CREATE TABLE `gerenciamentocaixa` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `dataOperacao` DATE NOT NULL,
+    `dataOperacao` VARCHAR(191) NOT NULL,
     `tipoOperacao` VARCHAR(100) NOT NULL,
     `meioPagamento` VARCHAR(100) NOT NULL,
     `valor` DOUBLE NOT NULL,

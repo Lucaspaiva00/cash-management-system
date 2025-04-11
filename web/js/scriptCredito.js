@@ -1,7 +1,34 @@
 const entradas = document.querySelector("#entradas");
-const uri = "http://localhost:3000";
+const caixaForm = document.querySelector("#caixaForm");
+const uri = "http://localhost:3000/";
 
-fetch(`${uri}/caixa`)
+caixaForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+        meioPagamento: caixaForm.meioPagamento.value,
+        tipoOperacao: caixaForm.tipoOperacao.value,
+        dataOperacao: caixaForm.dataOperacao.value,
+        valor: caixaForm.valor.value
+    }
+    fetch(uri + "caixa", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.status)
+        .then(status => {
+            if (status == 201) {
+                window.location.reload();
+            } else {
+                alert('Erro ao enviar dados para a API');
+            }
+        });
+    console.log(data)
+})
+
+fetch(`${uri}caixa`)
     .then(resp => resp.json())
     .then(resp => {
         resp.forEach(e => {
@@ -27,7 +54,7 @@ fetch(`${uri}/caixa`)
 
 function excluirPerfil(id) {
     if (confirm(`Confirma a exclusão da operação?`)) {
-        fetch(uri + "/caixa/" + id, {
+        fetch(uri + "caixa/" + id, {
             method:
                 "DELETE"
         })

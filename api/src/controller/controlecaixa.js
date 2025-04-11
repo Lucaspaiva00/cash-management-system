@@ -6,9 +6,9 @@ const create = async (req, res) => {
         const caixa = await prisma.gerenciamentocaixa.create({
             data: req.body
         })
-        res.redirect("http://127.0.0.1:5500/web/index.html")
+        res.status(201).json(caixa).end()
     } catch (error) {
-        res.redirect("http://127.0.0.1:5500/web/erro.html")
+        res.status(400).end()
     }
 }
 

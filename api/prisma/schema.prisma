@@ -15,7 +15,7 @@ model login {
 
 model gerenciamentocaixa {
   id            Int      @id @default(autoincrement())
-  dataOperacao  DateTime @db.Date
+  dataOperacao  String
   tipoOperacao  String   @db.VarChar(100)
   meioPagamento String   @db.VarChar(100)
   valor         Float
