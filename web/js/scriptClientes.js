@@ -1,22 +1,49 @@
 const clientesCadastrados = document.querySelector("#clientesCadastrados");
-const uri = "http://localhost:3000";
+const uri = "http://localhost:3000/clientes";
+const caixaForms = document.querySelector("#caixaForms")
+
+caixaForms.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+        nome: caixaForms.nome.value,
+        cpf: caixaForms.cpf.value,
+        cnpj: caixaForms.cnpj.value,
+        endereco: caixaForms.endereco.value,
+        telefone: caixaForms.telefone.value,
+        email: caixaForms.email.value,        
+    }
+    fetch(`${uri}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(res => res.status)
+        .then(status => {
+            if (status == 201) {
+                window.location.reload();
+            } else {
+                alert('Erro ao enviar dados para a API');
+            }
+        });
+    console.log(data)
+})
 
 
-fetch("http://localhost:3000/cliente")
+fetch(uri)
     .then(resp => resp.json())
     .then(resp => {
         resp.forEach(e => {
             clientesCadastrados.innerHTML +=
                 `
             <tr>
-                <td>${e.nomeCliente}</td>
-                <td>${e.cnpjCliente}</td>
-                <td>${e.cpfCliente}</td>
-                <td>${e.rgCliente}</td>
-                <td>${e.enderecoCliente}</td>
-                <td>${e.numeroCliente}</td>
-                <td>${e.emailCliente}</td>
-                <td>${e.rgCliente}</td>
+                <td>${e.nome}</td>
+                <td>${e.cpf}</td>
+                <td>${e.cnpj}</td>
+                <td>${e.endereco}</td>
+                <td>${e.telefone}</td>
+                <td>${e.email}</td>
                 <td>                
                 <button type="button" title="button" class='btn btn-primary' id='editaroperacao' onClick='editaroperacao(${e.id})'>Editar</button>
                 <button type="button" title="button" class='btn btn-primary' id='excluirCliente' onClick='excluirCliente(${e.id})'>Excluir</button>
@@ -31,7 +58,7 @@ fetch("http://localhost:3000/cliente")
 //Funções CRUD - DELETE
 function excluirCliente(id) {
     if (confirm(`Confirma a exclusão do seu Produto?`)) {
-        fetch(uri + "/cliente/" + id, { method: "DELETE" })
+        fetch(uri + "/" + id, { method: "DELETE" })
             .then((resp) => {
                 if (resp.status != 204) {
                     return {

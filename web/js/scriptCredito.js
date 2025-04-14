@@ -8,9 +8,9 @@ caixaForm.addEventListener('submit', (e) => {
         meioPagamento: caixaForm.meioPagamento.value,
         tipoOperacao: caixaForm.tipoOperacao.value,
         dataOperacao: caixaForm.dataOperacao.value,
-        valor: caixaForm.valor.value
+        valor: Number(caixaForm.valor.value)
     }
-    fetch(uri + "caixa", {
+    fetch(`${uri}caixa`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -30,20 +30,6 @@
             <div class="sidebar-heading">
                 Páginas
             </div>
-            <!-- <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#tes" aria-expanded="true"
-                    aria-controls="tes">
-                    <i class="fa fa-tachometer-alt" aria-hidden="true"></i>
-                    <span>Vendas</span>
-                </a>
-                <div id="tes" class="collapse" aria-labelledby="headingTwo" data-parent="#a">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Páginas similares</h6>
-                        <a class="collapse-item" href="vendas.html">Realizar Venda</a>
-                    </div>
-                </div>
-            </li> -->
-
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
@@ -82,7 +68,6 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Páginas similares</h6>
                         <a class="collapse-item" href="criarCliente.html">Criar Cliente</a>
-                        <a class="collapse-item" href="buscarCliente.html">Buscar Cliente</a>
                     </div>
                 </div>
             </li>
@@ -150,37 +135,42 @@
 
 
                     <div class="card card-body">
-                        <form id="caixaForms" action="http://localhost:3000/clientes" method="post">
-
-
-
+                        <form id="caixaForms">
                             <input type="text" name="nome" placeholder="Nome do Cliente" required>
-
                             <input type="text" name="cpf" placeholder="CNPJ" required>
-
                             <input type="text" name="cnpj" placeholder="CPF" required>
-
                             <input type="text" name="endereco" placeholder="Endereço do Cliente" required>
-
                             <input type="text" name="telefone" placeholder="Telefone do Cliente" required>
-
                             <input type="email" name="email" placeholder="E-mail" required>
-
-                            <input type="submit" value="Enviar" class='btn btn-success'>
+                            <button type="submit" class='btn btn-success'>Enviar</button>
                         </form>
                     </div>
                     <br>
                 </div>
 
+                <table class="table table-hover table-dark ">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Cpf</th>
+                            <th>Cnpj</th>
+                            <th>Endereço</th>
+                            <th>Telefone</th>
+                            <th>Email</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientesCadastrados">
+
+                    </tbody>
+                </table>
 
 </body>
-<script src="index.js"></script>
+<script src="js/scriptClientes.js"></script>
 <script src="vendor2/jquery/jquery.min.js"></script>
 <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 <script src="js2/sb-admin-2.min.js"></script>
-<script src="vendor2/chart.js/Chart.min.js"></script>
-<script src="js2/demo/chart-area-demo.js"></script>
-<script src="js2/demo/chart-pie-demo.js"></script>
+
 
 </html>

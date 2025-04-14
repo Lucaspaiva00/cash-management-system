@@ -31,20 +31,6 @@
             <div class="sidebar-heading">
                 Páginas
             </div>
-            <!-- <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#tes" aria-expanded="true"
-                    aria-controls="tes">
-                    <i class="fa fa-tachometer-alt" aria-hidden="true"></i>
-                    <span>Vendas</span>
-                </a>
-                <div id="tes" class="collapse" aria-labelledby="headingTwo" data-parent="#a">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Páginas similares</h6>
-                        <a class="collapse-item" href="vendas.html">Realizar Venda</a>
-                    </div>
-                </div>
-            </li> -->
-
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
@@ -83,7 +69,6 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Páginas similares</h6>
                         <a class="collapse-item" href="criarCliente.html">Criar Cliente</a>
-                        <a class="collapse-item" href="buscarCliente.html">Buscar Cliente</a>
                     </div>
                 </div>
             </li>
@@ -110,15 +95,6 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <!-- <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small"
-                            placeholder="Pesquise por um produto" aria-label="Search" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
-                        </div>
-                    </div> -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
@@ -160,12 +136,12 @@
                     </p>
                     <div class="collapse" id="collapseExample">
                         <div class="card card-body">
-                            <form id="caixaForm" action="http://localhost:3000/caixa" method="post">
+                            <form id="caixaForm">
                                 <input type="text" name="valor" placeholder="Valor" required>
                                 <input type="text" name="meioPagamento" placeholder="Meio de Pagamento" required>
                                 <input type="text" name="tipoOperacao" placeholder="Tipo de Operação (Saída)" required>
                                 <input type="date" name="dataOperacao" placeholder="Data de Operação" required>
-                                <input type="submit" value="Enviar" id="botao" class='btn btn-success'>
+                                <button type="submit" class='btn btn-success'>Enviar</button>
                             </form>
                         </div>
                     </div>
@@ -191,10 +167,5 @@
 <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 <script src="js2/sb-admin-2.min.js"></script>
-<script src="vendor2/chart.js/Chart.min.js"></script>
-<script src="js2/demo/chart-area-demo.js"></script>
-<script src="js2/demo/chart-pie-demo.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
-    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-    crossorigin="anonymous"></script>
+
 </html>

@@ -3,9 +3,10 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const caixa = await prisma.gerenciamentocaixa.create({
+        const prop = await prisma.proposta.create({
             data: req.body
         })
+
         res.status(201).json(caixa).end()
     } catch (error) {
         console.log(error);
@@ -15,30 +16,30 @@ const create = async (req, res) => {
 }
 
 const read = async (req, res) => {
-    const caixa = await prisma.gerenciamentocaixa.findMany()
-    return res.json(caixa)
+    const prop = prisma.proposta.findMany()
+    return res.json(prop)
 }
 
 const update = async (req, res) => {
     try {
-        const caixa = await prisma.gerenciamentocaixa.update({
+        const prop = await prisma.proposta.update({
             where: { id: parseInt(req.params.id) },
             data: req.body
         })
-        return res.status(202).json(caixa);
+        return res.status(201).json(prop).end()
     } catch (error) {
-        return res.status(400).json({ error: error.message });
+        return res.status(400).json(prop)
     }
 }
 
 const remove = async (req, res) => {
     try {
-        const caixa = await prisma.gerenciamentocaixa.delete({
+        const prop = await prisma.proposta.delete({
             where: { id: parseInt(req.params.id) }
         })
-        return res.status(204).json(caixa).end();
+        return res.status(201).json(prop).end()
     } catch (error) {
-        return res.status(400).json({ error: error.message });
+        return res.status(400).json(prop)
     }
 }
 
