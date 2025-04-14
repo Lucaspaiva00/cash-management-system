@@ -81,7 +81,8 @@ fetch(uri)
                     if (resp.error == undefined) {
                         window.location.reload();
                     } else {
-                        document.querySelector("#msg").innerHTML = resp.error;
+                        // document.querySelector("#msg").innerHTML = resp.error;
+                        window.location.reload();
                     }
                 });
         }
