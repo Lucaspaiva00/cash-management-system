@@ -151,10 +151,11 @@
 
                     <div class="card card-body">
                         <form id="caixaForms">
-                            <input type="number" name="numero" placeholder="Núemro da Prop." required>
+                            <input type="number" name="numero" placeholder="Número da Prop." required>
                             <input type="date" name="data" placeholder="Data da criação" required>
                             <input type="text" name="descricao" placeholder="Descrição" required>
                             <input type="text" name="status" placeholder="Aberto ou Fechado" required>
+                            <input type="text" name="valor" placeholder="Preço" required>
                             <button type="submit" class='btn btn-success'>Enviar</button>
                         </form>
                     </div>
@@ -167,8 +168,9 @@
                                 <th>Número</th>
                                 <th>Data</th>
                                 <th>Descrição</th>
-                                <th>status</th>
-                                <th>AÇÃO</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody id="propostasCadastrados"></tbody>

@@ -8,7 +8,8 @@ caixaForms.addEventListener('submit', (e) => {
         numero: Number(caixaForms.numero.value),
         data: caixaForms.data.value,
         descricao: caixaForms.descricao.value,
-        status: caixaForms.status.value
+        status: caixaForms.status.value,
+        valor: Number(caixaForms.valor.value)
     }
 
     fetch(`${uri}`, {
@@ -39,20 +40,17 @@ fetch(uri)
             <td>${e.numero}</td>
             <td>${e.data}</td>
             <td>${e.descricao}</td>
+            <td>${e.valor}</td>
             <td>${e.status}</td>
             <td>                
             <button type="button" title="button" class='btn btn-primary' id='editaroperacao' onClick='editaroperacao(${e.id})'>Editar</button>
             <button type="button" title="button" class='btn btn-primary' id='excluirProposta' onClick='excluirProposta(${e.id})'>Excluir</button>
             </td>
             `;
-            totalprop += e.valorProposta;
+            totalprop += e.valor;
             document.querySelector("#totalprop").innerHTML = totalprop.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            // document.querySelector("#custo").innerHTML = e.custoProposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-            // document.querySelector("#liquido").innerHTML = (e.valorProposta - e.custoProposta).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
         });
-       
+
     })
 
 //Funções CRUD - DELETE
@@ -70,7 +68,7 @@ function excluirProposta(id) {
                 if (resp.error == undefined) {
                     window.location.reload();
                 } else {
-                    document.querySelector("#msg").innerHTML = resp.error;
+                    window.location.reload();
                 }
             });
     }

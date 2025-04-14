@@ -56,17 +56,17 @@ fetch(`${uri}/caixa`)
 
 
 // PUXANDO TOTAL EM PROPOSTAS
-// fetch(`${uri}/proposta`)
-//     .then(resp => resp.json())
-//     .then(resp => {
-//         let totalprop = 0;
-//         resp.forEach(e => {
-//             totalprop += e.valorProposta;
-//             document.querySelector("#totalprop").innerHTML = totalprop.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-//         });
+fetch(`${uri}/proposta`)
+    .then(resp => resp.json())
+    .then(resp => {
+        let totalprop = 0;
+        resp.forEach(e => {
+            totalprop += e.valor;
+            document.querySelector("#totalprop").innerHTML = totalprop.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        });
 
 
-//     })
+    })
 
 //Funções CRUD - DELETE
 function excluirPerfil(id) {

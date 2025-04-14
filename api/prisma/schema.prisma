@@ -14,10 +14,10 @@ model login {
 }
 
 model gerenciamentocaixa {
-  id            Int      @id @default(autoincrement())
+  id            Int    @id @default(autoincrement())
   dataOperacao  String
-  tipoOperacao  String   @db.VarChar(100)
-  meioPagamento String   @db.VarChar(100)
+  tipoOperacao  String @db.VarChar(100)
+  meioPagamento String @db.VarChar(100)
   valor         Float
 }
 
@@ -32,11 +32,12 @@ model cliente {
 }
 
 model proposta {
-  id        Int      @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   numero    Int
-  data      DateTime @db.Date
-  descricao String   @db.VarChar(252)
-  status    String   @db.VarChar(100)
+  data      String
+  descricao String @db.VarChar(252)
+  status    String @db.VarChar(100)
+  valor     Float
 }
 
 model produtos {

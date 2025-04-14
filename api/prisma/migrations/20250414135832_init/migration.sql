@@ -39,9 +39,10 @@ CREATE TABLE `cliente` (
 CREATE TABLE `proposta` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `numero` INTEGER NOT NULL,
-    `data` DATE NOT NULL,
+    `data` VARCHAR(191) NOT NULL,
     `descricao` VARCHAR(252) NOT NULL,
     `status` VARCHAR(100) NOT NULL,
+    `valor` DOUBLE NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
