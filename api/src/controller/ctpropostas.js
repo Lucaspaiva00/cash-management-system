@@ -7,7 +7,7 @@ const create = async (req, res) => {
             data: req.body
         })
 
-        res.status(201).json(caixa).end()
+        res.status(201).json(prop).end()
     } catch (error) {
         console.log(error);
 
@@ -16,7 +16,7 @@ const create = async (req, res) => {
 }
 
 const read = async (req, res) => {
-    const prop = prisma.proposta.findMany()
+    const prop = await prisma.proposta.findMany()
     return res.json(prop)
 }
 
