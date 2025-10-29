@@ -1,77 +1,80 @@
 const saidas = document.querySelector("#saidas");
-const uri = "http://localhost:3000/caixa";
+const uri = "https://cash-management-system.fly.dev/caixa";
 const caixaForm = document.querySelector("#caixaForm");
 
-caixaForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = {
-        meioPagamento: caixaForm.meioPagamento.value,
-        tipoOperacao: caixaForm.tipoOperacao.value,
-        dataOperacao: caixaForm.dataOperacao.value,
-        valor: Number(caixaForm.valor.value)
-    }
-    fetch(`${uri}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(res => res.status)
-        .then(status => {
-            if (status == 201) {
-                window.location.reload();
-            } else {
-                alert('Erro ao enviar dados para a API');
-            }
-        });
-    console.log(data)
-})
+caixaForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const data = {
+    meioPagamento: caixaForm.meioPagamento.value,
+    tipoOperacao: caixaForm.tipoOperacao.value,
+    dataOperacao: caixaForm.dataOperacao.value,
+    valor: Number(caixaForm.valor.value),
+  };
+  fetch(`${uri}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((res) => res.status)
+    .then((status) => {
+      if (status == 201) {
+        window.location.reload();
+      } else {
+        alert("Erro ao enviar dados para a API");
+      }
+    });
+  console.log(data);
+});
 
 fetch(uri)
-    .then(resp => resp.json())
-    .then(resp => {
-        resp.forEach(e => {
-            if (e.tipoOperacao == "Saída") {
-                saidas.innerHTML +=
-                    `
+  .then((resp) => resp.json())
+  .then((resp) => {
+    resp.forEach((e) => {
+      if (e.tipoOperacao == "Saída") {
+        saidas.innerHTML += `
             <tr>
                 <td>${e.id}</td>
                 <td>${e.dataOperacao}</td>
                 <td>${e.tipoOperacao}</td>
                 <td>${e.meioPagamento}</td>
-                <td>${e.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                <td>${e.valor.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}</td>
                 <td>
-                <button type="button" title="button" class='btn btn-primary' id='editaroperacao' onClick='editaroperacao(${e.id})'>Editar</button>
-                <button type="button" title="button" class='btn btn-primary' id='excluirPerfil' onClick='excluirPerfil(${e.id})'>Excluir</button></td>
+                <button type="button" title="button" class='btn btn-primary' id='editaroperacao' onClick='editaroperacao(${
+                  e.id
+                })'>Editar</button>
+                <button type="button" title="button" class='btn btn-primary' id='excluirPerfil' onClick='excluirPerfil(${
+                  e.id
+                })'>Excluir</button></td>
             <tr>
             `;
-            }
-        });
-
-
+      }
     });
+  });
 
 function excluirPerfil(id) {
-    if (confirm(`Confirma a exclusão da operação?`)) {
-        fetch(uri + "/" + id, {
-            method:
-                "DELETE"
-        })
-            .then((resp) => {
-                if (resp.status != 204) {
-                    return {
-                        error: "Erro ao excluir uma operação!",
-                    };
-                } else return {};
-            })
-            .then((resp) => {
-                if (resp.error == undefined) {
-                    window.location.reload();
-                    console.log("Caiu no Error");
-                } else {
-                    document.querySelector('#msg').innerHTML = resp.error;
-                }
-            })
-    }
+  if (confirm(`Confirma a exclusão da operação?`)) {
+    fetch(uri + "/" + id, {
+      method: "DELETE",
+    })
+      .then((resp) => {
+        if (resp.status != 204) {
+          return {
+            error: "Erro ao excluir uma operação!",
+          };
+        } else return {};
+      })
+      .then((resp) => {
+        if (resp.error == undefined) {
+          window.location.reload();
+          console.log("Caiu no Error");
+        } else {
+          document.querySelector("#msg").innerHTML = resp.error;
+        }
+      });
+  }
 }
