@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@prisma/client": "^6.5.0",
+    "@prisma/client": "^6.10.1",
     "api": "file:",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -11,7 +11,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "devDependencies": {
-    "prisma": "^6.5.0"
+    "prisma": "^6.10.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
