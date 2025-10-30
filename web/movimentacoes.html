@@ -208,50 +208,68 @@
                     <h5 class="m-0 font-weight-bold text-dark">Movimentações do Caixa</h5>
                 </nav>
 
-                <div class="card-body">
-                    <form id="caixaForms">
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label>Nome do Cliente</label>
-                                <input type="text" name="nome" class="form-control" placeholder="Nome completo"
-                                    required />
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>CPF</label>
-                                <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" />
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>CNPJ</label>
-                                <input type="text" name="cnpj" class="form-control" placeholder="00.000.000/0000-00" />
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>Endereço</label>
-                                <input type="text" name="endereco" class="form-control"
-                                    placeholder="Rua, número, bairro..." />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Telefone</label>
-                                <input type="text" name="telefone" class="form-control" placeholder="(00) 00000-0000" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>E-mail</label>
-                                <input type="email" name="email" class="form-control" placeholder="email@empresa.com" />
-                            </div>
-                        </div>
-
-                        <div class="text-right mt-3">
-                            <button type="submit" class="btn btn-success px-4 py-2 shadow-sm">
-                                <i class="fas fa-save mr-1"></i> Salvar Cliente
-                            </button>
-                            <button type="reset" class="btn btn-light border px-4 py-2 ml-2">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
                 <!-- CARD DE CADASTRO -->
-               
+                <div class="container-fluid mb-4">
+                    <div class="card card-movimentacao shadow-sm">
+                        <div class="card-header d-flex align-items-center">
+                            <i class="fas fa-plus-circle text-danger mr-2"></i>
+                            <h5 class="mb-0">Nova Movimentação</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <form id="caixaForm" novalidate>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Tipo de Operação</label>
+                                        <select name="tipoOperacao" class="form-control" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="ENTRADA">Entrada</option>
+                                            <option value="SAIDA">Saída</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        <label>Meio de Pagamento</label>
+                                        <select name="meioPagamento" class="form-control" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="PIX">Pix</option>
+                                            <option value="CARTAO">Cartão</option>
+                                            <option value="DINHEIRO">Dinheiro</option>
+                                            <option value="BOLETO">Boleto</option>
+                                            <option value="TRANSFERENCIA">Transferência</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        <label>Valor</label>
+                                        <input type="number" step="0.01" name="valor" class="form-control"
+                                            placeholder="0,00" required />
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Data</label>
+                                        <input type="date" name="dataOperacao" class="form-control" required />
+                                    </div>
+
+                                    <div class="form-group col-md-8">
+                                        <label>Descrição</label>
+                                        <input type="text" name="descricao" class="form-control"
+                                            placeholder="Ex: Pagamento de fornecedor, venda, compra de material..." />
+                                    </div>
+                                </div>
+
+                                <div class="text-right mt-3">
+                                    <button type="submit" class="btn btn-danger px-4 py-2 shadow-sm">
+                                        <i class="fas fa-save mr-1"></i> Salvar Movimentação
+                                    </button>
+                                    <button type="reset" class="btn btn-light border px-4 py-2 ml-2">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- LISTA DE MOVIMENTAÇÕES -->
                 <div class="container-fluid">
