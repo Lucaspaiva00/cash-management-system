@@ -68,22 +68,26 @@ function criarCards() {
 
 async function carregarDashboard() {
   try {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+    if (!usuario || !usuario.empresaId) {
+      alert("Sessão expirada. Faça login novamente.");
+      window.location.href = "login.html";
+      return;
+    }
+
     // --- Caixa (Entradas/Saídas) ---
-    const caixa = await fetch(`${API}/caixa`).then((r) => r.json());
-    let entrada = 0,
-      saida = 0;
+    const caixa = await fetch(`${API}/caixa?empresaId=${usuario.empresaId}`).then((r) => r.json());
+
+    let entrada = 0, saida = 0;
     const evolucao = {};
 
     caixa.forEach((op) => {
-      const dataRef = op.data || op.createdAt; // compatibilidade com campo correto
-      const dia = new Date(dataRef).toLocaleDateString("pt-BR");
-
-      if (op.tipoOperacao === "Entrada") entrada += op.valor;
-      if (op.tipoOperacao === "Saída") saida += op.valor;
+      const dia = new Date(op.dataOperacao).toLocaleDateString("pt-BR");
+      if (op.tipoOperacao === "ENTRADA") entrada += op.valor;
+      if (op.tipoOperacao === "SAIDA") saida += op.valor;
 
       evolucao[dia] = evolucao[dia] || { entrada: 0, saida: 0 };
-      evolucao[dia][op.tipoOperacao === "Entrada" ? "entrada" : "saida"] +=
-        op.valor;
+      evolucao[dia][op.tipoOperacao === "ENTRADA" ? "entrada" : "saida"] += op.valor;
     });
 
     const lucro = entrada - saida;
@@ -92,25 +96,16 @@ async function carregarDashboard() {
     atualizarValor("lucro", lucro);
 
     // --- Propostas ---
-    const propostas = await fetch(`${API}/proposta`).then((r) => r.json());
-    const totalPropostas = propostas.reduce(
-      (acc, p) => acc + (p.valor || 0),
-      0
-    );
-    const aprovadas = propostas.filter(
-      (p) => p.status?.toLowerCase() === "fechado"
-    ).length;
-    const pendentes = propostas.filter(
-      (p) => p.status?.toLowerCase() === "aberto"
-    ).length;
+    const propostas = await fetch(`${API}/propostas?empresaId=${usuario.empresaId}`).then((r) => r.json());
+    const totalPropostas = propostas.reduce((acc, p) => acc + (p.valorTotal || 0), 0);
+    const aprovadas = propostas.filter((p) => p.status?.toLowerCase() === "fechado").length;
+    const pendentes = propostas.filter((p) => p.status?.toLowerCase() === "aberto").length;
     atualizarValor("propostas", totalPropostas);
     document.getElementById("aprovadas").innerText = aprovadas;
     document.getElementById("pendentes").innerText = pendentes;
 
     // --- Clientes ---
-    const clientes = await fetch(`${API}/clientescontroller`).then((r) =>
-      r.json()
-    );
+    const clientes = await fetch(`${API}/clientes?empresaId=${usuario.empresaId}`).then((r) => r.json());
     document.getElementById("clientes").innerText = clientes.length;
 
     // --- Empresas ---
@@ -120,10 +115,12 @@ async function carregarDashboard() {
     // --- Gráficos ---
     renderizarGraficoBarras(entrada, saida, lucro);
     renderizarGraficoLinha(evolucao);
+
   } catch (err) {
     console.error("Erro ao carregar dashboard:", err);
   }
 }
+
 
 function atualizarValor(id, valor) {
   document.getElementById(id).innerText = valor.toLocaleString("pt-BR", {
