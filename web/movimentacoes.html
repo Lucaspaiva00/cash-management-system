@@ -144,105 +144,89 @@
                     <h5 class="m-0 font-weight-bold text-dark">Movimentações do Caixa</h5>
                 </nav>
 
-                <div class="container-fluid mb-4">
-                    <!-- Filtro -->
-                    <div class="filter-bar mb-4">
-                        <select id="filtroTipo" class="form-control" onchange="carregarOperacoes(this.value)">
-                            <option value="TODAS">Todas</option>
-                            <option value="ENTRADA">Entradas</option>
-                            <option value="SAIDA">Saídas</option>
-                        </select>
+                <div class="card card-movimentacao shadow-sm mt-3">
+                    <div class="card-header bg-white border-0 d-flex align-items-center">
+                        <i class="fas fa-plus-circle text-danger mr-2"></i>
+                        <h5 class="mb-0 font-weight-bold text-dark">Nova Movimentação</h5>
                     </div>
 
-                    <div class="card shadow-sm mt-3">
-                        <div class="card-body">
-                            <h5 class="mb-4">
-                                <i class="fas fa-plus-circle text-danger mr-2"></i> Nova Movimentação
-                            </h5>
-
-                            <form id="caixaForm" class="needs-validation" novalidate>
-                                <!-- LINHA 1: Tipo + Meio -->
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label class="small font-weight-semibold text-muted">Tipo de Operação</label>
-                                        <div class="input-icon">
-                                            <i class="fas fa-random"></i>
-                                            <select name="tipoOperacao" class="form-control" required>
-                                                <option value="">Selecione...</option>
-                                                <option value="ENTRADA">Entrada</option>
-                                                <option value="SAIDA">Saída</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group col-md-6">
-                                        <label class="small font-weight-semibold text-muted">Meio de Pagamento</label>
-                                        <div class="input-icon">
-                                            <i class="fas fa-credit-card"></i>
-                                            <select name="meioPagamento" class="form-control" required>
-                                                <option value="">Selecione...</option>
-                                                <option value="PIX">Pix</option>
-                                                <option value="CARTAO">Cartão</option>
-                                                <option value="DINHEIRO">Dinheiro</option>
-                                                <option value="BOLETO">Boleto</option>
-                                                <option value="TRANSFERENCIA">Transferência</option>
-                                            </select>
-                                        </div>
+                    <div class="card-body">
+                        <form id="caixaForm" novalidate>
+                            <!-- Tipo / Meio -->
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Tipo de Operação</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-random"></i>
+                                        <select name="tipoOperacao" class="form-control" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="ENTRADA">Entrada</option>
+                                            <option value="SAIDA">Saída</option>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <!-- LINHA 2: Valor -->
-                                <div class="form-row">
-                                    <div class="form-group col-md-4">
-                                        <label class="small font-weight-semibold text-muted">Valor</label>
-                                        <div class="input-icon">
-                                            <i class="fas fa-dollar-sign"></i>
-                                            <input type="number" step="0.01" name="valor" class="form-control"
-                                                placeholder="0,00" required>
-                                        </div>
+                                <div class="form-group col-md-6">
+                                    <label>Meio de Pagamento</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-credit-card"></i>
+                                        <select name="meioPagamento" class="form-control" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="PIX">Pix</option>
+                                            <option value="CARTAO">Cartão</option>
+                                            <option value="DINHEIRO">Dinheiro</option>
+                                            <option value="BOLETO">Boleto</option>
+                                            <option value="TRANSFERENCIA">Transferência</option>
+                                        </select>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- LINHA 3: Data -->
-                                <div class="form-row">
-                                    <div class="form-group col-md-4">
-                                        <label class="small font-weight-semibold text-muted">Data</label>
-                                        <div class="input-icon">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            <input type="date" name="dataOperacao" class="form-control" required>
-                                        </div>
+                            <!-- Valor -->
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label>Valor</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <input type="number" step="0.01" name="valor" class="form-control"
+                                            placeholder="0,00" required>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- LINHA 4: Descrição -->
-                                <div class="form-row">
-                                    <div class="form-group col-md-12">
-                                        <label class="small font-weight-semibold text-muted">Descrição</label>
-                                        <div class="input-icon">
-                                            <i class="fas fa-align-left"></i>
-                                            <input type="text" name="descricao" class="form-control"
-                                                placeholder="Ex: Pagamento de fornecedor, venda, compra de material...">
-                                        </div>
+                            <!-- Data -->
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label>Data</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <input type="date" name="dataOperacao" class="form-control" required>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- Botão -->
-                                <div class="text-right mt-3">
-                                    <button type="submit" class="btn btn-danger px-5 py-2 shadow-sm"
-                                        style="border-radius:8px;font-weight:600;">
-                                        <i class="fas fa-save mr-2"></i> Salvar Movimentação
-                                    </button>
+                            <!-- Descrição -->
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label>Descrição</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-align-left"></i>
+                                        <input type="text" name="descricao" class="form-control"
+                                            placeholder="Ex: Pagamento de fornecedor, venda, compra de material...">
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
 
-                    <!-- Lista -->
-                    <div>
-                        <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
-                        <div id="listaOperacoes"></div>
+                            <div class="text-right mt-3">
+                                <button type="submit" class="btn btn-danger px-5 py-2 shadow-sm"
+                                    style="border-radius:8px;font-weight:600;">
+                                    <i class="fas fa-save mr-2"></i> Salvar Movimentação
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
