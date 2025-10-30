@@ -136,31 +136,40 @@
                     </div>
 
                     <!-- Formulário -->
-                    <div class="card shadow-sm mb-4 border-0" style="border-left: 6px solid #e63946;">
+                    <!-- 🔥 Card aprimorado de Movimentação -->
+                    <div class="card border-0 shadow-sm mb-4"
+                        style="background-color:#fff; border-left:5px solid #e63946; border-radius:12px;">
                         <div class="card-body">
-                            <h5 class="mb-4 text-dark font-weight-bold">
-                                <i class="fas fa-plus-circle text-danger"></i> Nova Movimentação
+                            <h5 class="mb-4 text-dark font-weight-bold d-flex align-items-center">
+                                <i class="fas fa-plus-circle text-danger mr-2"></i> Nova Movimentação
                             </h5>
 
-                            <form id="caixaForm" class="needs-validation" novalidate>
-                                <div class="form-row">
-                                    <div class="form-group col-md-3">
-                                        <label for="tipoOperacao"><i
-                                                class="fas fa-exchange-alt mr-1 text-secondary"></i>Tipo de
-                                            Operação</label>
-                                        <select name="tipoOperacao" id="tipoOperacao" class="form-control custom-select"
-                                            required>
+                            <form id="caixaForm" class="row g-3 align-items-end">
+                                <div class="form-group col-md-3">
+                                    <label class="font-weight-semibold text-secondary"><i
+                                            class="fas fa-random mr-1 text-muted"></i> Tipo de Operação</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-light"><i
+                                                    class="fas fa-exchange-alt text-danger"></i></span>
+                                        </div>
+                                        <select name="tipoOperacao" class="form-control" required>
                                             <option value="">Selecione...</option>
                                             <option value="ENTRADA">Entrada</option>
                                             <option value="SAIDA">Saída</option>
                                         </select>
                                     </div>
+                                </div>
 
-                                    <div class="form-group col-md-3">
-                                        <label for="meioPagamento"><i class="fas fa-wallet mr-1 text-secondary"></i>Meio
-                                            de Pagamento</label>
-                                        <select name="meioPagamento" id="meioPagamento"
-                                            class="form-control custom-select" required>
+                                <div class="form-group col-md-3">
+                                    <label class="font-weight-semibold text-secondary"><i
+                                            class="fas fa-wallet mr-1 text-muted"></i> Meio de Pagamento</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-light"><i
+                                                    class="fas fa-credit-card text-danger"></i></span>
+                                        </div>
+                                        <select name="meioPagamento" class="form-control" required>
                                             <option value="">Selecione...</option>
                                             <option value="PIX">Pix</option>
                                             <option value="CARTAO">Cartão</option>
@@ -169,39 +178,50 @@
                                             <option value="TRANSFERENCIA">Transferência</option>
                                         </select>
                                     </div>
+                                </div>
 
-                                    <div class="form-group col-md-3">
-                                        <label for="valor"><i
-                                                class="fas fa-dollar-sign mr-1 text-secondary"></i>Valor</label>
-                                        <input type="number" step="0.01" name="valor" id="valor" class="form-control"
+                                <div class="form-group col-md-3">
+                                    <label class="font-weight-semibold text-secondary"><i
+                                            class="fas fa-dollar-sign mr-1 text-muted"></i> Valor</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-light"><i
+                                                    class="fas fa-money-bill-wave text-danger"></i></span>
+                                        </div>
+                                        <input type="number" step="0.01" name="valor" class="form-control"
                                             placeholder="0,00" required>
                                     </div>
+                                </div>
 
-                                    <div class="form-group col-md-3">
-                                        <label for="dataOperacao"><i
-                                                class="fas fa-calendar-alt mr-1 text-secondary"></i>Data</label>
-                                        <input type="date" name="dataOperacao" id="dataOperacao" class="form-control"
-                                            required>
+                                <div class="form-group col-md-3">
+                                    <label class="font-weight-semibold text-secondary"><i
+                                            class="fas fa-calendar-alt mr-1 text-muted"></i> Data</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-light"><i
+                                                    class="fas fa-clock text-danger"></i></span>
+                                        </div>
+                                        <input type="date" name="dataOperacao" class="form-control" required>
                                     </div>
                                 </div>
 
-                                <div class="form-row">
-                                    <div class="form-group col-md-12">
-                                        <label for="descricao"><i
-                                                class="fas fa-align-left mr-1 text-secondary"></i>Descrição</label>
-                                        <input type="text" name="descricao" id="descricao" class="form-control"
-                                            placeholder="Ex: Pagamento de fornecedor, venda, compra de material..." />
-                                    </div>
+                                <div class="form-group col-md-12 mt-2">
+                                    <label class="font-weight-semibold text-secondary"><i
+                                            class="fas fa-align-left mr-1 text-muted"></i> Descrição</label>
+                                    <input type="text" name="descricao" class="form-control"
+                                        placeholder="Ex: Pagamento de fornecedor, venda, compra de material..." />
                                 </div>
 
-                                <div class="text-right">
-                                    <button type="submit" class="btn btn-danger px-4 shadow-sm">
-                                        <i class="fas fa-save mr-1"></i> Salvar
+                                <div class="col-md-12 text-right mt-3">
+                                    <button type="submit" class="btn px-4 shadow-sm"
+                                        style="background-color:#e63946; color:#fff; font-weight:600; border-radius:8px;">
+                                        <i class="fas fa-save mr-2"></i> Salvar Movimentação
                                     </button>
                                 </div>
                             </form>
                         </div>
                     </div>
+
 
 
                     <!-- Lista -->
