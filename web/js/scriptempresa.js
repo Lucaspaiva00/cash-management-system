@@ -1,77 +1,96 @@
-const baseURL = "http://localhost:3000/empresas"; // Trocar para seu endpoint no Render
+const API = "https://cash-management-system.fly.dev/empresas"; // seu endpoint Render
+const lista = document.querySelector("#empresasCadastradas");
+const form = document.querySelector("#formEmpresa");
 
-
+// 🔹 Carregar empresas
 async function carregarEmpresas() {
     try {
-        const resp = await fetch(baseURL);
+        const resp = await fetch(API);
         const empresas = await resp.json();
+        lista.innerHTML = "";
 
-        const tabela = document.querySelector("#tabelaEmpresas tbody");
-        tabela.innerHTML = "";
+        if (empresas.length === 0) {
+            lista.innerHTML = `<div class="text-center text-muted w-100">Nenhuma empresa cadastrada.</div>`;
+            return;
+        }
 
         empresas.forEach(e => {
-            tabela.innerHTML += `
-        <tr>
-          <td>${e.id}</td>
-          <td>${e.nome}</td>
-          <td>${e.cnpj || "-"}</td>
-          <td>${e.email || "-"}</td>
-          <td>${e.telefone || "-"}</td>
-          <td>${e.endereco || "-"}</td>
-          <td>
-            <button class="btn btn-danger btn-sm" onclick="removerEmpresa(${e.id})">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
-        </tr>
+            lista.innerHTML += `
+        <div class="col-md-4 mb-4">
+          <div class="card card-empresa shadow-sm h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title text-primary"><i class="fas fa-building"></i> ${e.nome}</h5>
+                <button class="btn btn-sm btn-danger" onclick="removerEmpresa(${e.id})">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+              <p class="mb-1"><strong>CNPJ:</strong> ${e.cnpj || "-"}</p>
+              <p class="mb-1"><strong>E-mail:</strong> ${e.email || "-"}</p>
+              <p class="mb-1"><strong>Telefone:</strong> ${e.telefone || "-"}</p>
+              <p class="mb-0"><strong>Endereço:</strong> ${e.endereco || "-"}</p>
+            </div>
+          </div>
+        </div>
       `;
         });
     } catch (error) {
         console.error("Erro ao carregar empresas:", error);
+        lista.innerHTML = `<div class="alert alert-danger w-100">Erro ao carregar lista de empresas.</div>`;
     }
 }
 
-document.querySelector("#formEmpresa").addEventListener("submit", async (e) => {
+// 🔹 Criar nova empresa
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const novaEmpresa = {
-        nome: document.querySelector("#nome").value.trim(),
-        cnpj: document.querySelector("#cnpj").value.trim(),
-        email: document.querySelector("#email").value.trim(),
-        telefone: document.querySelector("#telefone").value.trim(),
-        endereco: document.querySelector("#endereco").value.trim(),
+        nome: form.nome.value.trim(),
+        cnpj: form.cnpj.value.trim(),
+        email: form.email.value.trim(),
+        telefone: form.telefone.value.trim(),
+        endereco: form.endereco.value.trim(),
     };
 
     try {
-        const resp = await fetch(baseURL, {
+        const resp = await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(novaEmpresa),
         });
 
-        if (!resp.ok) throw new Error("Erro ao criar empresa");
-
-        alert("✅ Empresa cadastrada com sucesso!");
-        e.target.reset();
-        carregarEmpresas();
+        if (resp.ok) {
+            alert("✅ Empresa cadastrada com sucesso!");
+            form.reset();
+            carregarEmpresas();
+        } else {
+            alert("❌ Falha ao cadastrar empresa.");
+        }
     } catch (error) {
-        alert("❌ Falha ao cadastrar empresa.");
-        console.error(error);
+        console.error("Erro ao criar empresa:", error);
+        alert("Erro de conexão com o servidor.");
     }
 });
 
+// 🔹 Remover empresa
 async function removerEmpresa(id) {
-    if (!confirm("Tem certeza que deseja remover esta empresa?")) return;
+    if (!confirm("Deseja realmente remover esta empresa?")) return;
 
     try {
-        const resp = await fetch(`${baseURL}/${id}`, { method: "DELETE" });
-        if (!resp.ok) throw new Error("Erro ao remover");
-
-        alert("Empresa removida com sucesso!");
-        carregarEmpresas();
+        const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
+        if (resp.status === 204) {
+            alert("🗑️ Empresa removida com sucesso!");
+            carregarEmpresas();
+        } else {
+            alert("❌ Falha ao remover empresa.");
+        }
     } catch (error) {
-        alert("Erro ao remover empresa.");
-        console.error(error);
+        console.error("Erro ao remover empresa:", error);
     }
 }
-document.addEventListener("DOMContentLoaded", carregarEmpresas);
+
+// Inicialização
+document.addEventListener("DOMContentLoaded", () => {
+    lista.classList.add("row");
+    carregarEmpresas();
+});
