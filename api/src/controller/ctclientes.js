@@ -1,48 +1,80 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+// Criar cliente
 const create = async (req, res) => {
     try {
-        const cliente = await prisma.cliente.create({
-            data: req.body
-        })
-        return res.status(201).json(cliente);
-    } catch (e) {
-        return res.status(500).json({ error: 'Falha ao cadastrar o cliente' });
+        const { nome, cpf, cnpj, endereco, telefone, email, empresaId } = req.body;
+
+        if (!nome || !empresaId) {
+            return res.status(400).json({ error: "Nome e empresaId são obrigatórios." });
+        }
+
+        const novo = await prisma.cliente.create({
+            data: {
+                nome,
+                cpf,
+                cnpj,
+                endereco,
+                telefone,
+                email,
+                empresaId: parseInt(empresaId),
+            },
+        });
+
+        return res.status(201).json({ message: "Cliente cadastrado com sucesso!", data: novo });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao cadastrar cliente." });
     }
-}
+};
 
+// Listar clientes
 const read = async (req, res) => {
-    const clientes = await prisma.cliente.findMany()
-    return res.json(clientes)
-}
+    try {
+        const empresaId = parseInt(req.query.empresaId);
+        if (!empresaId) return res.status(400).json({ error: "Informe o ID da empresa." });
 
+        const lista = await prisma.cliente.findMany({
+            where: { empresaId },
+            orderBy: { id: "desc" },
+        });
+
+        return res.status(200).json(lista);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao listar clientes." });
+    }
+};
+
+// Atualizar cliente
 const update = async (req, res) => {
     try {
-        const cliente = await prisma.cliente.update({
-            where: { id: parseInt(req.params.id) },
-            data: req.body
-        })
-        return res.json(cliente);
-    } catch (err) {
-        return res.status(500).json({ error: 'Falha ao atualizar o cliente' });
-    }
-}
+        const id = parseInt(req.params.id);
+        const dados = req.body;
 
+        const atualizado = await prisma.cliente.update({
+            where: { id },
+            data: dados,
+        });
+
+        return res.status(200).json({ message: "Cliente atualizado com sucesso!", data: atualizado });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao atualizar cliente." });
+    }
+};
+
+// Excluir cliente
 const remove = async (req, res) => {
     try {
-        const cliente = await prisma.cliente.delete({
-            where: { id: parseInt(req.params.id) }
-        })
-        return res.status(204).json(cliente);
-    } catch (err) {
-        return res.status(500).json({ error: 'Falha ao remover o cliente' });
+        const id = parseInt(req.params.id);
+        await prisma.cliente.delete({ where: { id } });
+        return res.status(200).json({ message: "Cliente excluído com sucesso!" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao excluir cliente." });
     }
-}
+};
 
-module.exports = {
-    create,
-    read,
-    update,
-    remove
-}
+module.exports = { create, read, update, remove };

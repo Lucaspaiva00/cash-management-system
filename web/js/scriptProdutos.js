@@ -1,105 +1,120 @@
-const produtosCadastrados = document.querySelector("#produtosCadastrados");
-const estoquevalorbruto = document.querySelector("#estoquevalorbruto");
-const estoquevalorcusto = document.querySelector("#estoquevalorcusto");
-const estoquevalorliquido = document.querySelector("#estoquevalorliquido");
-const caixaForms = document.querySelector("#caixaForms");
-const uri = "https://cash-management-system.fly.dev/produtos";
+const API = "https://cash-management-system.fly.dev/produtos";
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+if (!usuario) {
+  alert("Sessão expirada. Faça login novamente.");
+  window.location.href = "login.html";
+}
 
-caixaForms.addEventListener("submit", (e) => {
+const produtosLista = document.querySelector("#produtosLista");
+const formProduto = document.querySelector("#formProduto");
+
+let editandoId = null; // controla se está editando
+
+// Criar ou atualizar produto
+formProduto.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const data = {
-    nome: caixaForms.nome.value,
-    precovenda: Number(caixaForms.precovenda.value),
-    precocompra: Number(caixaForms.precocompra.value),
-    estoque: Number(caixaForms.estoque.value),
-    marca: caixaForms.marca.value,
-    quantidade: Number(caixaForms.quantidade.value),
-    categoria: caixaForms.categoria.value,
+    nome: formProduto.nome.value.trim(),
+    preco: parseFloat(formProduto.preco.value),
+    descricao: formProduto.descricao.value.trim(),
+    empresaId: usuario.empresaId,
   };
 
-  fetch(uri, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((res) => res.status)
-    .then((status) => {
-      if (status == 201) {
-        window.location.reload();
-      } else {
-        alert("Erro ao enviar dados para a API");
-      }
+  try {
+    const url = editandoId ? `${API}/${editandoId}` : API;
+    const method = editandoId ? "PUT" : "POST";
+
+    const resp = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
-  console.log(data);
+
+    const result = await resp.json();
+
+    if (!resp.ok) {
+      alert(result.error || "Erro ao salvar produto.");
+      return;
+    }
+
+    alert(editandoId ? "✅ Produto atualizado com sucesso!" : "✅ Produto cadastrado com sucesso!");
+    formProduto.reset();
+    editandoId = null;
+    document.querySelector("#btnSalvar").innerHTML = '<i class="fas fa-save"></i> Salvar';
+    carregarProdutos();
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao conectar com o servidor.");
+  }
 });
 
-fetch(uri)
-  .then((resp) => resp.json())
-  .then((resp) => {
-    let precovenda = 0;
-    let precocompra = 0;
-    resp.forEach((e) => {
-      produtosCadastrados.innerHTML += `
-        <tr>
-            <td>${e.id}</td>
-            <td>${e.nome}</td>
-            <td>${e.precovenda.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}</td>
-            <td>${e.precocompra.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}</td>
-            <td>${e.estoque}</td>
-            <td>${e.marca}</td>
-            <td>${e.quantidade}</td>
-            <td>${e.categoria}</td>
-            <td>                
-            <button type="button" title="button" class='btn btn-primary' id='editaroperacao' onClick='editaroperacao(this)'>Editar</button>
-            <button type="button" title="button" class='btn btn-primary' id='excluirproduto' onClick='excluirproduto(${
-              e.id
-            })'>Excluir</button></td>
-            </td>
-        <tr>
-        `;
-      precovenda += e.precovenda;
-      document.querySelector("#estoquevalorbruto").innerHTML =
-        precovenda.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        });
-      precocompra += e.precocompra;
-      document.querySelector("#estoquevalorcusto").innerHTML =
-        precocompra.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        });
-      document.querySelector("#estoquevalorliquido").innerHTML = (
-        precovenda - precocompra
-      ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    });
-  });
+// Listar produtos
+async function carregarProdutos() {
+  try {
+    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+    const lista = await resp.json();
 
-function excluirproduto(id) {
-  if (confirm(`Confirma a exclusão do seu Produto?`)) {
-    fetch(uri + "/" + id, { method: "DELETE" })
-      .then((resp) => {
-        if (resp.status != 204) {
-          return {
-            error: "Erro ao excluir o Produto",
-          };
-        } else return {};
-      })
-      .then((resp) => {
-        if (resp.error == undefined) {
-          window.location.reload();
-        } else {
-          // document.querySelector("#msg").innerHTML = resp.error;
-          window.location.reload();
-        }
-      });
+    produtosLista.innerHTML = "";
+    lista.forEach((p) => {
+      produtosLista.innerHTML += `
+        <tr>
+          <td>${p.nome}</td>
+          <td>${p.descricao || "-"}</td>
+          <td>${p.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+          <td>
+            <button class="btn btn-warning btn-sm" onclick="editarProduto(${p.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="excluirProduto(${p.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
   }
 }
+
+// Excluir produto
+async function excluirProduto(id) {
+  if (!confirm("Deseja excluir este produto?")) return;
+  try {
+    const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
+    if (resp.ok) {
+      alert("🗑️ Produto excluído!");
+      carregarProdutos();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Editar produto
+async function editarProduto(id) {
+  try {
+    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+    const lista = await resp.json();
+    const produto = lista.find((p) => p.id === id);
+
+    if (!produto) {
+      alert("Produto não encontrado!");
+      return;
+    }
+
+    formProduto.nome.value = produto.nome;
+    formProduto.preco.value = produto.preco;
+    formProduto.descricao.value = produto.descricao || "";
+
+    editandoId = id;
+    document.querySelector("#btnSalvar").innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao carregar produto para edição.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", carregarProdutos);

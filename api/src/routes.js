@@ -1,34 +1,68 @@
-const express = require('express')
-const routes = express.Router()
+// api/routes.js
+const express = require("express");
+const routes = express.Router();
 
-const caixa = require('./controller/controlecaixa')
-const clientes = require('./controller/ctclientes')
-const produtos = require('./controller/ctprodutos')
-const proposta = require('./controller/ctpropostas')
+const caixa = require("./controller/controlecaixa");
+const clientes = require("./controller/ctclientes");
+const produtos = require("./controller/ctprodutos");
+const proposta = require("./controller/ctpropostas");
+const empresa = require("./controller/ctempresa");
+const usuario = require("./controller/ctusuario");
 
-routes.get('/', function (req, res) {
-    res.send('API de Fluxo de Caixa')
+routes.get("/", (req, res) => {
+  res.status(200).json({
+    status: "✅ API do Sistema de Gerenciamento de Caixa está online!",
+    versao: "v1.0.0",
+    autor: "Paiva Tech",
+  });
+});
 
-})
+// 🔐 novo signup (Empresa + Admin)
+routes.post("/auth/signup", usuario.signup);
 
-routes.get('/caixa', caixa.read)
-routes.post('/caixa', caixa.create)
-routes.put('/caixa/:id', caixa.update)
-routes.delete('/caixa/:id', caixa.remove)
+// Usuários
+routes.post("/usuarios/login", usuario.login);
+routes.route("/usuarios")
+  .get(usuario.read)
+  .post(usuario.create); // mantém para casos internos quando já existe empresa
+routes.route("/usuarios/:id")
+  .put(usuario.update)
+  .delete(usuario.remove);
 
-routes.get('/clientes', clientes.read)
-routes.post('/clientes', clientes.create)
-routes.put('/clientes/:id', clientes.update)
-routes.delete('/clientes/:id', clientes.remove)
+// Caixa
+routes.route("/caixa")
+  .get(caixa.read)
+  .post(caixa.create);
+routes.route("/caixa/:id")
+  .put(caixa.update)
+  .delete(caixa.remove);
 
-routes.get('/produtos', produtos.read)
-routes.post('/produtos', produtos.create)
-routes.put('/produtos/:id', produtos.update)
-routes.delete('/produtos/:id', produtos.remove)
+// Clientes
+routes.route("/clientes")
+  .get(clientes.read)
+  .post(clientes.create);
+routes.route("/clientes/:id")
+  .put(clientes.update)
+  .delete(clientes.remove);
 
-routes.get('/proposta', proposta.read)
-routes.post('/proposta', proposta.create)
-routes.put('/proposta/:id', proposta.update)
-routes.delete('/proposta/:id', proposta.remove)
+// Produtos
+routes.route("/produtos")
+  .get(produtos.read)
+  .post(produtos.create);
+routes.route("/produtos/:id")
+  .put(produtos.update)
+  .delete(produtos.remove);
 
-module.exports = routes
+// Propostas
+routes.route("/propostas")
+  .get(proposta.read)
+  .post(proposta.create);
+routes.route("/propostas/:id")
+  .put(proposta.update)
+  .delete(proposta.remove);
+
+routes.use((req, res) => {
+  res.status(404).json({ error: "❌ Rota não encontrada." });
+});
+
+module.exports = routes;

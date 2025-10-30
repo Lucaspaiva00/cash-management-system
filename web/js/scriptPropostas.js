@@ -1,76 +1,128 @@
-const caixaForms = document.querySelector("#caixaForms");
-const totalprop = document.querySelector("#totalprop");
-const uri = "https://cash-management-system.fly.dev/proposta";
+const API = "https://cash-management-system.fly.dev/propostas";
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+if (!usuario) {
+  alert("Sessão expirada. Faça login novamente.");
+  window.location.href = "login.html";
+}
 
-caixaForms.addEventListener("submit", (e) => {
+const propostasLista = document.querySelector("#propostasLista");
+const formProposta = document.querySelector("#formProposta");
+
+let editandoId = null; // controla se o usuário está editando
+
+// Criar ou atualizar proposta
+formProposta.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const data = {
-    numero: Number(caixaForms.numero.value),
-    data: caixaForms.data.value,
-    descricao: caixaForms.descricao.value,
-    status: caixaForms.status.value,
-    valor: Number(caixaForms.valor.value),
+    clienteId: parseInt(formProposta.clienteId.value),
+    descricao: formProposta.descricao.value.trim(),
+    valor: parseFloat(formProposta.valor.value),
+    status: formProposta.status.value,
+    empresaId: usuario.empresaId,
   };
 
-  fetch(`${uri}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((res) => res.status)
-    .then((status) => {
-      if (status == 201) {
-        window.location.reload();
-      } else {
-        alert("Erro ao enviar dados para a API");
-      }
+  try {
+    const url = editandoId ? `${API}/${editandoId}` : API;
+    const method = editandoId ? "PUT" : "POST";
+
+    const resp = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
-  console.log(data);
+
+    const result = await resp.json();
+
+    if (!resp.ok) {
+      alert(result.error || "Erro ao salvar proposta.");
+      return;
+    }
+
+    alert(editandoId ? "✅ Proposta atualizada com sucesso!" : "✅ Proposta criada com sucesso!");
+    formProposta.reset();
+    editandoId = null;
+    document.querySelector("#btnSalvarProposta").innerHTML = '<i class="fas fa-save"></i> Salvar';
+    carregarPropostas();
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao conectar com o servidor.");
+  }
 });
 
-fetch(uri)
-  .then((resp) => resp.json())
-  .then((resp) => {
-    let totalprop = 0;
-    resp.forEach((e) => {
-      propostasCadastrados.innerHTML += `
-            <td>${e.numero}</td>
-            <td>${e.data}</td>
-            <td>${e.descricao}</td>
-            <td>${e.valor}</td>
-            <td>${e.status}</td>
-            <td>                
-            <button type="button" title="button" class='btn btn-primary' id='editaroperacao' onClick='editaroperacao(${e.id})'>Editar</button>
-            <button type="button" title="button" class='btn btn-primary' id='excluirProposta' onClick='excluirProposta(${e.id})'>Excluir</button>
-            </td>
-            `;
-      totalprop += e.valor;
-      document.querySelector("#totalprop").innerHTML = totalprop.toLocaleString(
-        "pt-BR",
-        { style: "currency", currency: "BRL" }
-      );
-    });
-  });
+// Listar propostas
+async function carregarPropostas() {
+  try {
+    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+    const lista = await resp.json();
 
-//Funções CRUD - DELETE
-function excluirProposta(id) {
-  if (confirm(`Confirma a exclusão da Proposta?`)) {
-    fetch(uri + "/" + id, { method: "DELETE" })
-      .then((resp) => {
-        if (resp.status != 204) {
-          return {
-            error: "Erro ao excluir uma Proposta",
-          };
-        } else return {};
-      })
-      .then((resp) => {
-        if (resp.error == undefined) {
-          window.location.reload();
-        } else {
-          window.location.reload();
-        }
-      });
+    propostasLista.innerHTML = "";
+    lista.forEach((p) => {
+      propostasLista.innerHTML += `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.cliente?.nome || "Sem cliente"}</td>
+          <td>${p.descricao}</td>
+          <td>${p.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+          <td>
+            <span class="badge ${p.status === "APROVADA" ? "badge-success" : "badge-warning"}">
+              ${p.status}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-warning btn-sm" onclick="editarProposta(${p.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="excluirProposta(${p.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
   }
 }
+
+// Excluir proposta
+async function excluirProposta(id) {
+  if (!confirm("Deseja excluir esta proposta?")) return;
+  try {
+    const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
+    if (resp.ok) {
+      alert("🗑️ Proposta excluída!");
+      carregarPropostas();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Editar proposta
+async function editarProposta(id) {
+  try {
+    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+    const lista = await resp.json();
+    const proposta = lista.find((p) => p.id === id);
+
+    if (!proposta) {
+      alert("Proposta não encontrada!");
+      return;
+    }
+
+    formProposta.clienteId.value = proposta.clienteId;
+    formProposta.descricao.value = proposta.descricao;
+    formProposta.valor.value = proposta.valor;
+    formProposta.status.value = proposta.status;
+
+    editandoId = id;
+    document.querySelector("#btnSalvarProposta").innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao carregar proposta para edição.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", carregarPropostas);
