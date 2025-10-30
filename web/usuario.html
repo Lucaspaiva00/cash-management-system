@@ -1,66 +1,48 @@
+<!-- web/usuario.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gerenciar Usuários</title>
-
+    <title>Criar Conta (Empresa + Admin)</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet" />
 </head>
 
 <body>
     <div id="wrapper">
-        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
-            <!-- Marca -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="usuario.html">
                 <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
                 <div class="sidebar-brand-text mx-3">Paiva Tech</div>
             </a>
-
-            <!-- Sair -->
-            <li class="nav-item">
-                <a class="nav-link" href="login.html">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sair</span>
-                </a>
-            </li>
-
-            <!-- Toggle da Sidebar -->
+            <li class="nav-item"><a class="nav-link" href="login.html"><i
+                        class="fas fa-sign-out-alt"></i><span>Voltar</span></a></li>
             <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            <div class="text-center d-none d-md-inline"><button class="rounded-circle border-0"
+                    id="sidebarToggle"></button></div>
         </ul>
 
-        <!-- Content -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <h5 class="m-0 font-weight-bold text-dark">Gerenciamento de Usuários</h5>
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="sair"><i class="fas fa-sign-out-alt"></i> Sair</a>
-                        </li>
-                    </ul>
+                    <h5 class="m-0 font-weight-bold text-dark">Criar conta da empresa</h5>
                 </nav>
 
                 <div class="container-fluid">
-                    <!-- Cadastro -->
                     <div class="card mb-4">
-                        <div class="card-header"><strong>Novo Usuário</strong></div>
+                        <div class="card-header"><strong>Dados do Admin</strong></div>
                         <div class="card-body">
                             <form id="formUsuario">
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
-                                        <label>Nome</label>
+                                        <label>Seu nome</label>
                                         <input type="text" id="nome" class="form-control" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label>Email</label>
+                                        <label>Seu e-mail</label>
                                         <input type="email" id="email" class="form-control" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
@@ -69,20 +51,38 @@
                                     </div>
                                 </div>
 
+                                <hr class="my-3">
+
                                 <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label>ID da Empresa</label>
-                                        <input type="number" id="empresaId" class="form-control" required>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Nome da Empresa</label>
+                                        <input type="text" id="empresaNome" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label>CNPJ (opcional)</label>
+                                        <input type="text" id="empresaCnpj" class="form-control">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label>E-mail da Empresa (opcional)</label>
+                                        <input type="email" id="empresaEmail" class="form-control">
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Salvar Usuário</button>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label>Telefone (opcional)</label>
+                                        <input type="text" id="empresaTelefone" class="form-control">
+                                    </div>
+                                    <div class="col-md-8 mb-3">
+                                        <label>Endereço (opcional)</label>
+                                        <input type="text" id="empresaEndereco" class="form-control">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Criar Conta</button>
                             </form>
                         </div>
                     </div>
-
-
-
                 </div><!-- container -->
             </div><!-- content -->
         </div><!-- wrapper -->
