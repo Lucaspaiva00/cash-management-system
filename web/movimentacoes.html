@@ -12,27 +12,30 @@
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
-        .card {
+        /* === CARD PRINCIPAL === */
+        .card-movimentacao {
             width: 100%;
-            max-width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
             border-radius: 12px;
+            background: #fff;
             border: none;
+            overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .card-body {
-            width: 100%;
-            height: auto;
-            display: flex;
-            flex-direction: column;
+        .card-movimentacao .card-body {
+            background: #fff;
+            padding: 2rem;
         }
 
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
+        .card-movimentacao .card-header {
+            background: #fff;
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #f3f3f3;
         }
 
+        /* === FORMATAÇÃO DOS CAMPOS === */
         .input-icon {
             position: relative;
         }
@@ -49,13 +52,30 @@
             padding-left: 32px;
         }
 
+        /* === ESPAÇAMENTO E RESPONSIVIDADE === */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 240px;
+        }
+
         @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
+            .card-movimentacao {
+                max-width: 100%;
+                margin: 0 1rem;
             }
 
-            .card-body {
+            .card-movimentacao .card-body {
                 padding: 1rem;
+            }
+
+            .form-row {
+                flex-direction: column;
             }
         }
     </style>
