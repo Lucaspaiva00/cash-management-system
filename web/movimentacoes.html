@@ -12,71 +12,64 @@
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
-        /* === CARD PRINCIPAL === */
-        .card-movimentacao {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            border-radius: 12px;
-            background: #fff;
-            border: none;
-            overflow: hidden;
-            transition: all 0.3s ease;
+        .card-op {
+            border-left: 5px solid #007bff;
+            transition: all 0.2s ease;
         }
 
-        .card-movimentacao .card-body {
-            background: #fff;
-            padding: 2rem;
+        .card-op:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .card-movimentacao .card-header {
-            background: #fff;
-            padding: 1rem 2rem;
-            border-bottom: 2px solid #f3f3f3;
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
-        /* === FORMATAÇÃO DOS CAMPOS === */
-        .input-icon {
-            position: relative;
+        .filter-bar select {
+            min-width: 200px;
         }
 
-        .input-icon i {
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            color: #999;
-        }
-
-        .input-icon .form-control {
-            padding-left: 32px;
-        }
-
-        /* === ESPAÇAMENTO E RESPONSIVIDADE === */
-        .form-row {
+        #listaOperacoes {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
         }
 
-        .form-group {
-            flex: 1;
-            min-width: 240px;
+        .card-body label {
+            font-size: 0.9rem;
         }
 
-        @media (max-width: 768px) {
-            .card-movimentacao {
-                max-width: 100%;
-                margin: 0 1rem;
-            }
+        .input-group-text {
+            border: none;
+            border-radius: 8px 0 0 8px;
+        }
 
-            .card-movimentacao .card-body {
-                padding: 1rem;
-            }
+        .input-group .form-control {
+            border-radius: 0 8px 8px 0;
+        }
 
-            .form-row {
-                flex-direction: column;
-            }
+        .form-control:focus,
+        .custom-select:focus {
+            border-color: #e63946 !important;
+            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
+        }
+
+        .btn:hover {
+            background-color: #c82333 !important;
+            transition: 0.2s ease;
+        }
+
+        .card {
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
     </style>
 </head>
@@ -164,18 +157,29 @@
                     <h5 class="m-0 font-weight-bold text-dark">Movimentações do Caixa</h5>
                 </nav>
 
-                <div class="card card-movimentacao shadow-sm mt-3">
-                    <div class="card-header bg-white border-0 d-flex align-items-center">
-                        <i class="fas fa-plus-circle text-danger mr-2"></i>
-                        <h5 class="mb-0 font-weight-bold text-dark">Nova Movimentação</h5>
+                <div class="container-fluid mb-4">
+                    <!-- Filtro -->
+                    <div class="filter-bar mb-4">
+                        <select id="filtroTipo" class="form-control" onchange="carregarOperacoes(this.value)">
+                            <option value="TODAS">Todas</option>
+                            <option value="ENTRADA">Entradas</option>
+                            <option value="SAIDA">Saídas</option>
+                        </select>
                     </div>
 
-                    <div class="card-body">
-                        <form id="caixaForm" novalidate>
-                            <!-- Tipo / Meio -->
+                    <!-- Formulário -->
+                    <!-- 🔥 Card aprimorado de Movimentação -->
+                    <section class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 14px;">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fas fa-plus-circle text-danger mr-2 fa-lg"></i>
+                            <h5 class="font-weight-bold text-dark mb-0">Nova Movimentação</h5>
+                        </div>
+
+                        <form id="caixaForm" class="needs-validation" novalidate>
+                            <!-- LINHA 1: Tipo + Meio -->
                             <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label>Tipo de Operação</label>
+                                <div class="form-group col-md-6 pr-md-3">
+                                    <label class="small font-weight-semibold text-muted">Tipo de Operação</label>
                                     <div class="input-icon">
                                         <i class="fas fa-random"></i>
                                         <select name="tipoOperacao" class="form-control" required>
@@ -186,8 +190,8 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-md-6">
-                                    <label>Meio de Pagamento</label>
+                                <div class="form-group col-md-6 pl-md-3">
+                                    <label class="small font-weight-semibold text-muted">Meio de Pagamento</label>
                                     <div class="input-icon">
                                         <i class="fas fa-credit-card"></i>
                                         <select name="meioPagamento" class="form-control" required>
@@ -202,10 +206,10 @@
                                 </div>
                             </div>
 
-                            <!-- Valor -->
+                            <!-- LINHA 2: Valor -->
                             <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label>Valor</label>
+                                <div class="form-group col-md-3">
+                                    <label class="small font-weight-semibold text-muted">Valor</label>
                                     <div class="input-icon">
                                         <i class="fas fa-dollar-sign"></i>
                                         <input type="number" step="0.01" name="valor" class="form-control"
@@ -214,10 +218,10 @@
                                 </div>
                             </div>
 
-                            <!-- Data -->
+                            <!-- LINHA 3: Data -->
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label>Data</label>
+                                    <label class="small font-weight-semibold text-muted">Data</label>
                                     <div class="input-icon">
                                         <i class="fas fa-calendar-alt"></i>
                                         <input type="date" name="dataOperacao" class="form-control" required>
@@ -225,10 +229,10 @@
                                 </div>
                             </div>
 
-                            <!-- Descrição -->
+                            <!-- LINHA 4: Descrição -->
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label>Descrição</label>
+                                    <label class="small font-weight-semibold text-muted">Descrição</label>
                                     <div class="input-icon">
                                         <i class="fas fa-align-left"></i>
                                         <input type="text" name="descricao" class="form-control"
@@ -237,6 +241,7 @@
                                 </div>
                             </div>
 
+                            <!-- Botão -->
                             <div class="text-right mt-3">
                                 <button type="submit" class="btn btn-danger px-5 py-2 shadow-sm"
                                     style="border-radius:8px;font-weight:600;">
@@ -244,9 +249,17 @@
                                 </button>
                             </div>
                         </form>
+
+
+                    </section>
+
+
+                    <!-- Lista -->
+                    <div>
+                        <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
+                        <div id="listaOperacoes"></div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
