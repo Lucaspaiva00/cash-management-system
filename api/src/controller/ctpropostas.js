@@ -23,13 +23,6 @@ const create = async (req, res) => {
         const _valorTotal = parseFloat(valorTotal);
         const _clienteId = clienteId ? parseInt(clienteId) : null;
 
-        // validações obrigatórias
-        if (!_empresaId || !_numero || !_valorTotal || !textoValido(descricao)) {
-            return res
-                .status(400)
-                .json({ error: "Campos obrigatórios ausentes ou inválidos." });
-        }
-
         const proposta = await prisma.proposta.create({
             data: {
                 numero: _numero,
