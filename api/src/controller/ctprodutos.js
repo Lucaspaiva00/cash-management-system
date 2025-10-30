@@ -41,7 +41,14 @@ const create = async (req, res) => {
             .json({ message: "Produto cadastrado com sucesso!", data: novo });
     } catch (error) {
         console.error("❌ Erro ao cadastrar produto:", error);
-        return res.status(500).json({ error: "Erro interno ao cadastrar produto." });
+        return res.status(500).json({
+            error: "Erro interno ao cadastrar produto.",
+            details: error.message,
+            stack: error.stack,
+            body: req.body
+        });
+
+
     }
 };
 
