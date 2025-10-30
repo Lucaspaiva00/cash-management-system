@@ -12,32 +12,113 @@
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
-        .card-op {
-            border-left: 5px solid #007bff;
-            transition: all 0.2s ease;
+        /* === LAYOUT GERAL === */
+        body {
+            background-color: #f8f9fc;
+            font-family: "Roboto", Arial, sans-serif;
         }
 
-        .card-op:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        h5 {
+            font-weight: 600;
         }
 
+        /* === CARD DO FORM === */
+        .card-form {
+            border: none;
+            border-left: 6px solid #e63946;
+            border-radius: 10px;
+            background-color: #f1f3f8;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card-form:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .card-form h5 {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        /* === CAMPOS DO FORM === */
+        #caixaForm .form-group label {
+            font-weight: 500;
+            color: #444;
+        }
+
+        #caixaForm .form-control {
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            height: 40px;
+            transition: all 0.2s;
+        }
+
+        #caixaForm .form-control:focus {
+            border-color: #e63946;
+            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
+        }
+
+        /* === BOTÃO SALVAR === */
+        .btn-danger {
+            background-color: #e63946;
+            border-color: #e63946;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .btn-danger:hover {
+            background-color: #c92a37;
+            border-color: #c92a37;
+        }
+
+        /* === FILTRO === */
         .filter-bar {
             display: flex;
-            flex-wrap: wrap;
+            justify-content: flex-start;
             gap: 1rem;
-            align-items: center;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
 
-        .filter-bar select {
-            min-width: 200px;
-        }
-
+        /* === LISTA DE OPERAÇÕES === */
         #listaOperacoes {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+        }
+
+        .card-op {
+            background-color: #fff;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            padding: 1rem;
+            flex: 1 1 300px;
+            max-width: 340px;
+            transition: all 0.2s ease;
+        }
+
+        .card-op:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            #caixaForm .form-row {
+                flex-direction: column;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .text-right {
+                text-align: center !important;
+            }
         }
     </style>
 </head>
@@ -46,13 +127,11 @@
     <div id="wrapper">
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
-            <!-- Marca -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
                 <div class="sidebar-brand-text mx-3">Paiva Tech</div>
             </a>
 
-            <!-- Dashboard -->
             <hr class="sidebar-divider my-0" />
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">
@@ -61,64 +140,22 @@
                 </a>
             </li>
 
-            <!-- Seção Páginas -->
             <hr class="sidebar-divider" />
             <div class="sidebar-heading">Páginas</div>
 
-            <!-- Caixa (Crédito e Débito) -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCaixa"
-                    aria-expanded="true" aria-controls="collapseCaixa">
-                    <i class="fa fa-university" aria-hidden="true"></i>
-                    <span>Caixa</span>
-                </a>
-                <div id="collapseCaixa" class="collapse" aria-labelledby="headingCaixa" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Movimentações</h6>
-                        <a class="collapse-item" href="movimentacoes.html">Cadastre uma Movimentação</a>
-                    </div>
-                </div>
-            </li>
-            <!-- Clientes -->
-            <li class="nav-item">
-                <a class="nav-link" href="criarCliente.html">
-                    <i class="fas fa-users"></i>
-                    <span>Clientes</span>
-                </a>
-            </li>
-
-            <!-- Produtos -->
-            <li class="nav-item">
-                <a class="nav-link" href="produtos.html">
-                    <i class="fas fa-boxes"></i>
-                    <span>Produtos</span>
-                </a>
-            </li>
-
-            <!-- Propostas -->
-            <li class="nav-item">
-                <a class="nav-link" href="propostas.html">
-                    <i class="fas fa-file-invoice"></i>
-                    <span>Propostas</span>
-                </a>
-            </li>
-
-            <!-- Sair -->
-            <li class="nav-item">
-                <a class="nav-link" href="login.html">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sair</span>
-                </a>
-            </li>
-
-            <!-- Toggle da Sidebar -->
-            <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            <li class="nav-item"><a class="nav-link" href="movimentacoes.html"><i
+                        class="fa fa-university"></i><span>Caixa</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="criarCliente.html"><i
+                        class="fas fa-users"></i><span>Clientes</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="produtos.html"><i
+                        class="fas fa-boxes"></i><span>Produtos</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="propostas.html"><i
+                        class="fas fa-file-invoice"></i><span>Propostas</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="login.html"><i
+                        class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>
         </ul>
 
-        <!-- Conteúdo principal -->
+        <!-- Conteúdo -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -136,11 +173,9 @@
                     </div>
 
                     <!-- Formulário -->
-                    <div class="card shadow-sm mb-4 border-0" style="border-left: 6px solid #e63946;">
+                    <div class="card card-form mb-4">
                         <div class="card-body">
-                            <h5 class="mb-4 text-dark font-weight-bold">
-                                <i class="fas fa-plus-circle text-danger"></i> Nova Movimentação
-                            </h5>
+                            <h5 class="mb-4"><i class="fas fa-plus-circle text-danger"></i> Nova Movimentação</h5>
 
                             <form id="caixaForm" class="needs-validation" novalidate>
                                 <div class="form-row">
@@ -170,10 +205,6 @@
                                         </select>
                                     </div>
 
-
-                                </div>
-
-                                <div class="form-row">
                                     <div class="form-group col-md-3">
                                         <label for="valor"><i
                                                 class="fas fa-dollar-sign mr-1 text-secondary"></i>Valor</label>
@@ -188,6 +219,7 @@
                                             required>
                                     </div>
                                 </div>
+
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
                                         <label for="descricao"><i
@@ -205,7 +237,6 @@
                             </form>
                         </div>
                     </div>
-
 
                     <!-- Lista -->
                     <div>
