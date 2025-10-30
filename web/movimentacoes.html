@@ -6,119 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movimentações do Caixa - Paiva Tech</title>
 
-    <!-- Estilos e bibliotecas -->
-    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
-        body {
-            background-color: #f8f9fc !important;
+        .card-op {
+            border-left: 5px solid #007bff;
+            transition: all 0.2s ease;
         }
 
-        /* --- Cards Resumo --- */
-        .resumo-cards {
+        .card-op:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .filter-bar {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
-        .resumo-card {
-            flex: 1;
-            min-width: 260px;
-            background: #fff;
-            border-left: 5px solid;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 1rem 1.5rem;
-            transition: 0.2s ease;
-        }
-
-        .resumo-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .resumo-card h6 {
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            color: #6c757d;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .resumo-card p {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin: 0;
-            color: #212529;
-        }
-
-        .resumo-card.azul {
-            border-color: #007bff;
-        }
-
-        .resumo-card.vermelho {
-            border-color: #e63946;
-        }
-
-        .resumo-card.verde {
-            border-color: #28a745;
-        }
-
-        /* --- Card formulário --- */
-        .card {
-            border-radius: 14px;
-            background-color: #fff;
-            transition: 0.25s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .input-icon {
-            position: relative;
-        }
-
-        .input-icon i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #e63946;
-            font-size: 0.9rem;
-        }
-
-        .input-icon .form-control {
-            padding-left: 36px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-        }
-
-        .input-icon .form-control:focus {
-            border-color: #e63946;
-            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.2);
-        }
-
-        .btn-danger {
-            background-color: #e63946 !important;
-            border: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
-        .btn-danger:hover {
-            background-color: #c72d38 !important;
-            transition: 0.2s ease;
-        }
-
-        label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 0.35rem;
+        .filter-bar select {
+            min-width: 200px;
         }
 
         #listaOperacoes {
@@ -127,15 +40,36 @@
             gap: 1rem;
         }
 
-        .card-op {
-            border-left: 5px solid #007bff;
-            border-radius: 10px;
-            transition: all 0.2s ease;
+        .card-body label {
+            font-size: 0.9rem;
         }
 
-        .card-op:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        .input-group-text {
+            border: none;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .form-control:focus,
+        .custom-select:focus {
+            border-color: #e63946 !important;
+            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
+        }
+
+        .btn:hover {
+            background-color: #c82333 !important;
+            transition: 0.2s ease;
+        }
+
+        .card {
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
     </style>
 </head>
@@ -144,41 +78,72 @@
     <div id="wrapper">
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+            <!-- Marca -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
                 <div class="sidebar-brand-text mx-3">Paiva Tech</div>
             </a>
 
+            <!-- Dashboard -->
             <hr class="sidebar-divider my-0" />
             <li class="nav-item active">
-                <a class="nav-link" href="index.html"><i
-                        class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a>
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
             </li>
 
+            <!-- Seção Páginas -->
             <hr class="sidebar-divider" />
             <div class="sidebar-heading">Páginas</div>
 
+            <!-- Caixa (Crédito e Débito) -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCaixa">
-                    <i class="fa fa-university"></i><span>Caixa</span>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCaixa"
+                    aria-expanded="true" aria-controls="collapseCaixa">
+                    <i class="fa fa-university" aria-hidden="true"></i>
+                    <span>Caixa</span>
                 </a>
-                <div id="collapseCaixa" class="collapse" data-parent="#accordionSidebar">
+                <div id="collapseCaixa" class="collapse" aria-labelledby="headingCaixa" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Movimentações</h6>
-                        <a class="collapse-item" href="movimentacoes.html">Gerenciar Movimentações</a>
+                        <a class="collapse-item" href="movimentacoes.html">Cadastre uma Movimentação</a>
                     </div>
                 </div>
             </li>
+            <!-- Clientes -->
+            <li class="nav-item">
+                <a class="nav-link" href="criarCliente.html">
+                    <i class="fas fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
 
-            <li class="nav-item"><a class="nav-link" href="criarCliente.html"><i
-                        class="fas fa-users"></i><span>Clientes</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="produtos.html"><i
-                        class="fas fa-boxes"></i><span>Produtos</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="propostas.html"><i
-                        class="fas fa-file-invoice"></i><span>Propostas</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="login.html"><i
-                        class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>
+            <!-- Produtos -->
+            <li class="nav-item">
+                <a class="nav-link" href="produtos.html">
+                    <i class="fas fa-boxes"></i>
+                    <span>Produtos</span>
+                </a>
+            </li>
 
+            <!-- Propostas -->
+            <li class="nav-item">
+                <a class="nav-link" href="propostas.html">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Propostas</span>
+                </a>
+            </li>
+
+            <!-- Sair -->
+            <li class="nav-item">
+                <a class="nav-link" href="login.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </li>
+
+            <!-- Toggle da Sidebar -->
             <hr class="sidebar-divider d-none d-md-block" />
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -193,93 +158,110 @@
                 </nav>
 
                 <div class="container-fluid mb-4">
-
-                    <!-- 🔹 Cards Resumo -->
-                    <div class="resumo-cards">
-                        <div class="resumo-card azul">
-                            <h6>Entradas</h6>
-                            <p id="resumoEntradas">R$ 0,00</p>
-                        </div>
-                        <div class="resumo-card vermelho">
-                            <h6>Saídas</h6>
-                            <p id="resumoSaidas">R$ 0,00</p>
-                        </div>
-                        <div class="resumo-card verde">
-                            <h6>Saldo Atual</h6>
-                            <p id="resumoSaldo">R$ 0,00</p>
-                        </div>
+                    <!-- Filtro -->
+                    <div class="filter-bar">
+                        <select id="filtroTipo" class="form-control" onchange="carregarOperacoes(this.value)">
+                            <option value="TODAS">Todas</option>
+                            <option value="ENTRADA">Entradas</option>
+                            <option value="SAIDA">Saídas</option>
+                        </select>
                     </div>
 
-                    <!-- 🔥 Formulário -->
-                    <section class="card border-0 shadow-sm p-4 mb-4 bg-white">
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="fas fa-plus-circle text-danger mr-2 fa-lg"></i>
-                            <h5 class="font-weight-bold text-dark mb-0">Nova Movimentação</h5>
-                        </div>
+                    <!-- Formulário -->
+                    <!-- 🔥 Card aprimorado de Movimentação -->
+                    <section class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 14px;">
+                        <h5 class="mb-4 font-weight-bold text-dark d-flex align-items-center">
+                            <i class="fas fa-plus-circle text-danger mr-2"></i> Nova Movimentação
+                        </h5>
 
-                        <form id="caixaForm" class="row g-3 needs-validation" novalidate>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label text-muted small">Tipo de Operação</label>
-                                <div class="input-icon">
-                                    <i class="fas fa-random"></i>
-                                    <select name="tipoOperacao" class="form-control" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="ENTRADA">Entrada</option>
-                                        <option value="SAIDA">Saída</option>
-                                    </select>
+                        <form id="caixaForm" class="needs-validation" novalidate>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="tipoOperacao" class="font-weight-semibold text-muted small">Tipo de
+                                        Operação</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-random"></i>
+                                        <select id="tipoOperacao" name="tipoOperacao" class="form-control campo"
+                                            required>
+                                            <option value="">Selecione...</option>
+                                            <option value="ENTRADA">Entrada</option>
+                                            <option value="SAIDA">Saída</option>
+                                        </select>
+                                    </div>
                                 </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="meioPagamento" class="font-weight-semibold text-muted small">Meio de
+                                        Pagamento</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-credit-card"></i>
+                                        <select id="meioPagamento" name="meioPagamento" class="form-control campo"
+                                            required>
+                                            <option value="">Selecione...</option>
+                                            <option value="PIX">Pix</option>
+                                            <option value="CARTAO">Cartão</option>
+                                            <option value="DINHEIRO">Dinheiro</option>
+                                            <option value="BOLETO">Boleto</option>
+                                            <option value="TRANSFERENCIA">Transferência</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="form-group col-md-3">
+                                    <label for="valor" class="font-weight-semibold text-muted small">Valor</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <input type="number" step="0.01" id="valor" name="valor"
+                                            class="form-control campo" placeholder="0,00" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="dataOperacao" class="font-weight-semibold text-muted small">Data</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <input type="date" id="dataOperacao" name="dataOperacao"
+                                            class="form-control campo" required>
+                                    </div>
+                                </div> -->
                             </div>
 
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label text-muted small">Meio de Pagamento</label>
-                                <div class="input-icon">
-                                    <i class="fas fa-credit-card"></i>
-                                    <select name="meioPagamento" class="form-control" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="PIX">Pix</option>
-                                        <option value="CARTAO">Cartão</option>
-                                        <option value="DINHEIRO">Dinheiro</option>
-                                        <option value="BOLETO">Boleto</option>
-                                        <option value="TRANSFERENCIA">Transferência</option>
-                                    </select>
+                            <div class="form-group mt-2">
+                                <div class="form-group col-md-3">
+                                    <label for="valor" class="font-weight-semibold text-muted small">Valor</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <input type="number" step="0.01" id="valor" name="valor"
+                                            class="form-control campo" placeholder="0,00" required>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label text-muted small">Valor</label>
-                                <div class="input-icon">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    <input type="number" step="0.01" name="valor" class="form-control"
-                                        placeholder="0,00" required>
+                                <div class="form-group col-md-3">
+                                    <label for="dataOperacao" class="font-weight-semibold text-muted small">Data</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <input type="date" id="dataOperacao" name="dataOperacao"
+                                            class="form-control campo" required>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label text-muted small">Data</label>
-                                <div class="input-icon">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <input type="date" name="dataOperacao" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-9 mb-3">
-                                <label class="form-label text-muted small">Descrição</label>
-                                <div class="input-icon">
+                                <label for="descricao" class="font-weight-semibold text-muted small">Descrição</label>
+                                <div class="input-wrapper">
                                     <i class="fas fa-align-left"></i>
-                                    <input type="text" name="descricao" class="form-control"
+                                    <input type="text" id="descricao" name="descricao" class="form-control campo"
                                         placeholder="Ex: Pagamento de fornecedor, venda, compra de material...">
                                 </div>
                             </div>
 
-                            <div class="col-md-3 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-danger px-5 py-2 shadow-sm w-100">
+                            <div class="text-right mt-4">
+                                <button type="submit" class="btn btn-danger px-5 py-2 shadow-sm"
+                                    style="border-radius: 8px; font-weight: 600;">
                                     <i class="fas fa-save mr-2"></i> Salvar Movimentação
                                 </button>
                             </div>
                         </form>
                     </section>
 
-                    <!-- 🔹 Lista de Movimentações -->
+                    <!-- Lista -->
                     <div>
                         <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
                         <div id="listaOperacoes"></div>
