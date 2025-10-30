@@ -1,96 +1,154 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const API = "https://cash-management-system.fly.dev/caixa";
+const tipoOperacao = window.location.pathname.includes("credito") ? "ENTRADA" : "SAIDA";
 
-const create = async (req, res) => {
+const listaOperacoes = document.getElementById("listaOperacoes");
+const form = document.getElementById("caixaForm");
+
+const totalCredito = document.getElementById("totalCredito");
+const ultimaEntrada = document.getElementById("ultimaEntrada");
+const qtdEntradas = document.getElementById("qtdEntradas");
+
+let editandoId = null; // controla se o usuário está editando
+
+// =======================
+// 🔹 CARREGAR OPERAÇÕES
+// =======================
+async function carregarOperacoes() {
     try {
-        const { tipoOperacao, meioPagamento, descricao, valor, empresaId } = req.body;
+        const resp = await fetch(API);
+        const dados = await resp.json();
+        const filtradas = dados.filter(op => op.tipoOperacao === tipoOperacao);
 
-        if (!tipoOperacao || !meioPagamento || !valor || !empresaId) {
-            return res.status(400).json({ error: "Campos obrigatórios ausentes." });
+        // ✅ Atualiza cards de resumo
+        const total = filtradas.reduce((acc, op) => acc + op.valor, 0);
+        totalCredito.innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        qtdEntradas.innerText = filtradas.length;
+        ultimaEntrada.innerText = filtradas.length
+            ? new Date(filtradas[0].dataOperacao).toLocaleDateString("pt-BR")
+            : "-";
+
+        // ✅ Renderiza lista
+        listaOperacoes.innerHTML = filtradas
+            .map(
+                (op) => `
+        <div class="col-md-4 mb-4">
+          <div class="card shadow card-op">
+            <div class="card-body">
+              <h5 class="card-title mb-2">
+                <i class="fas ${tipoOperacao === "ENTRADA" ? "fa-arrow-up text-success" : "fa-arrow-down text-danger"}"></i>
+                ${op.tipoOperacao}
+              </h5>
+              <p class="mb-1"><strong>Valor:</strong> ${op.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
+              <p class="mb-1"><strong>Pagamento:</strong> ${op.meioPagamento}</p>
+              <p class="mb-1"><strong>Descrição:</strong> ${op.descricao || "-"}</p>
+              <p class="text-muted small">${new Date(op.dataOperacao).toLocaleDateString("pt-BR")}</p>
+              <div class="text-right">
+                <button class="btn btn-sm btn-warning" onclick="editarOperacao(${op.id})"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-sm btn-danger" onclick="excluirOperacao(${op.id})"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>`
+            )
+            .join("");
+    } catch (error) {
+        console.error("Erro ao carregar operações:", error);
+    }
+}
+
+// =======================
+// 🔹 CADASTRAR / ATUALIZAR
+// =======================
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+        tipoOperacao,
+        meioPagamento: form.meioPagamento.value,
+        descricao: form.descricao.value,
+        dataOperacao: form.dataOperacao.value,
+        valor: parseFloat(form.valor.value),
+        empresaId: 1, // ⚠️ Substituir pelo ID real da empresa
+    };
+
+    try {
+        let resp;
+
+        if (editandoId) {
+            // 🔄 Atualização (PUT)
+            resp = await fetch(`${API}/${editandoId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+        } else {
+            // ➕ Criação (POST)
+            resp = await fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
         }
 
-        const novaOperacao = await prisma.caixa.create({
-            data: {
-                tipoOperacao,
-                meioPagamento,
-                descricao,
-                valor: parseFloat(valor),
-                empresaId: parseInt(empresaId),
-            },
-        });
-
-        return res.status(201).json({
-            message: "Operação registrada com sucesso.",
-            data: novaOperacao,
-        });
-    } catch (error) {
-        console.error("Erro ao criar operação:", error);
-        return res.status(500).json({ error: "Erro ao registrar operação de caixa." });
+        if (resp.ok) {
+            alert(editandoId ? "✅ Operação atualizada com sucesso!" : "✅ Operação registrada com sucesso!");
+            form.reset();
+            editandoId = null; // sai do modo edição
+            document.querySelector('button[type="submit"]').innerHTML = `<i class="fas fa-save"></i> Registrar`;
+            carregarOperacoes();
+        } else {
+            const err = await resp.json();
+            alert(err.error || "Erro ao salvar operação.");
+        }
+    } catch (err) {
+        console.error("Erro:", err);
     }
-};
+});
 
-const read = async (req, res) => {
+// =======================
+// 🔹 EXCLUIR
+// =======================
+async function excluirOperacao(id) {
+    if (!confirm("Deseja excluir esta operação?")) return;
     try {
-        const empresaId = parseInt(req.query.empresaId);
+        const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
+        if (resp.ok) {
+            alert("Operação excluída com sucesso!");
+            carregarOperacoes();
+        }
+    } catch (err) {
+        console.error("Erro ao excluir:", err);
+    }
+}
 
-        if (!empresaId) {
-            return res.status(400).json({ error: "Informe o ID da empresa." });
+// =======================
+// 🔹 EDITAR
+// =======================
+async function editarOperacao(id) {
+    try {
+        const resp = await fetch(`${API}`);
+        const dados = await resp.json();
+        const operacao = dados.find(op => op.id === id);
+
+        if (!operacao) {
+            alert("❌ Operação não encontrada!");
+            return;
         }
 
-        const operacoes = await prisma.caixa.findMany({
-            where: { empresaId },
-            orderBy: { dataOperacao: "desc" },
-        });
+        // Preenche o formulário
+        form.valor.value = operacao.valor;
+        form.meioPagamento.value = operacao.meioPagamento;
+        form.descricao.value = operacao.descricao || "";
+        form.dataOperacao.value = operacao.dataOperacao ? operacao.dataOperacao.split("T")[0] : "";
 
-        return res.status(200).json(operacoes);
+        // Muda o modo para edição
+        editandoId = id;
+        document.querySelector('button[type="submit"]').innerHTML = `<i class="fas fa-sync-alt"></i> Atualizar`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
-        console.error("Erro ao listar operações:", error);
-        return res.status(500).json({ error: "Erro ao listar as operações do caixa." });
+        console.error("Erro ao carregar operação para edição:", error);
     }
-};
+}
 
-const update = async (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        const { tipoOperacao, meioPagamento, descricao, valor } = req.body;
-
-        const existe = await prisma.caixa.findUnique({ where: { id } });
-        if (!existe) return res.status(404).json({ error: "Operação não encontrada." });
-
-        const atualizada = await prisma.caixa.update({
-            where: { id },
-            data: { tipoOperacao, meioPagamento, descricao, valor },
-        });
-
-        return res.status(200).json({
-            message: "Operação atualizada com sucesso.",
-            data: atualizada,
-        });
-    } catch (error) {
-        console.error("Erro ao atualizar operação:", error);
-        return res.status(500).json({ error: "Erro ao atualizar operação." });
-    }
-};
-
-const remove = async (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        const existe = await prisma.caixa.findUnique({ where: { id } });
-
-        if (!existe) return res.status(404).json({ error: "Operação não encontrada." });
-
-        await prisma.caixa.delete({ where: { id } });
-
-        return res.status(200).json({ message: "Operação removida com sucesso." });
-    } catch (error) {
-        console.error("Erro ao excluir operação:", error);
-        return res.status(500).json({ error: "Erro ao excluir operação." });
-    }
-};
-
-module.exports = {
-    create,
-    read,
-    update,
-    remove,
-};
+// =======================
+document.addEventListener("DOMContentLoaded", carregarOperacoes);
