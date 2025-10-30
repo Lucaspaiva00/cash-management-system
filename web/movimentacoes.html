@@ -136,50 +136,73 @@
                     </div>
 
                     <!-- Formulário -->
-                    <div class="card shadow-sm mb-4">
+                    <div class="card shadow-sm mb-4 border-0" style="border-left: 6px solid #e63946;">
                         <div class="card-body">
-                            <h5 class="mb-3"><i class="fas fa-plus-circle"></i> Nova Movimentação</h5>
-                            <form id="caixaForm" class="row">
-                                <div class="col-md-3 mb-2">
-                                    <label>Tipo de Operação</label>
-                                    <select name="tipoOperacao" class="form-control" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="ENTRADA">Entrada</option>
-                                        <option value="SAIDA">Saída</option>
-                                    </select>
+                            <h5 class="mb-4 text-dark font-weight-bold">
+                                <i class="fas fa-plus-circle text-danger"></i> Nova Movimentação
+                            </h5>
+
+                            <form id="caixaForm" class="needs-validation" novalidate>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="tipoOperacao"><i
+                                                class="fas fa-exchange-alt mr-1 text-secondary"></i>Tipo de
+                                            Operação</label>
+                                        <select name="tipoOperacao" id="tipoOperacao" class="form-control custom-select"
+                                            required>
+                                            <option value="">Selecione...</option>
+                                            <option value="ENTRADA">Entrada</option>
+                                            <option value="SAIDA">Saída</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label for="meioPagamento"><i class="fas fa-wallet mr-1 text-secondary"></i>Meio
+                                            de Pagamento</label>
+                                        <select name="meioPagamento" id="meioPagamento"
+                                            class="form-control custom-select" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="PIX">Pix</option>
+                                            <option value="CARTAO">Cartão</option>
+                                            <option value="DINHEIRO">Dinheiro</option>
+                                            <option value="BOLETO">Boleto</option>
+                                            <option value="TRANSFERENCIA">Transferência</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label for="valor"><i
+                                                class="fas fa-dollar-sign mr-1 text-secondary"></i>Valor</label>
+                                        <input type="number" step="0.01" name="valor" id="valor" class="form-control"
+                                            placeholder="0,00" required>
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label for="dataOperacao"><i
+                                                class="fas fa-calendar-alt mr-1 text-secondary"></i>Data</label>
+                                        <input type="date" name="dataOperacao" id="dataOperacao" class="form-control"
+                                            required>
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <label>Meio de Pagamento</label>
-                                    <select name="meioPagamento" class="form-control" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="PIX">Pix</option>
-                                        <option value="CARTAO">Cartão</option>
-                                        <option value="DINHEIRO">Dinheiro</option>
-                                        <option value="BOLETO">Boleto</option>
-                                        <option value="TRANSFERENCIA">Transferência</option>
-                                    </select>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label for="descricao"><i
+                                                class="fas fa-align-left mr-1 text-secondary"></i>Descrição</label>
+                                        <input type="text" name="descricao" id="descricao" class="form-control"
+                                            placeholder="Ex: Pagamento de fornecedor, venda, compra de material..." />
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <label>Valor</label>
-                                    <input type="number" step="0.01" name="valor" class="form-control"
-                                        placeholder="0,00" required>
-                                </div>
-                                <div class="col-md-3 mb-2">
-                                    <label>Data</label>
-                                    <input type="date" name="dataOperacao" class="form-control" required>
-                                </div>
-                                <div class="col-md-12 mb-2">
-                                    <label>Descrição</label>
-                                    <input type="text" name="descricao" class="form-control"
-                                        placeholder="Ex: Pagamento de fornecedor">
-                                </div>
-                                <div class="col-md-12 text-right mt-3">
-                                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i>
-                                        Salvar</button>
+
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-danger px-4 shadow-sm">
+                                        <i class="fas fa-save mr-1"></i> Salvar
+                                    </button>
                                 </div>
                             </form>
                         </div>
                     </div>
+
 
                     <!-- Lista -->
                     <div>
