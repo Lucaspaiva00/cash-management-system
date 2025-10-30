@@ -1,17 +1,28 @@
 const API = "https://cash-management-system.fly.dev/caixa";
-const tipoOperacao = window.location.pathname.includes("credito")
-    ? "ENTRADA"
-    : "SAIDA";
+const tipoOperacao = window.location.pathname.includes("credito") ? "ENTRADA" : "SAIDA";
 
 const listaOperacoes = document.getElementById("listaOperacoes");
 const form = document.getElementById("caixaForm");
+
+const totalCredito = document.getElementById("totalCredito");
+const ultimaEntrada = document.getElementById("ultimaEntrada");
+const qtdEntradas = document.getElementById("qtdEntradas");
 
 async function carregarOperacoes() {
     try {
         const resp = await fetch(API);
         const dados = await resp.json();
-        const filtradas = dados.filter((op) => op.tipoOperacao === tipoOperacao);
+        const filtradas = dados.filter(op => op.tipoOperacao === tipoOperacao);
 
+        // ✅ Atualiza cards
+        const total = filtradas.reduce((acc, op) => acc + op.valor, 0);
+        totalCredito.innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        qtdEntradas.innerText = filtradas.length;
+        ultimaEntrada.innerText = filtradas.length
+            ? new Date(filtradas[filtradas.length - 1].dataOperacao).toLocaleDateString("pt-BR")
+            : "-";
+
+        // ✅ Renderiza cards de operações
         listaOperacoes.innerHTML = filtradas
             .map(
                 (op) => `
@@ -19,13 +30,10 @@ async function carregarOperacoes() {
           <div class="card shadow card-op">
             <div class="card-body">
               <h5 class="card-title mb-2">
-                <i class="fas ${tipoOperacao === "ENTRADA" ? "fa-arrow-up text-success" : "fa-arrow-down text-danger"
-                    }"></i> ${op.tipoOperacao}
+                <i class="fas ${tipoOperacao === "ENTRADA" ? "fa-arrow-up text-success" : "fa-arrow-down text-danger"}"></i>
+                ${op.tipoOperacao}
               </h5>
-              <p class="mb-1"><strong>Valor:</strong> ${op.valor.toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                    })}</p>
+              <p class="mb-1"><strong>Valor:</strong> ${op.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
               <p class="mb-1"><strong>Pagamento:</strong> ${op.meioPagamento}</p>
               <p class="mb-1"><strong>Descrição:</strong> ${op.descricao || "-"}</p>
               <p class="text-muted small">${new Date(op.dataOperacao).toLocaleDateString("pt-BR")}</p>
@@ -35,8 +43,7 @@ async function carregarOperacoes() {
               </div>
             </div>
           </div>
-        </div>
-      `
+        </div>`
             )
             .join("");
     } catch (error) {
@@ -52,7 +59,7 @@ form.addEventListener("submit", async (e) => {
         descricao: form.descricao.value,
         dataOperacao: form.dataOperacao.value,
         valor: parseFloat(form.valor.value),
-        empresaId: 1, // ⚠️ substituir com ID real da empresa
+        empresaId: 1, // Substituir por empresa real
     };
 
     try {
@@ -63,7 +70,7 @@ form.addEventListener("submit", async (e) => {
         });
 
         if (resp.ok) {
-            alert("Operação registrada com sucesso!");
+            alert("✅ Operação registrada com sucesso!");
             form.reset();
             carregarOperacoes();
         } else {
@@ -89,7 +96,7 @@ async function excluirOperacao(id) {
 }
 
 function editarOperacao(id) {
-    alert(`Edição da operação ${id} ainda em desenvolvimento.`);
+    alert(`✏️ Edição da operação ${id} ainda em desenvolvimento.`);
 }
 
 document.addEventListener("DOMContentLoaded", carregarOperacoes);
