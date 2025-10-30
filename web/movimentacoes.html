@@ -159,7 +159,7 @@
 
                 <div class="container-fluid mb-4">
                     <!-- Filtro -->
-                    <div class="filter-bar mb-4">
+                    <div class="filter-bar">
                         <select id="filtroTipo" class="form-control" onchange="carregarOperacoes(this.value)">
                             <option value="TODAS">Todas</option>
                             <option value="ENTRADA">Entradas</option>
@@ -170,19 +170,19 @@
                     <!-- Formulário -->
                     <!-- 🔥 Card aprimorado de Movimentação -->
                     <section class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 14px;">
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="fas fa-plus-circle text-danger mr-2 fa-lg"></i>
-                            <h5 class="font-weight-bold text-dark mb-0">Nova Movimentação</h5>
-                        </div>
+                        <h5 class="mb-4 font-weight-bold text-dark d-flex align-items-center">
+                            <i class="fas fa-plus-circle text-danger mr-2"></i> Nova Movimentação
+                        </h5>
 
                         <form id="caixaForm" class="needs-validation" novalidate>
-                            <!-- LINHA 1: Tipo + Meio -->
                             <div class="form-row">
-                                <div class="form-group col-md-6 pr-md-3">
-                                    <label class="small font-weight-semibold text-muted">Tipo de Operação</label>
-                                    <div class="input-icon">
+                                <div class="form-group col-md-3">
+                                    <label for="tipoOperacao" class="font-weight-semibold text-muted small">Tipo de
+                                        Operação</label>
+                                    <div class="input-wrapper">
                                         <i class="fas fa-random"></i>
-                                        <select name="tipoOperacao" class="form-control" required>
+                                        <select id="tipoOperacao" name="tipoOperacao" class="form-control campo"
+                                            required>
                                             <option value="">Selecione...</option>
                                             <option value="ENTRADA">Entrada</option>
                                             <option value="SAIDA">Saída</option>
@@ -190,11 +190,13 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-md-6 pl-md-3">
-                                    <label class="small font-weight-semibold text-muted">Meio de Pagamento</label>
-                                    <div class="input-icon">
+                                <div class="form-group col-md-3">
+                                    <label for="meioPagamento" class="font-weight-semibold text-muted small">Meio de
+                                        Pagamento</label>
+                                    <div class="input-wrapper">
                                         <i class="fas fa-credit-card"></i>
-                                        <select name="meioPagamento" class="form-control" required>
+                                        <select id="meioPagamento" name="meioPagamento" class="form-control campo"
+                                            required>
                                             <option value="">Selecione...</option>
                                             <option value="PIX">Pix</option>
                                             <option value="CARTAO">Cartão</option>
@@ -204,55 +206,43 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- LINHA 2: Valor -->
-                            <div class="form-row">
                                 <div class="form-group col-md-3">
-                                    <label class="small font-weight-semibold text-muted">Valor</label>
-                                    <div class="input-icon">
+                                    <label for="valor" class="font-weight-semibold text-muted small">Valor</label>
+                                    <div class="input-wrapper">
                                         <i class="fas fa-dollar-sign"></i>
-                                        <input type="number" step="0.01" name="valor" class="form-control"
-                                            placeholder="0,00" required>
+                                        <input type="number" step="0.01" id="valor" name="valor"
+                                            class="form-control campo" placeholder="0,00" required>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- LINHA 3: Data -->
-                            <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label class="small font-weight-semibold text-muted">Data</label>
-                                    <div class="input-icon">
+                                <div class="form-group col-md-3">
+                                    <label for="dataOperacao" class="font-weight-semibold text-muted small">Data</label>
+                                    <div class="input-wrapper">
                                         <i class="fas fa-calendar-alt"></i>
-                                        <input type="date" name="dataOperacao" class="form-control" required>
+                                        <input type="date" id="dataOperacao" name="dataOperacao"
+                                            class="form-control campo" required>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- LINHA 4: Descrição -->
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <label class="small font-weight-semibold text-muted">Descrição</label>
-                                    <div class="input-icon">
-                                        <i class="fas fa-align-left"></i>
-                                        <input type="text" name="descricao" class="form-control"
-                                            placeholder="Ex: Pagamento de fornecedor, venda, compra de material...">
-                                    </div>
+                            <div class="form-group mt-2">
+                                <label for="descricao" class="font-weight-semibold text-muted small">Descrição</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-align-left"></i>
+                                    <input type="text" id="descricao" name="descricao" class="form-control campo"
+                                        placeholder="Ex: Pagamento de fornecedor, venda, compra de material...">
                                 </div>
                             </div>
 
-                            <!-- Botão -->
-                            <div class="text-right mt-3">
+                            <div class="text-right mt-4">
                                 <button type="submit" class="btn btn-danger px-5 py-2 shadow-sm"
-                                    style="border-radius:8px;font-weight:600;">
+                                    style="border-radius: 8px; font-weight: 600;">
                                     <i class="fas fa-save mr-2"></i> Salvar Movimentação
                                 </button>
                             </div>
                         </form>
-
-
                     </section>
-
 
                     <!-- Lista -->
                     <div>
