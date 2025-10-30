@@ -1,11 +1,26 @@
-# ERP-Fluxo-de-caixa
+# 💰 ERP - Fluxo de Caixa | Paiva Tech
 
-Linguagens:  
-Node.js - Prisma - Mysql - Maria DB  
+![Status](https://img.shields.io/badge/Status-Online-brightgreen)
+![Node.js](https://img.shields.io/badge/Node.js-18.x-green)
+![Prisma](https://img.shields.io/badge/ORM-Prisma-blue)
+![MySQL](https://img.shields.io/badge/Database-MySQL-orange)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-Comandos Necessários:  
-- npm i -g prisma
-- npm init
-- npm i express cors dotenv
-- prisma init --datasource-provider mysql
-- prisma migrate dev --name "descricao"
+> Sistema completo de **Gestão Financeira e Fluxo de Caixa Empresarial**, desenvolvido em **Node.js + Prisma + MySQL** com painel web moderno e responsivo.
+
+---
+
+## 🧠 Sobre o Projeto
+
+O **ERP - Fluxo de Caixa** é um sistema completo para **gestão financeira e comercial** de pequenas e médias empresas.  
+Ele permite o controle de:
+
+- 📥 Créditos e Débitos mensais  
+- 🧾 Propostas comerciais (pendentes e aprovadas)  
+- 👥 Clientes vinculados à empresa  
+- 🏢 Empresas e usuários administradores  
+- 📦 Produtos e serviços  
+- 💸 Relatórios e indicadores em tempo real  
+
+O projeto é dividido em duas partes:
+
