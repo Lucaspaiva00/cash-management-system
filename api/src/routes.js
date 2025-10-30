@@ -6,7 +6,6 @@ const caixa = require("./controller/controlecaixa");
 const clientes = require("./controller/ctclientes");
 const produtos = require("./controller/ctprodutos");
 const proposta = require("./controller/ctpropostas");
-const empresa = require("./controller/ctempresa");
 const usuario = require("./controller/ctusuario");
 
 routes.get("/", (req, res) => {
@@ -22,44 +21,24 @@ routes.post("/auth/signup", usuario.signup);
 
 // Usuários
 routes.post("/usuarios/login", usuario.login);
-routes.route("/usuarios")
-  .get(usuario.read)
-  .post(usuario.create); // mantém para casos internos quando já existe empresa
-routes.route("/usuarios/:id")
-  .put(usuario.update)
-  .delete(usuario.remove);
+routes.route("/usuarios").get(usuario.read).post(usuario.create); // mantém para casos internos quando já existe empresa
+routes.route("/usuarios/:id").put(usuario.update).delete(usuario.remove);
 
 // Caixa
-routes.route("/caixa")
-  .get(caixa.read)
-  .post(caixa.create);
-routes.route("/caixa/:id")
-  .put(caixa.update)
-  .delete(caixa.remove);
+routes.route("/caixa").get(caixa.read).post(caixa.create);
+routes.route("/caixa/:id").put(caixa.update).delete(caixa.remove);
 
 // Clientes
-routes.route("/clientes")
-  .get(clientes.read)
-  .post(clientes.create);
-routes.route("/clientes/:id")
-  .put(clientes.update)
-  .delete(clientes.remove);
+routes.route("/clientes").get(clientes.read).post(clientes.create);
+routes.route("/clientes/:id").put(clientes.update).delete(clientes.remove);
 
 // Produtos
-routes.route("/produtos")
-  .get(produtos.read)
-  .post(produtos.create);
-routes.route("/produtos/:id")
-  .put(produtos.update)
-  .delete(produtos.remove);
+routes.route("/produtos").get(produtos.read).post(produtos.create);
+routes.route("/produtos/:id").put(produtos.update).delete(produtos.remove);
 
 // Propostas
-routes.route("/propostas")
-  .get(proposta.read)
-  .post(proposta.create);
-routes.route("/propostas/:id")
-  .put(proposta.update)
-  .delete(proposta.remove);
+routes.route("/propostas").get(proposta.read).post(proposta.create);
+routes.route("/propostas/:id").put(proposta.update).delete(proposta.remove);
 
 routes.use((req, res) => {
   res.status(404).json({ error: "❌ Rota não encontrada." });
