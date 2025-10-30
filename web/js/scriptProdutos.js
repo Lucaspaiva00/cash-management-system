@@ -77,7 +77,7 @@ function cardProdutoHTML(p) {
         <h5 class="mb-1 text-dark">${p.nome}</h5>
         <p class="small text-muted mb-1">Categoria: ${p.categoria || "—"}</p>
         <p class="small text-muted mb-1">Estoque: ${p.estoque || 0}</p>
-        <p class="small mb-1"><span class="badge badge-success">Venda ${fmtBRL(p.precovenda)}</span> <span class="badge badge-danger">Custo ${fmtBRL(p.precocompra)}</span></p>
+        <p class="small mb-1"><span class="badge badge-success">Venda ${fmtBRL(p.precoVenda)}</span> <span class="badge badge-danger">Custo ${fmtBRL(p.precoCompra)}</span></p>
       </div>
       <div>
         <button class="btn btn-warning btn-sm mr-1" onclick='editarProduto(${JSON.stringify(p)})'><i class="fas fa-edit"></i></button>
