@@ -2,6 +2,7 @@ const caixaForms = document.querySelector("#caixaForms");
 const totalprop = document.querySelector("#totalprop");
 const uri = "https://cash-management-system.fly.dev/proposta";
 
+
 caixaForms.addEventListener("submit", (e) => {
   e.preventDefault();
   const data = {

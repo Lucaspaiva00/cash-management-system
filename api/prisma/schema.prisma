@@ -7,47 +7,110 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model login {
-  id    Int    @id @default(autoincrement())
-  cpf   String @unique
-  senha String @db.VarChar(255)
+model Empresa {
+  id           Int        @id @default(autoincrement())
+  nome         String     @db.VarChar(150)
+  cnpj         String?    @unique
+  email        String?    @unique
+  telefone     String?    @db.VarChar(20)
+  endereco     String?    @db.VarChar(255)
+  usuario      Usuario?
+  clientes     Cliente[]
+  produtos     Produto[]
+  propostas    Proposta[]
+  operacoes    Caixa[]
+  criadoEm     DateTime   @default(now())
+  atualizadoEm DateTime   @updatedAt
 }
 
-model gerenciamentocaixa {
-  id            Int    @id @default(autoincrement())
-  dataOperacao  String
-  tipoOperacao  String @db.VarChar(100)
-  meioPagamento String @db.VarChar(100)
-  valor         Float
+model Usuario {
+  id        Int     @id @default(autoincrement())
+  nome      String  @db.VarChar(100)
+  email     String  @unique
+  senha     String  @db.VarChar(255)
+  empresaId Int     @unique
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 }
 
-model cliente {
+model Cliente {
   id       Int     @id @default(autoincrement())
-  nome     String  @db.VarChar(100)
-  cpf      String  @unique
-  cnpj     String? @db.VarChar(100)
-  email    String  @unique
-  telefone String  @unique
-  endereco String  @db.VarChar(255)
+  nome     String  @db.VarChar(150)
+  cpf      String? @unique
+  cnpj     String? @unique
+  email    String? @unique
+  telefone String? @db.VarChar(20)
+  endereco String? @db.VarChar(255)
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime   @default(now())
+  atualizadoEm DateTime   @updatedAt
+  propostas    Proposta[]
 }
 
-model proposta {
-  id        Int    @id @default(autoincrement())
-  numero    Int
-  data      String
-  descricao String @db.VarChar(252)
-  status    String @db.VarChar(100)
-  valor     Float
-}
-
-model produtos {
+model Produto {
   id          Int     @id @default(autoincrement())
   nome        String  @db.VarChar(100)
-  precovenda  Float
-  precocompra Float
-  estoque     Int
-  marca       String  @db.VarChar(100)
-  quantidade  Int
-  categoria   String  @db.VarChar(100)
+  marca       String? @db.VarChar(100)
+  categoria   String? @db.VarChar(100)
+  precoVenda  Float
+  precoCompra Float?
+  estoque     Int     @default(0)
   imagem      String? @db.VarChar(255)
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Proposta {
+  id         Int      @id @default(autoincrement())
+  numero     Int
+  descricao  String   @db.VarChar(255)
+  data       DateTime @default(now())
+  status     String   @db.VarChar(100)
+  valorTotal Float
+
+  clienteId Int?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Caixa {
+  id            Int           @id @default(autoincrement())
+  dataOperacao  DateTime      @default(now())
+  tipoOperacao  TipoOperacao
+  meioPagamento MeioPagamento
+  descricao     String?       @db.VarChar(255)
+  valor         Float
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+enum TipoOperacao {
+  ENTRADA
+  SAIDA
+}
+
+enum MeioPagamento {
+  PIX
+  CARTAO
+  DINHEIRO
+  BOLETO
+  TRANSFERENCIA
 }

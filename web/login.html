@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Sistema Paiva Tech</title>
+
+    <!-- Bootstrap / FontAwesome / Tema SB-Admin -->
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-dark">
+
+    <div class="container">
+
+        <!-- Centralização vertical -->
+        <div class="row justify-content-center align-items-center vh-100">
+            <div class="col-xl-5 col-lg-6 col-md-8">
+
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+
+                        <div class="text-center mb-4">
+                            <h1 class="h4 text-gray-900 mb-2">Acesso ao Sistema</h1>
+                            <p class="text-muted mb-4">Entre com seu e-mail e senha</p>
+                        </div>
+
+                        <form id="formLogin">
+                            <div class="form-group">
+                                <input type="email" id="email" class="form-control" placeholder="E-mail" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="senha" class="form-control" placeholder="Senha" required>
+                            </div>
+                            <button type="submit" class="btn btn-dark btn-block mt-3">
+                                <i class="fas fa-sign-in-alt"></i> Entrar
+                            </button>
+                        </form>
+
+                        <div class="text-center mt-4">
+                            <a class="small text-primary" href="usuario.html">
+                                <i class="fas fa-user-plus"></i> Criar usuário (admin da empresa)
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="vendor2/jquery/jquery.min.js"></script>
+    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/scriptlogin.js"></script>
+
+</body>
+
+</html>
