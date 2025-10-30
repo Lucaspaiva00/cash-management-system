@@ -43,28 +43,6 @@ Ele centraliza as informações de entradas, saídas, clientes, produtos e propo
 | **Infraestrutura** | Fly.io (API) + Vercel (Frontend) |
 | **Outros** | CORS, Dotenv, LocalStorage Authentication |
 
----
-
-## 📸 Telas do Sistema
-
-### 📊 Dashboard Principal
-![Dashboard](https://i.imgur.com/Y4iXwvO.png)
-
-### 💵 Página de Créditos
-![Créditos](https://i.imgur.com/tIIfZ7S.png)
-
-### 🧾 Página de Débitos
-![Débitos](https://i.imgur.com/LXFWuBy.png)
-
-### 🧑‍💼 Gestão de Usuários
-![Usuários](https://i.imgur.com/XC6LYbo.png)
-
-### 🏢 Empresas e Clientes
-![Empresas](https://i.imgur.com/5K03E3G.png)
-
-*(As imagens acima são exemplos ilustrativos baseados no layout real do sistema.)*
-
----
 
 ## ⚙️ Instalação e Configuração
 
