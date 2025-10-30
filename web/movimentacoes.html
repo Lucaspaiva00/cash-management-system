@@ -39,6 +39,38 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
+
+        .card-body label {
+            font-size: 0.9rem;
+        }
+
+        .input-group-text {
+            border: none;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .form-control:focus,
+        .custom-select:focus {
+            border-color: #e63946 !important;
+            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
+        }
+
+        .btn:hover {
+            background-color: #c82333 !important;
+            transition: 0.2s ease;
+        }
+
+        .card {
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
     </style>
 </head>
 
