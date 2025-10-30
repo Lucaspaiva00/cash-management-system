@@ -45,40 +45,47 @@ caixaForms.addEventListener("submit", async (e) => {
 });
 
 // Listar clientes
+// Listar clientes (em cards)
 async function carregarClientes() {
   try {
     const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
     const lista = await resp.json();
 
     clientesCadastrados.innerHTML = "";
+    if (!lista.length) {
+      clientesCadastrados.innerHTML = `<p class="text-muted">Nenhum cliente cadastrado ainda.</p>`;
+      return;
+    }
+
     lista.forEach((c) => {
       clientesCadastrados.innerHTML += `
-        <tr>
-          <td>${c.nome}</td>
-          <td>${c.cpf || "-"}</td>
-          <td>${c.cnpj || "-"}</td>
-          <td>${c.endereco || "-"}</td>
-          <td>${c.telefone || "-"}</td>
-          <td>${c.email || "-"}</td>
-          <td>
-            <button class="btn btn-warning btn-sm" onclick="editarCliente(${
-              c.id
-            })">
+        <div class="card-cliente card border-0 shadow-sm p-3" style="flex: 1 1 320px; max-width: 360px; border-left:5px solid #007bff;">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="font-weight-bold text-dark mb-1"><i class="fas fa-user text-primary mr-1"></i> ${c.nome}</h6>
+              <p class="mb-1 small text-muted"><i class="fas fa-map-marker-alt mr-1 text-secondary"></i> ${c.endereco || "—"}</p>
+              <p class="mb-1 small text-muted"><i class="fas fa-phone mr-1 text-secondary"></i> ${c.telefone || "—"}</p>
+              <p class="mb-1 small text-muted"><i class="fas fa-envelope mr-1 text-secondary"></i> ${c.email || "—"}</p>
+              <p class="mb-1 small text-muted"><i class="fas fa-id-card mr-1 text-secondary"></i> CPF: ${c.cpf || "—"} | CNPJ: ${c.cnpj || "—"}</p>
+            </div>
+          </div>
+
+          <div class="mt-3 d-flex justify-content-end">
+            <button class="btn btn-warning btn-sm mr-2" onclick="editarCliente(${c.id})">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-danger btn-sm" onclick="excluirCliente(${
-              c.id
-            })">
+            <button class="btn btn-danger btn-sm" onclick="excluirCliente(${c.id})">
               <i class="fas fa-trash"></i>
             </button>
-          </td>
-        </tr>
+          </div>
+        </div>
       `;
     });
   } catch (err) {
     console.error(err);
   }
 }
+
 
 // Excluir cliente
 async function excluirCliente(id) {

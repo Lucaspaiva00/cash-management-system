@@ -12,20 +12,32 @@
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
-        .card-cliente {
-            border-left: 5px solid #007bff;
-            transition: all 0.2s ease;
-        }
-
-        .card-cliente:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
         #clientesCadastrados {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+            justify-content: flex-start;
+        }
+
+        .card-cliente {
+            background: #fff;
+            border-radius: 12px;
+            transition: 0.25s ease;
+            min-width: 280px;
+        }
+
+        .card-cliente:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-cliente h6 {
+            font-size: 1rem;
+        }
+
+        .card-cliente p {
+            font-size: 0.85rem;
+            color: #6c757d;
         }
     </style>
 </head>
