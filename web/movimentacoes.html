@@ -13,7 +13,7 @@
 
     <style>
         /* === PADRÃO DO CARD === */
-        .card-clientes {
+        .card-movimentacao {
             width: 100%;
             max-width: 1100px;
             margin: 0 auto;
@@ -23,13 +23,13 @@
             transition: all 0.3s ease;
         }
 
-        .card-clientes .card-header {
+        .card-movimentacao .card-header {
             background: #fff;
             padding: 1rem 2rem;
             border-bottom: 2px solid #f3f3f3;
         }
 
-        .card-clientes .card-body {
+        .card-movimentacao .card-body {
             background: #fff;
             padding: 2rem;
         }
@@ -69,15 +69,15 @@
             font-weight: 600;
         }
 
-        /* === LISTA DE CLIENTES === */
-        #clientesCadastrados {
+        /* === LISTA DE MOVIMENTAÇÕES === */
+        #listaOperacoes {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             justify-content: flex-start;
         }
 
-        .card-cliente {
+        .card-op {
             background: #fff;
             border-radius: 12px;
             transition: 0.25s ease;
@@ -88,30 +88,30 @@
             padding: 1rem;
         }
 
-        .card-cliente:hover {
+        .card-op:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .card-cliente h6 {
+        .card-op h6 {
             font-size: 1rem;
             font-weight: 600;
             color: #333;
         }
 
-        .card-cliente p {
+        .card-op p {
             font-size: 0.85rem;
             color: #6c757d;
             margin-bottom: 0.25rem;
         }
 
         @media (max-width: 768px) {
-            .card-clientes {
+            .card-movimentacao {
                 max-width: 100%;
                 margin: 0 1rem;
             }
 
-            .card-clientes .card-body {
+            .card-movimentacao .card-body {
                 padding: 1.2rem;
             }
 
