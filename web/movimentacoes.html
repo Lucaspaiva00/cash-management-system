@@ -2,74 +2,125 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movimentações do Caixa - Paiva Tech</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet" />
 
     <style>
-        .card-op {
-            border-left: 5px solid #007bff;
-            transition: all 0.2s ease;
+        /* === CARD PRINCIPAL === */
+        .card-movimentacao {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            border-radius: 12px;
+            background: #fff;
+            border: none;
+            transition: all 0.3s ease;
         }
 
-        .card-op:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        .card-movimentacao .card-header {
+            background: #fff;
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #f3f3f3;
         }
 
-        .filter-bar {
+        .card-movimentacao .card-body {
+            background: #fff;
+            padding: 2rem;
+        }
+
+        /* === FORMULÁRIO === */
+        .form-row {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            align-items: center;
-            margin-bottom: 1rem;
         }
 
-        .filter-bar select {
-            min-width: 200px;
+        .form-group {
+            flex: 1;
+            min-width: 240px;
         }
 
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .form-control,
+        select {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: none;
+            transition: 0.2s ease;
+        }
+
+        .form-control:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* === LISTA DE MOVIMENTAÇÕES === */
         #listaOperacoes {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+            justify-content: flex-start;
         }
 
-        .card-body label {
-            font-size: 0.9rem;
+        .card-op {
+            background: #fff;
+            border-radius: 12px;
+            transition: 0.25s ease;
+            min-width: 280px;
+            flex: 1 1 300px;
+            border-left: 5px solid #007bff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
         }
 
-        .input-group-text {
-            border: none;
-            border-radius: 8px 0 0 8px;
+        .card-op:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .input-group .form-control {
-            border-radius: 0 8px 8px 0;
+        .card-op h6 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
         }
 
-        .form-control:focus,
-        .custom-select:focus {
-            border-color: #e63946 !important;
-            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
+        .card-op p {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
         }
 
-        .btn:hover {
-            background-color: #c82333 !important;
-            transition: 0.2s ease;
-        }
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 768px) {
+            .card-movimentacao {
+                max-width: 100%;
+                margin: 0 1rem;
+            }
 
-        .card {
-            transition: 0.3s ease;
-        }
+            .card-movimentacao .card-body {
+                padding: 1.2rem;
+            }
 
-        .card:hover {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            .form-row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -97,7 +148,7 @@
             <hr class="sidebar-divider" />
             <div class="sidebar-heading">Páginas</div>
 
-            <!-- Caixa (Crédito e Débito) -->
+            <!-- Caixa -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCaixa"
                     aria-expanded="true" aria-controls="collapseCaixa">
@@ -111,6 +162,7 @@
                     </div>
                 </div>
             </li>
+
             <!-- Clientes -->
             <li class="nav-item">
                 <a class="nav-link" href="criarCliente.html">
@@ -143,60 +195,42 @@
                 </a>
             </li>
 
-            <!-- Toggle da Sidebar -->
             <hr class="sidebar-divider d-none d-md-block" />
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
         </ul>
 
-        <!-- Conteúdo principal -->
+        <!-- Conteúdo -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <h5 class="m-0 font-weight-bold text-dark">Movimentações do Caixa</h5>
                 </nav>
 
+                <!-- CARD DE CADASTRO -->
                 <div class="container-fluid mb-4">
-                    <!-- Filtro -->
-                    <div class="filter-bar">
-                        <select id="filtroTipo" class="form-control" onchange="carregarOperacoes(this.value)">
-                            <option value="TODAS">Todas</option>
-                            <option value="ENTRADA">Entradas</option>
-                            <option value="SAIDA">Saídas</option>
-                        </select>
-                    </div>
+                    <div class="card card-movimentacao shadow-sm">
+                        <div class="card-header d-flex align-items-center">
+                            <i class="fas fa-plus-circle text-danger mr-2"></i>
+                            <h5 class="mb-0">Nova Movimentação</h5>
+                        </div>
 
-                    <!-- Formulário -->
-                    <!-- 🔥 Card aprimorado de Movimentação -->
-                    <section class="card border-0 shadow-sm p-4 mb-4 bg-white" style="border-radius: 14px;">
-                        <h5 class="mb-4 font-weight-bold text-dark d-flex align-items-center">
-                            <i class="fas fa-plus-circle text-danger mr-2"></i> Nova Movimentação
-                        </h5>
-
-                        <form id="caixaForm" class="needs-validation" novalidate>
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <label for="tipoOperacao" class="font-weight-semibold text-muted small">Tipo de
-                                        Operação</label>
-                                    <div class="input-wrapper">
-                                        <i class="fas fa-random"></i>
-                                        <select id="tipoOperacao" name="tipoOperacao" class="form-control campo"
-                                            required>
+                        <div class="card-body">
+                            <form id="caixaForm" novalidate>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Tipo de Operação</label>
+                                        <select name="tipoOperacao" class="form-control" required>
                                             <option value="">Selecione...</option>
                                             <option value="ENTRADA">Entrada</option>
                                             <option value="SAIDA">Saída</option>
                                         </select>
                                     </div>
-                                </div>
 
-                                <div class="form-group col-md-3">
-                                    <label for="meioPagamento" class="font-weight-semibold text-muted small">Meio de
-                                        Pagamento</label>
-                                    <div class="input-wrapper">
-                                        <i class="fas fa-credit-card"></i>
-                                        <select id="meioPagamento" name="meioPagamento" class="form-control campo"
-                                            required>
+                                    <div class="form-group col-md-4">
+                                        <label>Meio de Pagamento</label>
+                                        <select name="meioPagamento" class="form-control" required>
                                             <option value="">Selecione...</option>
                                             <option value="PIX">Pix</option>
                                             <option value="CARTAO">Cartão</option>
@@ -205,50 +239,42 @@
                                             <option value="TRANSFERENCIA">Transferência</option>
                                         </select>
                                     </div>
-                                </div>
 
-                                <div class="form-group col-md-3">
-                                    <label for="valor" class="font-weight-semibold text-muted small">Valor</label>
-                                    <div class="input-wrapper">
-                                        <i class="fas fa-dollar-sign"></i>
-                                        <input type="number" step="0.01" id="valor" name="valor"
-                                            class="form-control campo" placeholder="0,00" required>
+                                    <div class="form-group col-md-4">
+                                        <label>Valor</label>
+                                        <input type="number" step="0.01" name="valor" class="form-control"
+                                            placeholder="0,00" required />
                                     </div>
                                 </div>
 
-                                <div class="form-group col-md-3">
-                                    <label for="dataOperacao" class="font-weight-semibold text-muted small">Data</label>
-                                    <div class="input-wrapper">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <input type="date" id="dataOperacao" name="dataOperacao"
-                                            class="form-control campo" required>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Data</label>
+                                        <input type="date" name="dataOperacao" class="form-control" required />
+                                    </div>
+
+                                    <div class="form-group col-md-8">
+                                        <label>Descrição</label>
+                                        <input type="text" name="descricao" class="form-control"
+                                            placeholder="Ex: Pagamento de fornecedor, venda, compra de material..." />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group mt-2">
-                                <label for="descricao" class="font-weight-semibold text-muted small">Descrição</label>
-                                <div class="input-wrapper">
-                                    <i class="fas fa-align-left"></i>
-                                    <input type="text" id="descricao" name="descricao" class="form-control campo"
-                                        placeholder="Ex: Pagamento de fornecedor, venda, compra de material...">
+                                <div class="text-right mt-3">
+                                    <button type="submit" class="btn btn-danger px-4 py-2 shadow-sm">
+                                        <i class="fas fa-save mr-1"></i> Salvar Movimentação
+                                    </button>
+                                    <button type="reset" class="btn btn-light border px-4 py-2 ml-2">Cancelar</button>
                                 </div>
-                            </div>
-
-                            <div class="text-right mt-4">
-                                <button type="submit" class="btn btn-danger px-5 py-2 shadow-sm"
-                                    style="border-radius: 8px; font-weight: 600;">
-                                    <i class="fas fa-save mr-2"></i> Salvar Movimentação
-                                </button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- Lista -->
-                    <div>
-                        <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
-                        <div id="listaOperacoes"></div>
+                            </form>
+                        </div>
                     </div>
+                </div>
+
+                <!-- LISTA DE MOVIMENTAÇÕES -->
+                <div class="container-fluid">
+                    <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
+                    <div id="listaOperacoes"></div>
                 </div>
             </div>
         </div>
