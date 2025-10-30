@@ -5,66 +5,55 @@ if (!usuario) {
   window.location.href = "login.html";
 }
 
-const tipoOperacao = window.location.pathname.includes("credito")
-  ? "ENTRADA"
-  : "SAIDA";
 const listaOperacoes = document.getElementById("listaOperacoes");
 const form = document.getElementById("caixaForm");
-const totalCredito = document.getElementById("totalCredito");
-const ultimaEntrada = document.getElementById("ultimaEntrada");
-const qtdEntradas = document.getElementById("qtdEntradas");
 let editandoId = null;
 
-async function carregarOperacoes() {
+// 🔄 Carregar operações com filtro
+async function carregarOperacoes(filtro = "TODAS") {
   try {
     const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
     const dados = await resp.json();
-    const filtradas = dados.filter((op) => op.tipoOperacao === tipoOperacao);
 
-    const total = filtradas.reduce((acc, op) => acc + op.valor, 0);
-    if (totalCredito)
-      totalCredito.innerText = total.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      });
-    if (qtdEntradas) qtdEntradas.innerText = filtradas.length;
-    if (ultimaEntrada)
-      ultimaEntrada.innerText = filtradas.length
-        ? new Date(filtradas[0].dataOperacao).toLocaleDateString("pt-BR")
-        : "-";
+    const filtradas =
+      filtro === "TODAS"
+        ? dados
+        : dados.filter((op) => op.tipoOperacao === filtro);
+
+    if (!filtradas.length) {
+      listaOperacoes.innerHTML =
+        "<p class='text-muted'>Nenhuma movimentação encontrada.</p>";
+      return;
+    }
 
     listaOperacoes.innerHTML = filtradas
       .map(
         (op) => `
       <div class="col-md-4 mb-4">
-        <div class="card shadow card-op">
+        <div class="card shadow card-op" style="border-left-color: ${op.tipoOperacao === "ENTRADA" ? "#28a745" : "#dc3545"
+          }">
           <div class="card-body">
             <h5 class="card-title mb-2">
-              <i class="fas ${
-                tipoOperacao === "ENTRADA"
-                  ? "fa-arrow-up text-success"
-                  : "fa-arrow-down text-danger"
-              }"></i>
+              <i class="fas ${op.tipoOperacao === "ENTRADA"
+            ? "fa-arrow-up text-success"
+            : "fa-arrow-down text-danger"
+          }"></i>
               ${op.tipoOperacao}
             </h5>
-            <p class="mb-1"><strong>Valor:</strong> ${op.valor.toLocaleString(
-              "pt-BR",
-              { style: "currency", currency: "BRL" }
-            )}</p>
-            <p class="mb-1"><strong>Pagamento:</strong> ${op.meioPagamento}</p>
-            <p class="mb-1"><strong>Descrição:</strong> ${
-              op.descricao || "-"
-            }</p>
+            <p><strong>Valor:</strong> ${op.valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })}</p>
+            <p><strong>Pagamento:</strong> ${op.meioPagamento}</p>
+            <p><strong>Descrição:</strong> ${op.descricao || "-"}</p>
             <p class="text-muted small">${new Date(
-              op.dataOperacao
-            ).toLocaleDateString("pt-BR")}</p>
+            op.dataOperacao
+          ).toLocaleDateString("pt-BR")}</p>
             <div class="text-right">
-              <button class="btn btn-sm btn-warning" onclick="editarOperacao(${
-                op.id
-              })"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-sm btn-danger" onclick="excluirOperacao(${
-                op.id
-              })"><i class="fas fa-trash"></i></button>
+              <button class="btn btn-sm btn-warning" onclick="editarOperacao(${op.id
+          })"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-danger" onclick="excluirOperacao(${op.id
+          })"><i class="fas fa-trash"></i></button>
             </div>
           </div>
         </div>
@@ -76,11 +65,12 @@ async function carregarOperacoes() {
   }
 }
 
+// 💾 Salvar / Atualizar operação
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const data = {
-    tipoOperacao,
+    tipoOperacao: form.tipoOperacao.value,
     meioPagamento: form.meioPagamento.value,
     descricao: form.descricao.value,
     dataOperacao: form.dataOperacao.value,
@@ -109,19 +99,22 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+// ✏️ Editar operação
 async function editarOperacao(id) {
   const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
   const dados = await resp.json();
   const op = dados.find((o) => o.id === id);
   if (!op) return alert("Operação não encontrada.");
 
-  form.valor.value = op.valor;
+  form.tipoOperacao.value = op.tipoOperacao;
   form.meioPagamento.value = op.meioPagamento;
+  form.valor.value = op.valor;
   form.descricao.value = op.descricao;
   form.dataOperacao.value = op.dataOperacao.split("T")[0];
   editandoId = id;
 }
 
+// 🗑️ Excluir operação
 async function excluirOperacao(id) {
   if (!confirm("Deseja excluir esta operação?")) return;
   const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
@@ -131,4 +124,4 @@ async function excluirOperacao(id) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", carregarOperacoes);
+document.addEventListener("DOMContentLoaded", () => carregarOperacoes());
