@@ -17,22 +17,35 @@ const create = async (req, res) => {
             empresaId,
         } = req.body;
 
-        if (!nome || !precovenda) {
+        // --- Validação geral ---
+        if (!nome || precovenda === undefined || precovenda === null) {
             return res
                 .status(400)
                 .json({ error: "Nome e preço de venda são obrigatórios." });
         }
 
+        // --- Conversões seguras ---
+        const precoVendaNum = parseFloat(precovenda);
+        const precoCompraNum = parseFloat(precocompra) || 0;
+        const estoqueNum = parseInt(estoque) || 0;
+        const qtdNum = parseInt(quantidade) || 0;
+        const empresaIdNum = parseInt(empresaId) || 1; // fallback seguro
+
+        if (isNaN(precoVendaNum)) {
+            return res.status(400).json({ error: "Preço de venda inválido." });
+        }
+
+        // --- Criação do produto ---
         const novo = await prisma.produto.create({
             data: {
                 nome,
-                precovenda: parseFloat(precovenda),
-                precocompra: parseFloat(precocompra) || 0,
-                estoque: parseInt(estoque) || 0,
+                precovenda: precoVendaNum,
+                precocompra: precoCompraNum,
+                estoque: estoqueNum,
                 marca: marca || "",
-                quantidade: parseInt(quantidade) || 0,
+                quantidade: qtdNum,
                 categoria: categoria || "",
-                empresaId: parseInt(empresaId) || 1, // fallback p/ teste
+                empresaId: empresaIdNum,
             },
         });
 
@@ -43,12 +56,8 @@ const create = async (req, res) => {
         console.error("❌ Erro ao cadastrar produto:", error);
         return res.status(500).json({
             error: "Erro interno ao cadastrar produto.",
-            details: error.message,
-            stack: error.stack,
-            body: req.body
+            detalhes: error.message,
         });
-
-
     }
 };
 
@@ -89,12 +98,12 @@ const update = async (req, res) => {
             where: { id },
             data: {
                 nome,
-                precovenda: parseFloat(precovenda),
-                precocompra: parseFloat(precocompra),
-                estoque: parseInt(estoque),
-                marca,
-                quantidade: parseInt(quantidade),
-                categoria,
+                precovenda: parseFloat(precovenda) || 0,
+                precocompra: parseFloat(precocompra) || 0,
+                estoque: parseInt(estoque) || 0,
+                marca: marca || "",
+                quantidade: parseInt(quantidade) || 0,
+                categoria: categoria || "",
             },
         });
 
