@@ -71,7 +71,6 @@
         .card:hover {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
-        
     </style>
 </head>
 
@@ -207,9 +206,9 @@
                                 </div>
                             </div>
 
-                            <!-- LINHA 2: Valor + Data + Descrição -->
-                            <div class="form-row align-items-end">
-                                <div class="form-group col-md-2 pr-md-2">
+                            <!-- LINHA 2: Valor -->
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
                                     <label class="small font-weight-semibold text-muted">Valor</label>
                                     <div class="input-icon">
                                         <i class="fas fa-dollar-sign"></i>
@@ -217,16 +216,22 @@
                                             placeholder="0,00" required>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group col-md-3 px-md-2">
+                            <!-- LINHA 3: Data -->
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
                                     <label class="small font-weight-semibold text-muted">Data</label>
                                     <div class="input-icon">
                                         <i class="fas fa-calendar-alt"></i>
                                         <input type="date" name="dataOperacao" class="form-control" required>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group col-md-7 pl-md-2">
+                            <!-- LINHA 4: Descrição -->
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
                                     <label class="small font-weight-semibold text-muted">Descrição</label>
                                     <div class="input-icon">
                                         <i class="fas fa-align-left"></i>
@@ -244,6 +249,7 @@
                                 </button>
                             </div>
                         </form>
+
 
                     </section>
 
