@@ -3,116 +3,73 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const { numero, descricao, status, valorTotal, clienteId, empresaId } = req.body;
+        const { clienteId, descricao, valor, status, empresaId } = req.body;
 
-        if (!numero || !descricao || !status || !valorTotal || !empresaId) {
+        if (!clienteId || !valor || !empresaId) {
             return res.status(400).json({ error: "Campos obrigatórios ausentes." });
         }
 
-        const novaProposta = await prisma.proposta.create({
+        const nova = await prisma.proposta.create({
             data: {
-                numero: parseInt(numero),
+                clienteId: parseInt(clienteId),
                 descricao,
-                status,
-                valorTotal: parseFloat(valorTotal),
-                clienteId: clienteId ? parseInt(clienteId) : null,
+                valor: parseFloat(valor),
+                status: status || "PENDENTE",
                 empresaId: parseInt(empresaId),
             },
-            include: {
-                cliente: true,
-                empresa: true,
-            },
         });
 
-        return res.status(201).json({
-            message: "Proposta criada com sucesso!",
-            data: novaProposta,
-        });
+        return res.status(201).json({ message: "Proposta criada com sucesso!", data: nova });
     } catch (error) {
-        console.error("Erro ao criar proposta:", error);
-        return res.status(500).json({ error: "Falha ao criar proposta." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao criar proposta." });
     }
 };
-
 
 const read = async (req, res) => {
     try {
         const empresaId = parseInt(req.query.empresaId);
+        if (!empresaId) return res.status(400).json({ error: "Informe o ID da empresa." });
 
-        if (!empresaId) {
-            return res.status(400).json({ error: "Informe o ID da empresa." });
-        }
-
-        const propostas = await prisma.proposta.findMany({
+        const lista = await prisma.proposta.findMany({
             where: { empresaId },
-            include: {
-                cliente: {
-                    select: { id: true, nome: true, email: true },
-                },
-            },
-            orderBy: { data: "desc" },
+            orderBy: { id: "desc" },
+            include: { cliente: true },
         });
 
-        return res.status(200).json(propostas);
+        return res.status(200).json(lista);
     } catch (error) {
-        console.error("Erro ao listar propostas:", error);
-        return res.status(500).json({ error: "Falha ao listar propostas." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao listar propostas." });
     }
 };
-
 
 const update = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const { descricao, status, valorTotal, clienteId } = req.body;
+        const { descricao, valor, status } = req.body;
 
-        const propostaExistente = await prisma.proposta.findUnique({ where: { id } });
-        if (!propostaExistente) {
-            return res.status(404).json({ error: "Proposta não encontrada." });
-        }
-
-        const propostaAtualizada = await prisma.proposta.update({
+        const atualizada = await prisma.proposta.update({
             where: { id },
-            data: {
-                descricao: descricao || propostaExistente.descricao,
-                status: status || propostaExistente.status,
-                valorTotal: valorTotal ? parseFloat(valorTotal) : propostaExistente.valorTotal,
-                clienteId: clienteId ? parseInt(clienteId) : propostaExistente.clienteId,
-            },
+            data: { descricao, valor: parseFloat(valor), status },
         });
 
-        return res.status(200).json({
-            message: "Proposta atualizada com sucesso!",
-            data: propostaAtualizada,
-        });
+        return res.status(200).json({ message: "Proposta atualizada com sucesso!", data: atualizada });
     } catch (error) {
-        console.error("Erro ao atualizar proposta:", error);
-        return res.status(500).json({ error: "Falha ao atualizar proposta." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao atualizar proposta." });
     }
 };
-
 
 const remove = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-
-        const propostaExistente = await prisma.proposta.findUnique({ where: { id } });
-        if (!propostaExistente) {
-            return res.status(404).json({ error: "Proposta não encontrada." });
-        }
-
         await prisma.proposta.delete({ where: { id } });
-
-        return res.status(200).json({ message: "Proposta removida com sucesso!" });
+        return res.status(200).json({ message: "Proposta excluída com sucesso!" });
     } catch (error) {
-        console.error("Erro ao remover proposta:", error);
-        return res.status(500).json({ error: "Falha ao remover proposta." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao excluir proposta." });
     }
 };
 
-module.exports = {
-    create,
-    read,
-    update,
-    remove,
-};
+module.exports = { create, read, update, remove };

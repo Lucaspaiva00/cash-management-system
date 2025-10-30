@@ -1,131 +1,120 @@
 const API = "https://cash-management-system.fly.dev/produtos";
-
-const lista = document.querySelector("#produtosCadastrados");
-const form = document.querySelector("#caixaForms");
-const bruto = document.querySelector("#estoquevalorbruto");
-const custo = document.querySelector("#estoquevalorcusto");
-const liquido = document.querySelector("#estoquevalorliquido");
-
-async function carregarProdutos() {
-  try {
-    const resp = await fetch(API);
-    const produtos = await resp.json();
-
-    let totalVenda = 0;
-    let totalCompra = 0;
-
-    lista.innerHTML = produtos
-      .map(
-        (p) => `
-        <div class="col-md-4 mb-4">
-          <div class="card shadow-sm border-left-primary h-100">
-            <div class="card-body">
-              <h5 class="card-title mb-2">
-                <i class="fas fa-box text-primary"></i> ${p.nome}
-              </h5>
-              <p class="mb-1"><strong>Categoria:</strong> ${p.categoria}</p>
-              <p class="mb-1"><strong>Marca:</strong> ${p.marca}</p>
-              <p class="mb-1"><strong>Preço Venda:</strong> ${p.precovenda.toLocaleString(
-          "pt-BR",
-          { style: "currency", currency: "BRL" }
-        )}</p>
-              <p class="mb-1"><strong>Preço Compra:</strong> ${p.precocompra.toLocaleString(
-          "pt-BR",
-          { style: "currency", currency: "BRL" }
-        )}</p>
-              <p class="mb-1"><strong>Estoque:</strong> ${p.estoque}</p>
-              <p class="mb-1"><strong>Quantidade:</strong> ${p.quantidade}</p>
-              <div class="text-right mt-3">
-                <button class="btn btn-sm btn-warning" onclick="editarProduto(${p.id})">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="excluirProduto(${p.id})">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>`
-      )
-      .join("");
-
-    produtos.forEach((p) => {
-      totalVenda += p.precovenda;
-      totalCompra += p.precocompra;
-    });
-
-    bruto.textContent = totalVenda.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-    custo.textContent = totalCompra.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-    liquido.textContent = (totalVenda - totalCompra).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  } catch (error) {
-    console.error("Erro ao carregar produtos:", error);
-  }
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+if (!usuario) {
+  alert("Sessão expirada. Faça login novamente.");
+  window.location.href = "login.html";
 }
 
-form.addEventListener("submit", async (e) => {
+const produtosLista = document.querySelector("#produtosLista");
+const formProduto = document.querySelector("#formProduto");
+
+let editandoId = null; // controla se está editando
+
+// Criar ou atualizar produto
+formProduto.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const data = {
-    nome: form.nome.value.trim(),
-    precovenda: Number(form.precovenda.value),
-    precocompra: Number(form.precocompra.value),
-    estoque: Number(form.estoque.value),
-    marca: form.marca.value.trim(),
-    quantidade: Number(form.quantidade.value),
-    categoria: form.categoria.value.trim(),
-    empresaId: 1, // ajustar conforme login da empresa
+    nome: formProduto.nome.value.trim(),
+    preco: parseFloat(formProduto.preco.value),
+    descricao: formProduto.descricao.value.trim(),
+    empresaId: usuario.empresaId,
   };
 
   try {
-    const resp = await fetch(API, {
-      method: "POST",
+    const url = editandoId ? `${API}/${editandoId}` : API;
+    const method = editandoId ? "PUT" : "POST";
+
+    const resp = await fetch(url, {
+      method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    if (resp.ok) {
-      alert("✅ Produto cadastrado com sucesso!");
-      form.reset();
-      carregarProdutos();
-    } else {
-      alert("❌ Erro ao cadastrar produto.");
+    const result = await resp.json();
+
+    if (!resp.ok) {
+      alert(result.error || "Erro ao salvar produto.");
+      return;
     }
+
+    alert(editandoId ? "✅ Produto atualizado com sucesso!" : "✅ Produto cadastrado com sucesso!");
+    formProduto.reset();
+    editandoId = null;
+    document.querySelector("#btnSalvar").innerHTML = '<i class="fas fa-save"></i> Salvar';
+    carregarProdutos();
   } catch (err) {
-    console.error("Erro:", err);
+    console.error(err);
+    alert("Erro ao conectar com o servidor.");
   }
 });
 
-async function excluirProduto(id) {
-  if (!confirm("Tem certeza que deseja excluir este produto?")) return;
+// Listar produtos
+async function carregarProdutos() {
+  try {
+    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+    const lista = await resp.json();
 
+    produtosLista.innerHTML = "";
+    lista.forEach((p) => {
+      produtosLista.innerHTML += `
+        <tr>
+          <td>${p.nome}</td>
+          <td>${p.descricao || "-"}</td>
+          <td>${p.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+          <td>
+            <button class="btn btn-warning btn-sm" onclick="editarProduto(${p.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="excluirProduto(${p.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Excluir produto
+async function excluirProduto(id) {
+  if (!confirm("Deseja excluir este produto?")) return;
   try {
     const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
     if (resp.ok) {
-      alert("🗑️ Produto removido com sucesso!");
+      alert("🗑️ Produto excluído!");
       carregarProdutos();
-    } else {
-      alert("❌ Erro ao excluir produto.");
     }
   } catch (err) {
-    console.error("Erro ao excluir:", err);
+    console.error(err);
   }
 }
 
-function editarProduto(id) {
-  alert(`🛠️ Função de edição em desenvolvimento (ID: ${id})`);
+// Editar produto
+async function editarProduto(id) {
+  try {
+    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+    const lista = await resp.json();
+    const produto = lista.find((p) => p.id === id);
+
+    if (!produto) {
+      alert("Produto não encontrado!");
+      return;
+    }
+
+    formProduto.nome.value = produto.nome;
+    formProduto.preco.value = produto.preco;
+    formProduto.descricao.value = produto.descricao || "";
+
+    editandoId = id;
+    document.querySelector("#btnSalvar").innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao carregar produto para edição.");
+  }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Transforma a listagem em grid
-  lista.classList.add("row");
-  carregarProdutos();
-});
+document.addEventListener("DOMContentLoaded", carregarProdutos);

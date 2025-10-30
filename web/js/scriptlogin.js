@@ -7,7 +7,7 @@ document.querySelector("#formLogin").addEventListener("submit", async (e) => {
     const senha = document.querySelector("#senha").value.trim();
 
     if (!email || !senha) {
-        alert("Preencha todos os campos!");
+        alert("⚠️ Preencha todos os campos!");
         return;
     }
 
@@ -20,16 +20,26 @@ document.querySelector("#formLogin").addEventListener("submit", async (e) => {
 
         const data = await resp.json();
 
-        if (resp.ok) {
-            // salva o usuário logado para consultas futuras (opcional)
-            localStorage.setItem("usuario", JSON.stringify(data.usuario));
-            alert("✅ Login realizado com sucesso!");
-            window.location.href = "index.html"; // redireciona pro painel
-        } else {
+        if (!resp.ok) {
             alert(data.error || "E-mail ou senha incorretos.");
+            return;
         }
+
+        // 🔐 Salva usuário logado no navegador
+        localStorage.setItem(
+            "usuarioLogado",
+            JSON.stringify({
+                id: data.usuario.id,
+                nome: data.usuario.nome,
+                email: data.usuario.email,
+                empresaId: data.usuario.empresaId,
+            })
+        );
+
+        alert(`✅ Bem-vindo, ${data.usuario.nome}!`);
+        window.location.href = "index.html";
     } catch (err) {
-        console.error(err);
+        console.error("Erro:", err);
         alert("Erro ao conectar com o servidor.");
     }
 });

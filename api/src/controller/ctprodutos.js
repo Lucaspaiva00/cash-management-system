@@ -3,109 +3,71 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const { nome, marca, categoria, precoVenda, precoCompra, estoque, imagem, empresaId } = req.body;
+        const { nome, preco, descricao, empresaId } = req.body;
 
-        if (!nome || !precoVenda || !empresaId) {
-            return res.status(400).json({ error: "Nome, preço de venda e empresaId são obrigatórios." });
+        if (!nome || !preco || !empresaId) {
+            return res.status(400).json({ error: "Nome, preço e empresaId são obrigatórios." });
         }
 
-        const novoProduto = await prisma.produto.create({
+        const novo = await prisma.produto.create({
             data: {
                 nome,
-                marca,
-                categoria,
-                precoVenda: parseFloat(precoVenda),
-                precoCompra: precoCompra ? parseFloat(precoCompra) : null,
-                estoque: estoque ? parseInt(estoque) : 0,
-                imagem,
+                preco: parseFloat(preco),
+                descricao,
                 empresaId: parseInt(empresaId),
             },
         });
 
-        return res.status(201).json({
-            message: "Produto cadastrado com sucesso!",
-            data: novoProduto,
-        });
+        return res.status(201).json({ message: "Produto cadastrado com sucesso!", data: novo });
     } catch (error) {
-        console.error("Erro ao criar produto:", error);
-        return res.status(500).json({ error: "Falha ao cadastrar produto." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao cadastrar produto." });
     }
 };
 
 const read = async (req, res) => {
     try {
         const empresaId = parseInt(req.query.empresaId);
+        if (!empresaId) return res.status(400).json({ error: "Informe o ID da empresa." });
 
-        if (!empresaId) {
-            return res.status(400).json({ error: "Informe o ID da empresa." });
-        }
-
-        const produtos = await prisma.produto.findMany({
+        const lista = await prisma.produto.findMany({
             where: { empresaId },
-            orderBy: { nome: "asc" },
+            orderBy: { id: "desc" },
         });
 
-        return res.status(200).json(produtos);
+        return res.status(200).json(lista);
     } catch (error) {
-        console.error("Erro ao listar produtos:", error);
-        return res.status(500).json({ error: "Falha ao listar produtos." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao listar produtos." });
     }
 };
 
 const update = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const { nome, marca, categoria, precoVenda, precoCompra, estoque, imagem } = req.body;
+        const { nome, preco, descricao } = req.body;
 
-        const produtoExistente = await prisma.produto.findUnique({ where: { id } });
-        if (!produtoExistente) {
-            return res.status(404).json({ error: "Produto não encontrado." });
-        }
-
-        const produtoAtualizado = await prisma.produto.update({
+        const atualizado = await prisma.produto.update({
             where: { id },
-            data: {
-                nome,
-                marca,
-                categoria,
-                precoVenda: precoVenda ? parseFloat(precoVenda) : produtoExistente.precoVenda,
-                precoCompra: precoCompra ? parseFloat(precoCompra) : produtoExistente.precoCompra,
-                estoque: estoque ? parseInt(estoque) : produtoExistente.estoque,
-                imagem,
-            },
+            data: { nome, preco: parseFloat(preco), descricao },
         });
 
-        return res.status(200).json({
-            message: "Produto atualizado com sucesso!",
-            data: produtoAtualizado,
-        });
+        return res.status(200).json({ message: "Produto atualizado com sucesso!", data: atualizado });
     } catch (error) {
-        console.error("Erro ao atualizar produto:", error);
-        return res.status(500).json({ error: "Falha ao atualizar produto." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao atualizar produto." });
     }
 };
 
 const remove = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-
-        const produtoExistente = await prisma.produto.findUnique({ where: { id } });
-        if (!produtoExistente) {
-            return res.status(404).json({ error: "Produto não encontrado." });
-        }
-
         await prisma.produto.delete({ where: { id } });
-
-        return res.status(200).json({ message: "Produto removido com sucesso!" });
+        return res.status(200).json({ message: "Produto excluído com sucesso!" });
     } catch (error) {
-        console.error("Erro ao remover produto:", error);
-        return res.status(500).json({ error: "Falha ao remover produto." });
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao excluir produto." });
     }
 };
 
-module.exports = {
-    create,
-    read,
-    update,
-    remove,
-};
+module.exports = { create, read, update, remove };

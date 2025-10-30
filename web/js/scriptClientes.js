@@ -1,51 +1,25 @@
 const API = "https://cash-management-system.fly.dev/clientes";
-const lista = document.querySelector("#clientesCadastrados");
-const form = document.querySelector("#caixaForms");
-
-async function carregarClientes() {
-  try {
-    const resp = await fetch(API);
-    const clientes = await resp.json();
-
-    lista.innerHTML = clientes.length
-      ? clientes.map(c => `
-        <div class="col-md-4 mb-4">
-          <div class="card card-cliente shadow-sm h-100">
-            <div class="card-body">
-              <h5 class="card-title text-primary mb-2">
-                <i class="fas fa-user"></i> ${c.nome || "Sem nome"}
-              </h5>
-              <p class="mb-1"><strong>CPF:</strong> ${c.cpf || "-"}</p>
-              <p class="mb-1"><strong>CNPJ:</strong> ${c.cnpj || "-"}</p>
-              <p class="mb-1"><strong>Telefone:</strong> ${c.telefone || "-"}</p>
-              <p class="mb-1"><strong>Email:</strong> ${c.email || "-"}</p>
-              <p class="mb-2"><strong>Endereço:</strong> ${c.endereco || "-"}</p>
-              <div class="text-right">
-                <button class="btn btn-sm btn-warning" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-sm btn-danger" onclick="excluirCliente(${c.id})"><i class="fas fa-trash"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join("")
-      : `<div class="text-center text-muted w-100">Nenhum cliente cadastrado.</div>`;
-  } catch (err) {
-    console.error("Erro ao carregar clientes:", err);
-    lista.innerHTML = `<div class="alert alert-danger w-100">Erro ao carregar clientes.</div>`;
-  }
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+if (!usuario) {
+  alert("Sessão expirada. Faça login novamente.");
+  window.location.href = "login.html";
 }
 
-form.addEventListener("submit", async (e) => {
+const clientesCadastrados = document.querySelector("#clientesCadastrados");
+const caixaForms = document.querySelector("#caixaForms");
+
+// Criar cliente
+caixaForms.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const data = {
-    nome: form.nome.value.trim(),
-    cpf: form.cpf.value.trim(),
-    cnpj: form.cnpj.value.trim(),
-    endereco: form.endereco.value.trim(),
-    telefone: form.telefone.value.trim(),
-    email: form.email.value.trim(),
-    empresaId: 1, // associar ao login depois
+    nome: caixaForms.nome.value.trim(),
+    cpf: caixaForms.cpf.value.trim(),
+    cnpj: caixaForms.cnpj.value.trim(),
+    endereco: caixaForms.endereco.value.trim(),
+    telefone: caixaForms.telefone.value.trim(),
+    email: caixaForms.email.value.trim(),
+    empresaId: usuario.empresaId,
   };
 
   try {
@@ -55,41 +29,81 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify(data),
     });
 
-    if (resp.ok) {
-      alert("✅ Cliente cadastrado com sucesso!");
-      form.reset();
-      carregarClientes();
-    } else {
-      const erro = await resp.json();
-      alert(`❌ Erro: ${erro.error || "Falha no cadastro"}`);
+    if (!resp.ok) {
+      const err = await resp.json();
+      alert(err.error || "Erro ao cadastrar cliente.");
+      return;
     }
-  } catch (err) {
-    console.error("Erro ao cadastrar:", err);
+
+    alert("✅ Cliente cadastrado com sucesso!");
+    caixaForms.reset();
+    carregarClientes();
+  } catch (error) {
+    console.error(error);
     alert("Erro ao conectar com o servidor.");
   }
 });
 
-async function excluirCliente(id) {
-  if (!confirm("Deseja excluir este cliente?")) return;
-
+// Listar clientes
+async function carregarClientes() {
   try {
-    const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
-    if (resp.status === 204) {
-      alert("🗑️ Cliente removido com sucesso!");
-      carregarClientes();
-    } else {
-      alert("❌ Erro ao excluir cliente.");
-    }
+    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+    const lista = await resp.json();
+
+    clientesCadastrados.innerHTML = "";
+    lista.forEach((c) => {
+      clientesCadastrados.innerHTML += `
+        <tr>
+          <td>${c.nome}</td>
+          <td>${c.cpf || "-"}</td>
+          <td>${c.cnpj || "-"}</td>
+          <td>${c.endereco || "-"}</td>
+          <td>${c.telefone || "-"}</td>
+          <td>${c.email || "-"}</td>
+          <td>
+            <button class="btn btn-warning btn-sm" onclick="editarCliente(${c.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="excluirCliente(${c.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
   } catch (err) {
-    console.error("Erro ao excluir:", err);
+    console.error(err);
   }
 }
 
-function editarCliente(id) {
-  alert(`✏️ Função de edição em desenvolvimento para o cliente ID: ${id}`);
+// Excluir cliente
+async function excluirCliente(id) {
+  if (!confirm("Deseja realmente excluir este cliente?")) return;
+  try {
+    const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
+    if (resp.ok) {
+      alert("🗑️ Cliente excluído com sucesso!");
+      carregarClientes();
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  lista.classList.add("row");
-  carregarClientes();
-});
+// Editar cliente
+async function editarCliente(id) {
+  const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
+  const lista = await resp.json();
+  const cliente = lista.find((c) => c.id === id);
+
+  if (!cliente) return alert("Cliente não encontrado.");
+
+  caixaForms.nome.value = cliente.nome;
+  caixaForms.cpf.value = cliente.cpf || "";
+  caixaForms.cnpj.value = cliente.cnpj || "";
+  caixaForms.endereco.value = cliente.endereco || "";
+  caixaForms.telefone.value = cliente.telefone || "";
+  caixaForms.email.value = cliente.email || "";
+}
+
+document.addEventListener("DOMContentLoaded", carregarClientes);
