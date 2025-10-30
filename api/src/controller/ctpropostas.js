@@ -1,144 +1,139 @@
-const API = "https://cash-management-system.onrender.com/propostas";
-const API_CLIENTES = "https://cash-management-system.onrender.com/clientes";
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-const fmtBRL = n =>
-    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(n || 0));
+const textoValido = (txt) => typeof txt === "string" && txt.trim().length > 0;
 
-const empresaId = JSON.parse(localStorage.getItem("usuarioLogado"))?.empresaId || 1;
-
-const form = document.querySelector("#formProposta");
-const lista = document.querySelector("#propostasCadastrados");
-const selCliente = document.querySelector("#clienteId");
-const totalAberto = document.querySelector("#totalAberto");
-const totalFechado = document.querySelector("#totalFechado");
-const totalGeral = document.querySelector("#totalGeral");
-
-// Init
-document.addEventListener("DOMContentLoaded", () => {
-    carregarClientes();
-    carregarPropostas();
-    form.addEventListener("submit", salvarProposta);
-});
-
-// === CLIENTES ===
-async function carregarClientes() {
+/**
+ * Criar proposta
+ */
+const create = async (req, res) => {
     try {
-        const resp = await fetch(`${API_CLIENTES}?empresaId=${empresaId}`);
-        const clientes = await resp.json();
+        const {
+            numero,
+            descricao,
+            valorTotal,
+            status,
+            data,
+            clienteId,
+            empresaId,
+        } = req.body;
 
-        selCliente.innerHTML = '<option value="">(Opcional) Selecionar cliente</option>';
-        clientes.forEach(c => {
-            const opt = document.createElement("option");
-            opt.value = c.id;
-            opt.textContent = c.nome;
-            selCliente.appendChild(opt);
-        });
-    } catch (e) {
-        console.warn("Erro ao carregar clientes:", e);
-    }
-}
+        const _empresaId = parseInt(empresaId);
+        const _numero = parseInt(numero);
+        const _valorTotal = parseFloat(valorTotal);
+        const _clienteId = clienteId ? parseInt(clienteId) : null;
 
-// === CREATE ===
-async function salvarProposta(e) {
-    e.preventDefault();
-
-    const data = {
-        numero: parseInt(form.numero.value),
-        data: form.data.value || undefined,
-        descricao: form.descricao.value.trim(),
-        valorTotal: parseFloat(form.valorTotal.value),
-        status: form.status.value.trim() || "Aberto",
-        empresaId,
-        clienteId: form.clienteId.value ? parseInt(form.clienteId.value) : null,
-    };
-
-    if (!data.numero || !data.descricao || isNaN(data.valorTotal)) {
-        alert("Preencha Número, Descrição e Valor corretamente.");
-        return;
-    }
-
-    const resp = await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
-
-    const json = await resp.json();
-    if (!resp.ok) return alert(json.error || "Erro ao salvar proposta.");
-    form.reset();
-    carregarPropostas();
-}
-
-// === READ ===
-async function carregarPropostas() {
-    lista.innerHTML = "<p>Carregando...</p>";
-    try {
-        const resp = await fetch(`${API}?empresaId=${empresaId}`);
-        const propostas = await resp.json();
-
-        if (!propostas.length) {
-            lista.innerHTML = '<p class="text-muted">Nenhuma proposta encontrada.</p>';
-            totalAberto.textContent = totalFechado.textContent = totalGeral.textContent = "R$ 0,00";
-            return;
+        // validações obrigatórias
+        if (!_empresaId || !_numero || !_valorTotal || !textoValido(descricao)) {
+            return res
+                .status(400)
+                .json({ error: "Campos obrigatórios ausentes ou inválidos." });
         }
 
-        lista.innerHTML = propostas.map(cardPropostaHTML).join("");
+        const proposta = await prisma.proposta.create({
+            data: {
+                numero: _numero,
+                descricao: descricao.trim(),
+                valorTotal: _valorTotal,
+                status: status?.trim() || "Aberto",
+                data: data ? new Date(data) : undefined,
+                empresaId: _empresaId,
+                clienteId: _clienteId,
+            },
+            include: {
+                cliente: { select: { id: true, nome: true } },
+            },
+        });
 
-        const aberto = propostas.filter(p => p.status.toLowerCase() === "aberto").reduce((a, p) => a + p.valorTotal, 0);
-        const fechado = propostas.filter(p => p.status.toLowerCase() === "fechado").reduce((a, p) => a + p.valorTotal, 0);
-
-        totalAberto.textContent = fmtBRL(aberto);
-        totalFechado.textContent = fmtBRL(fechado);
-        totalGeral.textContent = fmtBRL(aberto + fechado);
-    } catch (e) {
-        console.error("Erro ao carregar propostas:", e);
-        lista.innerHTML = '<p class="text-danger">Erro ao carregar propostas.</p>';
+        return res
+            .status(201)
+            .json({ message: "Proposta criada com sucesso!", data: proposta });
+    } catch (error) {
+        console.error("❌ Erro ao criar proposta:", error);
+        return res
+            .status(500)
+            .json({ error: "Erro interno ao criar proposta.", detalhes: error.message });
     }
-}
+};
 
-// === UPDATE ===
-async function alternarStatus(p) {
-    const novoStatus = p.status.toLowerCase() === "aberto" ? "Fechado" : "Aberto";
-    await fetch(`${API}/${p.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: novoStatus }),
-    });
-    carregarPropostas();
-}
+/**
+ * Listar propostas
+ */
+const read = async (req, res) => {
+    try {
+        const empresaId = parseInt(req.query.empresaId);
+        if (!empresaId)
+            return res.status(400).json({ error: "empresaId é obrigatório." });
 
-// === DELETE ===
-async function excluirProposta(id) {
-    if (!confirm("Excluir esta proposta?")) return;
-    await fetch(`${API}/${id}`, { method: "DELETE" });
-    carregarPropostas();
-}
+        const propostas = await prisma.proposta.findMany({
+            where: { empresaId },
+            include: { cliente: { select: { id: true, nome: true } } },
+            orderBy: { data: "desc" },
+        });
 
-// === TEMPLATE CARD ===
-function cardPropostaHTML(p) {
-    const statusLower = (p.status || "Aberto").toLowerCase();
-    const cor = statusLower === "fechado" ? "card-status-fechado" : "card-status-aberto";
-    const dataBR = p.data ? new Date(p.data).toLocaleDateString("pt-BR") : "—";
-    const cliente = p.cliente?.nome || "—";
+        return res.status(200).json(propostas);
+    } catch (error) {
+        console.error("❌ Erro ao listar propostas:", error);
+        return res
+            .status(500)
+            .json({ error: "Erro interno ao listar propostas.", detalhes: error.message });
+    }
+};
 
-    return `
-    <div class="card card-proposta ${cor} p-3 shadow-sm mb-2">
-      <div class="d-flex justify-content-between align-items-start">
-        <div>
-          <h5 class="mb-1 text-dark">#${p.numero}</h5>
-          <p class="small text-muted mb-1">${dataBR} • ${cliente}</p>
-          <p class="small text-muted mb-1">${p.descricao}</p>
-          <p><span class="badge badge-${statusLower === "fechado" ? "success" : "primary"}">${p.status}</span></p>
-          <h6 class="text-primary font-weight-bold">${fmtBRL(p.valorTotal)}</h6>
-        </div>
-        <div>
-          <button class="btn btn-sm btn-warning mr-1" onclick='alternarStatus(${JSON.stringify(p)})' title="Alternar status">
-            <i class="fas fa-sync"></i>
-          </button>
-          <button class="btn btn-sm btn-danger" onclick="excluirProposta(${p.id})" title="Excluir">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    </div>`;
-}
+/**
+ * Atualizar proposta
+ */
+const update = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (!id) return res.status(400).json({ error: "ID inválido." });
+
+        const { numero, descricao, valorTotal, status, data, clienteId } = req.body;
+
+        const atualiza = {};
+        if (numero) atualiza.numero = parseInt(numero);
+        if (valorTotal) atualiza.valorTotal = parseFloat(valorTotal);
+        if (descricao) atualiza.descricao = descricao.trim();
+        if (status) atualiza.status = status.trim();
+        if (data) atualiza.data = new Date(data);
+        if (clienteId !== undefined)
+            atualiza.clienteId = clienteId ? parseInt(clienteId) : null;
+
+        const proposta = await prisma.proposta.update({
+            where: { id },
+            data: atualiza,
+            include: { cliente: { select: { id: true, nome: true } } },
+        });
+
+        return res
+            .status(200)
+            .json({ message: "Proposta atualizada com sucesso!", data: proposta });
+    } catch (error) {
+        console.error("❌ Erro ao atualizar proposta:", error);
+        return res
+            .status(500)
+            .json({ error: "Erro interno ao atualizar proposta.", detalhes: error.message });
+    }
+};
+
+/**
+ * Excluir proposta
+ */
+const remove = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (!id) return res.status(400).json({ error: "ID inválido." });
+
+        await prisma.proposta.delete({ where: { id } });
+        return res
+            .status(200)
+            .json({ message: "Proposta excluída com sucesso!" });
+    } catch (error) {
+        console.error("❌ Erro ao excluir proposta:", error);
+        return res
+            .status(500)
+            .json({ error: "Erro interno ao excluir proposta.", detalhes: error.message });
+    }
+};
+
+module.exports = { create, read, update, remove };
