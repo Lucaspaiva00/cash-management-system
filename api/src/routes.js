@@ -29,15 +29,6 @@ routes.route("/usuarios/:id")
   .put(usuario.update)
   .delete(usuario.remove);
 
-// Empresas
-routes.route("/empresas")
-  .get(empresa.read)
-  .post(empresa.create);
-routes.route("/empresas/:id")
-  .get(empresa.readById)
-  .put(empresa.update)
-  .delete(empresa.remove);
-
 // Caixa
 routes.route("/caixa")
   .get(caixa.read)
