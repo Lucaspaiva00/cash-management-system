@@ -126,19 +126,16 @@
                             <h5 class="mb-3"><i class="fas fa-plus-circle text-success"></i> Nova Proposta</h5>
 
                             <form id="formProposta" class="row" autocomplete="off">
-                                <!-- numero (INT) -->
                                 <div class="col-md-2 mb-2">
                                     <label>Número</label>
                                     <input type="number" name="numero" class="form-control" required>
                                 </div>
 
-                                <!-- data (opcional, default no backend) -->
                                 <div class="col-md-2 mb-2">
                                     <label>Data</label>
                                     <input type="date" name="data" class="form-control">
                                 </div>
 
-                                <!-- clienteId (opcional) -->
                                 <div class="col-md-3 mb-2">
                                     <label>Cliente</label>
                                     <select name="clienteId" id="clienteId" class="form-control">
@@ -146,20 +143,17 @@
                                     </select>
                                 </div>
 
-                                <!-- descricao (STRING) -->
                                 <div class="col-md-5 mb-2">
                                     <label>Descrição</label>
                                     <input type="text" name="descricao" class="form-control" placeholder="Descrição"
                                         required>
                                 </div>
 
-                                <!-- valorTotal (FLOAT) -->
                                 <div class="col-md-3 mb-2">
                                     <label>Valor (R$)</label>
                                     <input type="number" step="0.01" name="valorTotal" class="form-control" required>
                                 </div>
 
-                                <!-- status (STRING) -->
                                 <div class="col-md-3 mb-2">
                                     <label>Status</label>
                                     <select name="status" class="form-control">
