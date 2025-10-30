@@ -8,42 +8,36 @@ const create = async (req, res) => {
     try {
         const {
             nome,
-            precovenda,
-            precocompra,
+            precoVenda,
+            precoCompra,
             estoque,
             marca,
-            quantidade,
             categoria,
             empresaId,
         } = req.body;
 
-        // --- Validação geral ---
-        if (!nome || precovenda === undefined || precovenda === null) {
+        if (!nome || precoVenda === undefined || precoVenda === null) {
             return res
                 .status(400)
                 .json({ error: "Nome e preço de venda são obrigatórios." });
         }
 
-        // --- Conversões seguras ---
-        const precoVendaNum = parseFloat(precovenda);
-        const precoCompraNum = parseFloat(precocompra) || 0;
+        const precoVendaNum = parseFloat(precoVenda);
+        const precoCompraNum = parseFloat(precoCompra) || 0;
         const estoqueNum = parseInt(estoque) || 0;
-        const qtdNum = parseInt(quantidade) || 0;
-        const empresaIdNum = parseInt(empresaId) || 1; // fallback seguro
+        const empresaIdNum = parseInt(empresaId) || 1;
 
         if (isNaN(precoVendaNum)) {
             return res.status(400).json({ error: "Preço de venda inválido." });
         }
 
-        // --- Criação do produto ---
         const novo = await prisma.produto.create({
             data: {
                 nome,
-                precovenda: precoVendaNum,
-                precocompra: precoCompraNum,
+                precoVenda: precoVendaNum,
+                precoCompra: precoCompraNum,
                 estoque: estoqueNum,
                 marca: marca || "",
-                quantidade: qtdNum,
                 categoria: categoria || "",
                 empresaId: empresaIdNum,
             },
@@ -86,11 +80,10 @@ const update = async (req, res) => {
         const id = parseInt(req.params.id);
         const {
             nome,
-            precovenda,
-            precocompra,
+            precoVenda,
+            precoCompra,
             estoque,
             marca,
-            quantidade,
             categoria,
         } = req.body;
 
@@ -98,11 +91,10 @@ const update = async (req, res) => {
             where: { id },
             data: {
                 nome,
-                precovenda: parseFloat(precovenda) || 0,
-                precocompra: parseFloat(precocompra) || 0,
+                precoVenda: parseFloat(precoVenda) || 0,
+                precoCompra: parseFloat(precoCompra) || 0,
                 estoque: parseInt(estoque) || 0,
                 marca: marca || "",
-                quantidade: parseInt(quantidade) || 0,
                 categoria: categoria || "",
             },
         });

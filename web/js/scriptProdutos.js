@@ -26,11 +26,10 @@ async function salvarProduto(e) {
 
   const data = {
     nome: form.nome.value.trim(),
-    precovenda: form.precovenda.value,
-    precocompra: form.precocompra.value,
+    precoVenda: form.precovenda.value, // antes: precovenda
+    precoCompra: form.precocompra.value, // antes: precocompra
     estoque: form.estoque.value,
     marca: form.marca.value.trim(),
-    quantidade: form.quantidade.value,
     categoria: form.categoria.value.trim(),
     empresaId: usuario.empresaId || 1,
   };
@@ -63,8 +62,8 @@ async function carregarProdutos() {
 
   lista.innerHTML = produtos.map(cardProdutoHTML).join("");
 
-  const somaVenda = produtos.reduce((acc, p) => acc + (p.precovenda * p.estoque), 0);
-  const somaCusto = produtos.reduce((acc, p) => acc + (p.precocompra * p.estoque), 0);
+  const somaVenda = produtos.reduce((acc, p) => acc + (p.precoVenda * p.estoque), 0);
+  const somaCusto = produtos.reduce((acc, p) => acc + (p.precoCompra * p.estoque), 0);
   elVenda.textContent = fmtBRL(somaVenda);
   elCusto.textContent = fmtBRL(somaCusto);
   elLucro.textContent = fmtBRL(somaVenda - somaCusto);
