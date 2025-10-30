@@ -17,13 +17,18 @@ async function salvar(e) {
   e.preventDefault();
   const data = {
     descricao: form.descricao.value.trim(),
-    valor: parseFloat(form.valor.value),
+    valorTotal: parseFloat(form.valor.value), // ✅ nome compatível com schema
     status: form.status.value.trim() || "Aberto",
-    numero: form.numero.value,
+    numero: parseInt(form.numero.value),
     empresaId,
   };
 
-  const resp = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+  const resp = await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
   const json = await resp.json();
   if (!resp.ok) return alert(json.error);
   form.reset();
