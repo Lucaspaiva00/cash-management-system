@@ -1,5 +1,5 @@
 // web/js/scriptusuario.js
-const API = "https://cash-management-system.fly.dev";
+const API = "https://cash-management-system.onrender.com";
 
 // Cadastro combinado (Empresa + Admin)
 document.getElementById("formUsuario").addEventListener("submit", async (e) => {
@@ -18,7 +18,12 @@ document.getElementById("formUsuario").addEventListener("submit", async (e) => {
     },
   };
 
-  if (!payload.nome || !payload.email || !payload.senha || !payload.empresa.nome) {
+  if (
+    !payload.nome ||
+    !payload.email ||
+    !payload.senha ||
+    !payload.empresa.nome
+  ) {
     alert("⚠️ Preencha pelo menos: Seu nome, e-mail, senha e nome da empresa.");
     return;
   }

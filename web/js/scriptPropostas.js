@@ -1,4 +1,4 @@
-const API = "https://cash-management-system.fly.dev/propostas";
+const API = "https://cash-management-system.onrender.com/propostas";
 const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 if (!usuario) {
   alert("Sessão expirada. Faça login novamente.");
@@ -39,10 +39,15 @@ formProposta.addEventListener("submit", async (e) => {
       return;
     }
 
-    alert(editandoId ? "✅ Proposta atualizada com sucesso!" : "✅ Proposta criada com sucesso!");
+    alert(
+      editandoId
+        ? "✅ Proposta atualizada com sucesso!"
+        : "✅ Proposta criada com sucesso!"
+    );
     formProposta.reset();
     editandoId = null;
-    document.querySelector("#btnSalvarProposta").innerHTML = '<i class="fas fa-save"></i> Salvar';
+    document.querySelector("#btnSalvarProposta").innerHTML =
+      '<i class="fas fa-save"></i> Salvar';
     carregarPropostas();
   } catch (err) {
     console.error(err);
@@ -63,17 +68,26 @@ async function carregarPropostas() {
           <td>${p.id}</td>
           <td>${p.cliente?.nome || "Sem cliente"}</td>
           <td>${p.descricao}</td>
-          <td>${p.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+          <td>${p.valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })}</td>
           <td>
-            <span class="badge ${p.status === "APROVADA" ? "badge-success" : "badge-warning"}">
+            <span class="badge ${
+              p.status === "APROVADA" ? "badge-success" : "badge-warning"
+            }">
               ${p.status}
             </span>
           </td>
           <td>
-            <button class="btn btn-warning btn-sm" onclick="editarProposta(${p.id})">
+            <button class="btn btn-warning btn-sm" onclick="editarProposta(${
+              p.id
+            })">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-danger btn-sm" onclick="excluirProposta(${p.id})">
+            <button class="btn btn-danger btn-sm" onclick="excluirProposta(${
+              p.id
+            })">
               <i class="fas fa-trash"></i>
             </button>
           </td>
@@ -117,7 +131,8 @@ async function editarProposta(id) {
     formProposta.status.value = proposta.status;
 
     editandoId = id;
-    document.querySelector("#btnSalvarProposta").innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar';
+    document.querySelector("#btnSalvarProposta").innerHTML =
+      '<i class="fas fa-sync-alt"></i> Atualizar';
     window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (err) {
     console.error(err);

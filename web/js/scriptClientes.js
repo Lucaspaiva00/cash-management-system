@@ -1,4 +1,4 @@
-const API = "https://cash-management-system.fly.dev/clientes";
+const API = "https://cash-management-system.onrender.com/clientes";
 const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 if (!usuario) {
   alert("Sessão expirada. Faça login novamente.");
@@ -61,10 +61,14 @@ async function carregarClientes() {
           <td>${c.telefone || "-"}</td>
           <td>${c.email || "-"}</td>
           <td>
-            <button class="btn btn-warning btn-sm" onclick="editarCliente(${c.id})">
+            <button class="btn btn-warning btn-sm" onclick="editarCliente(${
+              c.id
+            })">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-danger btn-sm" onclick="excluirCliente(${c.id})">
+            <button class="btn btn-danger btn-sm" onclick="excluirCliente(${
+              c.id
+            })">
               <i class="fas fa-trash"></i>
             </button>
           </td>
