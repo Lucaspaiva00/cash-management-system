@@ -83,14 +83,14 @@ async function salvarProposta(e) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-
+  console.log("🛰️ Enviando proposta:", data);
   const json = await resp.json();
   if (!resp.ok) {
     console.error("Erro ao salvar proposta:", json);
     alert(json.error || "Erro ao salvar proposta.");
     return;
   }
-
+  console.log("🛰️ Enviando proposta:", data);
   form.reset();
   carregarPropostas();
 }
