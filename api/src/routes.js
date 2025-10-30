@@ -40,8 +40,4 @@ routes.route("/produtos/:id").put(produtos.update).delete(produtos.remove);
 routes.route("/propostas").get(proposta.read).post(proposta.create);
 routes.route("/propostas/:id").put(proposta.update).delete(proposta.remove);
 
-routes.use((req, res) => {
-  res.status(404).json({ error: "❌ Rota não encontrada." });
-});
-
 module.exports = routes;
