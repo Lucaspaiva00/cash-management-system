@@ -26,8 +26,8 @@ async function salvarProduto(e) {
 
   const data = {
     nome: form.nome.value.trim(),
-    precoVenda: form.precovenda.value, // antes: precovenda
-    precoCompra: form.precocompra.value, // antes: precocompra
+    precoVenda: form.precoVenda.value, // antes: precovenda
+    precoCompra: form.precoCompra.value, // antes: precocompra
     estoque: form.estoque.value,
     marca: form.marca.value.trim(),
     categoria: form.categoria.value.trim(),
