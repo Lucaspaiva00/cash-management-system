@@ -6,60 +6,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Sistema Paiva Tech</title>
 
-    <!-- Bootstrap / FontAwesome / Tema SB-Admin -->
-    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <!-- Bootstrap e FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0d1117, #1f2833);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+        }
+
+        .login-card {
+            background: #fff;
+            color: #333;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .login-card p {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ccc;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 0.15rem rgba(255, 0, 0, 0.2);
+        }
+
+        .btn-dark {
+            background: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dark:hover {
+            background: #e50914;
+            transform: translateY(-1px);
+        }
+
+        .text-center a {
+            color: #e50914;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .text-center a:hover {
+            color: #b20710;
+        }
+
+        .brand-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .brand-logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #e50914;
+            object-fit: cover;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-dark">
+<body>
 
-    <div class="container">
+    <div class="login-card">
 
-        <!-- Centralização vertical -->
-        <div class="row justify-content-center align-items-center vh-100">
-            <div class="col-xl-5 col-lg-6 col-md-8">
 
-                <div class="card shadow-lg border-0">
-                    <div class="card-body p-5">
-
-                        <div class="text-center mb-4">
-                            <h1 class="h4 text-gray-900 mb-2">Acesso ao Sistema</h1>
-                            <p class="text-muted mb-4">Entre com seu e-mail e senha</p>
-                        </div>
-
-                        <form id="formLogin">
-                            <div class="form-group">
-                                <input type="email" id="email" class="form-control" placeholder="E-mail" required>
-                            </div>
-                            <div class="form-group">
-                                <input type="password" id="senha" class="form-control" placeholder="Senha" required>
-                            </div>
-                            <button type="submit" class="btn btn-dark btn-block mt-3">
-                                <i class="fas fa-sign-in-alt"></i> Entrar
-                            </button>
-                        </form>
-
-                        <div class="text-center mt-4">
-                            <a class="small text-primary" href="usuario.html">
-                                <i class="fas fa-user-plus"></i> Criar usuário (admin da empresa)
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
+        <div class="text-center mb-4">
+            <h1>Acesso ao Sistema</h1>
+            <p>Entre com seu e-mail e senha</p>
         </div>
 
+        <form id="formLogin">
+            <div class="mb-3">
+                <input type="email" id="email" class="form-control" placeholder="E-mail" required />
+            </div>
+            <div class="mb-3">
+                <input type="password" id="senha" class="form-control" placeholder="Senha" required />
+            </div>
+            <button type="submit" class="btn btn-dark w-100">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <a href="usuario.html"><i class="fas fa-user-plus"></i> Criar usuário (Admin da Empresa)</a>
+        </div>
     </div>
 
     <!-- Scripts -->
-    <script src="vendor2/jquery/jquery.min.js"></script>
-    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/scriptlogin.js"></script>
-
 </body>
 
 </html>

@@ -124,31 +124,35 @@ async function excluirOperacao(id) {
 // =======================
 // 🔹 EDITAR
 // =======================
-async function editarOperacao(id) {
+const update = async (req, res) => {
     try {
-        const resp = await fetch(`${API}`);
-        const dados = await resp.json();
-        const operacao = dados.find(op => op.id === id);
+        const id = parseInt(req.params.id);
+        const { tipoOperacao, meioPagamento, descricao, valor, dataOperacao, empresaId } = req.body;
 
-        if (!operacao) {
-            alert("❌ Operação não encontrada!");
-            return;
-        }
+        const existe = await prisma.caixa.findUnique({ where: { id } });
+        if (!existe) return res.status(404).json({ error: "Operação não encontrada." });
 
-        // Preenche o formulário
-        form.valor.value = operacao.valor;
-        form.meioPagamento.value = operacao.meioPagamento;
-        form.descricao.value = operacao.descricao || "";
-        form.dataOperacao.value = operacao.dataOperacao ? operacao.dataOperacao.split("T")[0] : "";
+        const atualizada = await prisma.caixa.update({
+            where: { id },
+            data: {
+                tipoOperacao,
+                meioPagamento,
+                descricao,
+                valor: parseFloat(valor),
+                dataOperacao: dataOperacao ? new Date(dataOperacao) : existe.dataOperacao,
+                empresaId: empresaId ? parseInt(empresaId) : existe.empresaId,
+            },
+        });
 
-        // Muda o modo para edição
-        editandoId = id;
-        document.querySelector('button[type="submit"]').innerHTML = `<i class="fas fa-sync-alt"></i> Atualizar`;
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        return res.status(200).json({
+            message: "Operação atualizada com sucesso.",
+            data: atualizada,
+        });
     } catch (error) {
-        console.error("Erro ao carregar operação para edição:", error);
+        console.error("Erro ao atualizar operação:", error);
+        return res.status(500).json({ error: "Erro ao atualizar operação." });
     }
-}
+};
 
 // =======================
 document.addEventListener("DOMContentLoaded", carregarOperacoes);
