@@ -5,21 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Produtos - Paiva Tech</title>
+
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
-        /* Corrige form */
-        form#caixaForms .form-control {
-            font-size: 0.9rem;
-        }
-
-        form#caixaForms .col-md-2,
-        form#caixaForms .col-md-3,
-        form#caixaForms .col-md-4 {
-            padding-right: 0.4rem;
-            padding-left: 0.4rem;
+        body {
+            background-color: #f8f9fc;
         }
 
         /* Container dos cards */
@@ -30,7 +23,7 @@
             justify-content: flex-start;
         }
 
-        /* Card do produto */
+        /* Card */
         .card-produto {
             background: #fff;
             border-radius: 10px;
@@ -45,30 +38,9 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
         }
 
-        /* Corrige badges */
         .badge {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             padding: 0.4em 0.6em;
-        }
-
-        /* Corrige espaçamento geral */
-        body {
-            background-color: #f8f9fc;
-        }
-
-        .card {
-            border: none;
-        }
-
-        /* Título */
-        h5 {
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            #produtosCadastrados {
-                justify-content: center;
-            }
         }
     </style>
 </head>
@@ -76,15 +48,12 @@
 <body>
     <div id="wrapper">
         <!-- Sidebar -->
-            <!-- ✅ SIDEBAR -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
-            <!-- Marca -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
                 <div class="sidebar-brand-text mx-3">Paiva Tech</div>
             </a>
 
-            <!-- Dashboard -->
             <hr class="sidebar-divider my-0" />
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">
@@ -93,61 +62,34 @@
                 </a>
             </li>
 
-            <!-- Seção Páginas -->
             <hr class="sidebar-divider" />
             <div class="sidebar-heading">Páginas</div>
 
-            <!-- Caixa (Crédito e Débito) -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCaixa"
-                    aria-expanded="true" aria-controls="collapseCaixa">
-                    <i class="fa fa-university" aria-hidden="true"></i>
-                    <span>Caixa</span>
+                <a class="nav-link" href="movimentacoes.html">
+                    <i class="fa fa-university"></i> <span>Caixa</span>
                 </a>
-                <div id="collapseCaixa" class="collapse" aria-labelledby="headingCaixa" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Movimentações</h6>
-                        <a class="collapse-item" href="movimentacoes.html">Cadastre uma Movimentação</a>
-                    </div>
-                </div>
             </li>
-            <!-- Clientes -->
             <li class="nav-item">
                 <a class="nav-link" href="criarCliente.html">
-                    <i class="fas fa-users"></i>
-                    <span>Clientes</span>
+                    <i class="fas fa-users"></i> <span>Clientes</span>
                 </a>
             </li>
-
-            <!-- Produtos -->
             <li class="nav-item">
                 <a class="nav-link" href="produtos.html">
-                    <i class="fas fa-boxes"></i>
-                    <span>Produtos</span>
+                    <i class="fas fa-boxes"></i> <span>Produtos</span>
                 </a>
             </li>
-
-            <!-- Propostas -->
             <li class="nav-item">
                 <a class="nav-link" href="propostas.html">
-                    <i class="fas fa-file-invoice"></i>
-                    <span>Propostas</span>
+                    <i class="fas fa-file-invoice"></i> <span>Propostas</span>
                 </a>
             </li>
-
-            <!-- Sair -->
             <li class="nav-item">
                 <a class="nav-link" href="login.html">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sair</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
                 </a>
             </li>
-
-            <!-- Toggle da Sidebar -->
-            <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
         </ul>
 
         <!-- Conteúdo principal -->
@@ -157,73 +99,31 @@
                     <h5 class="m-0 font-weight-bold text-dark">Gerenciamento de Produtos</h5>
                 </nav>
 
-                <!-- Cards Resumo -->
-                <div class="container-fluid mb-4">
-                    <div class="row text-center">
-                        <div class="col-md-4 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Valor de
-                                        Venda</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="estoquevalorbruto">R$ 0,00
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Custo Total
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="estoquevalorcusto">R$ 0,00
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Lucro Líquido
-                                    </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="estoquevalorliquido">R$ 0,00
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Formulário -->
-                <div class="container-fluid mb-4">
-                    <div class="card shadow-sm">
+                <div class="container-fluid">
+                    <!-- Formulário -->
+                    <div class="card shadow-sm mb-4">
                         <div class="card-body">
-                            <h5 class="mb-3"><i class="fas fa-plus-circle"></i> Adicionar Produto</h5>
-                            <form id="caixaForms" class="form-row">
+                            <h5><i class="fas fa-plus-circle"></i> Adicionar Produto</h5>
+                            <form id="caixaForms" class="form-row mt-3">
                                 <div class="col-md-3 mb-2">
-                                    <label for="">Nome do Produto</label>
                                     <input type="text" name="nome" class="form-control" placeholder="Nome do Produto"
                                         required>
                                 </div>
                                 <div class="col-md-2 mb-2">
-                                    <label for="">Preço de Venda</label>
                                     <input type="number" step="0.01" name="precoVenda" class="form-control"
                                         placeholder="Preço Venda" required>
                                 </div>
                                 <div class="col-md-2 mb-2">
-                                    <label for="">Preço de Compra</label>
                                     <input type="number" step="0.01" name="precoCompra" class="form-control"
                                         placeholder="Preço Compra">
                                 </div>
                                 <div class="col-md-2 mb-2">
-                                    <label for="">Estoque</label>
                                     <input type="number" name="estoque" class="form-control" placeholder="Estoque">
                                 </div>
                                 <div class="col-md-2 mb-2">
-                                    <label for="">Marca</label>
                                     <input type="text" name="marca" class="form-control" placeholder="Marca">
                                 </div>
                                 <div class="col-md-2 mb-2">
-                                    <label for="">Categoria</label>
                                     <input type="text" name="categoria" class="form-control" placeholder="Categoria">
                                 </div>
                                 <div class="col-md-12 text-right mt-3">
@@ -233,12 +133,59 @@
                             </form>
                         </div>
                     </div>
-                </div>
 
-                <!-- Listagem -->
-                <div class="container-fluid mb-5">
+                    <!-- Listagem -->
                     <h5 class="mb-3"><i class="fas fa-box"></i> Produtos Cadastrados</h5>
-                    <div id="produtosCadastrados"></div>
+                    <div id="produtosCadastrados" class="mb-5"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR -->
+    <div class="modal fade" id="modalEditarProduto" tabindex="-1" role="dialog" aria-labelledby="editarProdutoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title"><i class="fas fa-edit"></i> Editar Produto</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarProduto" class="form-row">
+                        <input type="hidden" id="edit-id">
+                        <div class="col-md-6 mb-2">
+                            <label>Nome</label>
+                            <input type="text" class="form-control" id="edit-nome" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label>Categoria</label>
+                            <input type="text" class="form-control" id="edit-categoria">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label>Preço Venda</label>
+                            <input type="number" step="0.01" class="form-control" id="edit-precoVenda">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label>Preço Compra</label>
+                            <input type="number" step="0.01" class="form-control" id="edit-precoCompra">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label>Estoque</label>
+                            <input type="number" class="form-control" id="edit-estoque">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label>Marca</label>
+                            <input type="text" class="form-control" id="edit-marca">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" id="btnSalvarEdicao"><i class="fas fa-save"></i>
+                        Salvar Alterações</button>
                 </div>
             </div>
         </div>
