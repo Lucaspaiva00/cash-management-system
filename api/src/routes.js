@@ -17,7 +17,6 @@ routes.get("/", (req, res) => {
   });
 });
 
-// 🔐 novo signup (Empresa + Admin)
 routes.post("/auth/signup", usuario.signup);
 
 // Usuários

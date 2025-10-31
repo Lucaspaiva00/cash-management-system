@@ -113,20 +113,19 @@ document.getElementById("finalizar").addEventListener("click", async () => {
             body: JSON.stringify(body),
         });
 
+        if (!resp.ok) {
+            const text = await resp.text();
+            throw new Error(`Erro HTTP ${resp.status}: ${text.slice(0, 100)}`);
+        }
+
         const data = await resp.json();
-
-        if (!resp.ok) throw new Error(data.error || "Erro ao registrar venda.");
-
         alert("✅ Venda registrada com sucesso!");
         gerarCupomPDF(data.data || body);
-        produtosVenda = [];
-        atualizarLista();
-        document.getElementById("valorRecebido").value = 0;
-        document.getElementById("troco").value = "R$ 0,00";
     } catch (err) {
         console.error(err);
-        alert("Erro ao finalizar venda: " + err.message);
+        alert("Erro ao finalizar venda:\n" + err.message);
     }
+
 });
 
 function gerarCupomPDF(venda) {

@@ -1,9 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-/**
- * 📋 Listar Vendas
- */
 const read = async (req, res) => {
     try {
         const empresaId = parseInt(req.query.empresaId);
@@ -25,10 +22,6 @@ const read = async (req, res) => {
     }
 };
 
-/**
- * 💰 Criar Venda
- * Cria a venda, baixa estoque e gera entrada no caixa automaticamente.
- */
 const create = async (req, res) => {
     try {
         const { empresaId, clienteId, meioPagamento, itens } = req.body;
@@ -105,10 +98,6 @@ const create = async (req, res) => {
     }
 };
 
-/**
- * 🗑️ Remover Venda
- * (opcional, caso queira permitir cancelamento)
- */
 const remove = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
