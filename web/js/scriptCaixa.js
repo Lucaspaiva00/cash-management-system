@@ -1,7 +1,3 @@
-// js/scriptCaixa.js
-// ===============================
-// 🔗 CONFIG
-// ===============================
 const API = "https://cash-management-system.onrender.com/caixa";
 const empresaId =
   JSON.parse(localStorage.getItem("usuarioLogado"))?.empresaId || 1;
