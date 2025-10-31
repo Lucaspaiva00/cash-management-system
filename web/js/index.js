@@ -129,65 +129,6 @@ function atualizarValor(id, valor) {
   });
 }
 
-// --- Gráfico de Barras ---
-function renderizarGraficoBarras(entrada, saida, lucro) {
-  const ctx = document.getElementById("graficoBarras").getContext("2d");
-  if (window.graficoBarrasInstance) window.graficoBarrasInstance.destroy();
-  window.graficoBarrasInstance = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Entradas", "Saídas", "Lucro"],
-      datasets: [
-        {
-          data: [entrada, saida, lucro],
-          backgroundColor: ["#007bff", "#dc3545", "#28a745"],
-        },
-      ],
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } },
-    },
-  });
-}
-
-// --- Gráfico de Linha ---
-function renderizarGraficoLinha(evolucao) {
-  const ctx = document.getElementById("graficoLinha").getContext("2d");
-  if (window.graficoLinhaInstance) window.graficoLinhaInstance.destroy();
-
-  const dias = Object.keys(evolucao);
-  const entradas = dias.map((d) => evolucao[d].entrada);
-  const saidas = dias.map((d) => evolucao[d].saida);
-
-  window.graficoLinhaInstance = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: dias,
-      datasets: [
-        {
-          label: "Entradas",
-          data: entradas,
-          borderColor: "#007bff",
-          fill: false,
-          tension: 0.3,
-        },
-        {
-          label: "Saídas",
-          data: saidas,
-          borderColor: "#dc3545",
-          fill: false,
-          tension: 0.3,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: "bottom" } },
-      scales: { y: { beginAtZero: true } },
-    },
-  });
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   criarCards();
