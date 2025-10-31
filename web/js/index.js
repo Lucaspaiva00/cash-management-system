@@ -129,34 +129,45 @@ function atualizarValor(id, valor) {
   });
 }
 
-// --- Gráfico de Barras ---
 function renderizarGraficoBarras(entrada, saida, lucro) {
   const ctx = document.getElementById("graficoBarras").getContext("2d");
   if (window.graficoBarrasInstance) window.graficoBarrasInstance.destroy();
+
   window.graficoBarrasInstance = new Chart(ctx, {
     type: "bar",
     data: {
-      labels: ["Entradas", "Saídas", "Lucro"],
-      datasets: [
-        {
-          data: [entrada, saida, lucro],
-          backgroundColor: ["#007bff", "#dc3545", "#28a745"],
-        },
-      ],
+      labels: ["Entradas", "Saídas", "Lucro Líquido"],
+      datasets: [{
+        label: "Valores (R$)",
+        data: [entrada, saida, lucro],
+        backgroundColor: ["#007bff", "#dc3545", "#28a745"],
+        borderRadius: 6,
+      }],
     },
     options: {
       plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => `R$ ${value.toLocaleString("pt-BR")}`,
+          },
+        },
+      },
     },
   });
 }
 
-// --- Gráfico de Linha ---
 function renderizarGraficoLinha(evolucao) {
   const ctx = document.getElementById("graficoLinha").getContext("2d");
   if (window.graficoLinhaInstance) window.graficoLinhaInstance.destroy();
 
-  const dias = Object.keys(evolucao);
+  const dias = Object.keys(evolucao).sort((a, b) => {
+    const [dA, mA, yA] = a.split("/").map(Number);
+    const [dB, mB, yB] = b.split("/").map(Number);
+    return new Date(yA, mA - 1, dA) - new Date(yB, mB - 1, dB);
+  });
+
   const entradas = dias.map((d) => evolucao[d].entrada);
   const saidas = dias.map((d) => evolucao[d].saida);
 
@@ -169,14 +180,14 @@ function renderizarGraficoLinha(evolucao) {
           label: "Entradas",
           data: entradas,
           borderColor: "#007bff",
-          fill: false,
+          borderWidth: 2,
           tension: 0.3,
         },
         {
           label: "Saídas",
           data: saidas,
           borderColor: "#dc3545",
-          fill: false,
+          borderWidth: 2,
           tension: 0.3,
         },
       ],
@@ -184,10 +195,18 @@ function renderizarGraficoLinha(evolucao) {
     options: {
       responsive: true,
       plugins: { legend: { position: "bottom" } },
-      scales: { y: { beginAtZero: true } },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => `R$ ${value.toLocaleString("pt-BR")}`,
+          },
+        },
+      },
     },
   });
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   criarCards();
