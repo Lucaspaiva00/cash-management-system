@@ -1,125 +1,176 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+// ================== CONFIG ==================
+const API = "https://cash-management-system.onrender.com/produtos";
 
-/**
- * Criar produto
- */
-const create = async (req, res) => {
+// Formatação de moeda BRL
+const fmtBRL = (n) =>
+    new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    }).format(Number(n || 0));
+
+// Usuário logado
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || { empresaId: 1 };
+
+// Elementos da página
+const form = document.querySelector("#caixaForms");
+const lista = document.querySelector("#produtosCadastrados");
+const elVenda = document.querySelector("#estoquevalorbruto");
+const elCusto = document.querySelector("#estoquevalorcusto");
+const elLucro = document.querySelector("#estoquevalorliquido");
+
+// Controle de edição
+let produtoEditando = null;
+
+// ================== EVENTOS ==================
+document.addEventListener("DOMContentLoaded", () => {
+    carregarProdutos();
+    form.addEventListener("submit", salvarProduto);
+});
+
+// ================== SALVAR / ATUALIZAR ==================
+async function salvarProduto(e) {
+    e.preventDefault();
+
+    const data = {
+        nome: form.nome.value.trim(),
+        precoVenda: parseFloat(form.precoVenda.value) || 0,
+        precoCompra: parseFloat(form.precoCompra.value) || 0,
+        estoque: parseInt(form.estoque.value) || 0,
+        marca: form.marca.value.trim(),
+        categoria: form.categoria.value.trim(),
+        empresaId: usuario.empresaId || 1,
+    };
+
     try {
-        const {
-            nome,
-            precoVenda,
-            precoCompra,
-            estoque,
-            marca,
-            categoria,
-            empresaId,
-        } = req.body;
-
-        if (!nome || precoVenda === undefined || precoVenda === null) {
-            return res
-                .status(400)
-                .json({ error: "Nome e preço de venda são obrigatórios." });
+        let resp;
+        if (produtoEditando) {
+            // Atualizar produto existente
+            resp = await fetch(`${API}/${produtoEditando.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+        } else {
+            // Criar novo produto
+            resp = await fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
         }
 
-        const precoVendaNum = parseFloat(precoVenda);
-        const precoCompraNum = parseFloat(precoCompra) || 0;
-        const estoqueNum = parseInt(estoque) || 0;
-        const empresaIdNum = parseInt(empresaId) || 1;
-
-        if (isNaN(precoVendaNum)) {
-            return res.status(400).json({ error: "Preço de venda inválido." });
+        const json = await resp.json();
+        if (!resp.ok) {
+            alert(json.error || "Erro ao salvar produto.");
+            return;
         }
 
-        const novo = await prisma.produto.create({
-            data: {
-                nome,
-                precoVenda: precoVendaNum,
-                precoCompra: precoCompraNum,
-                estoque: estoqueNum,
-                marca: marca || "",
-                categoria: categoria || "",
-                empresaId: empresaIdNum,
-            },
-        });
+        alert(produtoEditando ? "✅ Produto atualizado com sucesso!" : "✅ Produto cadastrado com sucesso!");
+        form.reset();
+        produtoEditando = null;
 
-        return res
-            .status(201)
-            .json({ message: "Produto cadastrado com sucesso!", data: novo });
-    } catch (error) {
-        console.error("❌ Erro ao cadastrar produto:", error);
-        return res.status(500).json({
-            error: "Erro interno ao cadastrar produto.",
-            detalhes: error.message,
-        });
+        // Restaura botão
+        const btn = form.querySelector("button[type='submit']");
+        btn.innerHTML = '<i class="fas fa-save"></i> Salvar Produto';
+        btn.classList.remove("btn-warning");
+        btn.classList.add("btn-success");
+
+        carregarProdutos();
+    } catch (err) {
+        console.error("Erro ao salvar produto:", err);
+        alert("❌ Falha ao salvar produto.");
     }
-};
+}
 
-/**
- * Listar produtos
- */
-const read = async (req, res) => {
+// ================== CARREGAR ==================
+async function carregarProdutos() {
+    lista.innerHTML = "<p>Carregando...</p>";
+
     try {
-        const empresaId = parseInt(req.query.empresaId) || 1;
-        const lista = await prisma.produto.findMany({
-            where: { empresaId },
-            orderBy: { id: "desc" },
-        });
-        return res.status(200).json(lista);
-    } catch (error) {
-        console.error("❌ Erro ao listar produtos:", error);
-        return res.status(500).json({ error: "Erro ao listar produtos." });
-    }
-};
+        const resp = await fetch(`${API}?empresaId=${usuario.empresaId || 1}`);
+        const produtos = await resp.json();
 
-/**
- * Atualizar produto
- */
-const update = async (req, res) => {
+        if (!Array.isArray(produtos) || produtos.length === 0) {
+            lista.innerHTML = '<p class="text-muted">Nenhum produto cadastrado.</p>';
+            elVenda.textContent = elCusto.textContent = elLucro.textContent = "R$ 0,00";
+            return;
+        }
+
+        lista.innerHTML = produtos.map(cardProdutoHTML).join("");
+
+        const somaVenda = produtos.reduce((acc, p) => acc + (p.precoVenda * p.estoque), 0);
+        const somaCusto = produtos.reduce((acc, p) => acc + (p.precoCompra * p.estoque), 0);
+        elVenda.textContent = fmtBRL(somaVenda);
+        elCusto.textContent = fmtBRL(somaCusto);
+        elLucro.textContent = fmtBRL(somaVenda - somaCusto);
+    } catch (err) {
+        console.error("Erro ao carregar produtos:", err);
+        lista.innerHTML = "<p class='text-danger'>Erro ao carregar produtos.</p>";
+    }
+}
+
+// ================== EDITAR ==================
+function editarProduto(p) {
+    produtoEditando = p;
+
+    // Preenche campos
+    form.nome.value = p.nome || "";
+    form.precoVenda.value = p.precoVenda || "";
+    form.precoCompra.value = p.precoCompra || "";
+    form.estoque.value = p.estoque || "";
+    form.marca.value = p.marca || "";
+    form.categoria.value = p.categoria || "";
+
+    // Muda botão
+    const btn = form.querySelector("button[type='submit']");
+    btn.innerHTML = '<i class="fas fa-save"></i> Atualizar Produto';
+    btn.classList.remove("btn-success");
+    btn.classList.add("btn-warning");
+}
+
+// ================== EXCLUIR ==================
+async function excluirProduto(id) {
+    if (!confirm("⚠️ Deseja realmente excluir este produto?")) return;
+
     try {
-        const id = parseInt(req.params.id);
-        const {
-            nome,
-            precoVenda,
-            precoCompra,
-            estoque,
-            marca,
-            categoria,
-        } = req.body;
+        const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
+        const json = await resp.json();
 
-        const atualizado = await prisma.produto.update({
-            where: { id },
-            data: {
-                nome,
-                precoVenda: parseFloat(precoVenda) || 0,
-                precoCompra: parseFloat(precoCompra) || 0,
-                estoque: parseInt(estoque) || 0,
-                marca: marca || "",
-                categoria: categoria || "",
-            },
-        });
+        if (!resp.ok) {
+            alert(json.error || "Erro ao excluir produto.");
+            return;
+        }
 
-        return res
-            .status(200)
-            .json({ message: "Produto atualizado com sucesso!", data: atualizado });
-    } catch (error) {
-        console.error("❌ Erro ao atualizar produto:", error);
-        return res.status(500).json({ error: "Erro ao atualizar produto." });
+        alert("🗑️ Produto excluído com sucesso!");
+        carregarProdutos();
+    } catch (err) {
+        console.error("Erro ao excluir produto:", err);
+        alert("❌ Falha ao excluir produto.");
     }
-};
+}
 
-/**
- * Excluir produto
- */
-const remove = async (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        await prisma.produto.delete({ where: { id } });
-        return res.status(200).json({ message: "Produto excluído com sucesso!" });
-    } catch (error) {
-        console.error("❌ Erro ao excluir produto:", error);
-        return res.status(500).json({ error: "Erro ao excluir produto." });
-    }
-};
-
-module.exports = { create, read, update, remove };
+// ================== TEMPLATE DE CARD ==================
+function cardProdutoHTML(p) {
+    return `
+  <div class="card card-produto border-0 shadow-sm p-3" style="flex:1 1 320px; max-width:360px;">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <h5 class="mb-1 text-dark">${p.nome}</h5>
+        <p class="small text-muted mb-1">Categoria: ${p.categoria || "—"}</p>
+        <p class="small text-muted mb-1">Estoque: ${p.estoque || 0}</p>
+        <p class="small mb-1">
+          <span class="badge badge-success">Venda ${fmtBRL(p.precoVenda)}</span>
+          <span class="badge badge-danger">Custo ${fmtBRL(p.precoCompra)}</span>
+        </p>
+      </div>
+      <div>
+        <button class="btn btn-warning btn-sm mr-1" onclick='editarProduto(${JSON.stringify(p)})'>
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" onclick='excluirProduto(${p.id})'>
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
