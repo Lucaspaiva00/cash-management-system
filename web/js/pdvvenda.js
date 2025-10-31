@@ -1,4 +1,4 @@
-const BASE = "https://cash-management-system.onrender.com";
+const BASE = "https://cash-management-system.onrender.com/vendas";
 const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 if (!usuario || !usuario.empresaId) {
     alert("Sessão expirada. Faça login novamente.");
