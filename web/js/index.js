@@ -201,7 +201,7 @@ function renderizarGraficoLinha(evolucao) {
           ticks: {
             callback: (value) => `R$ ${value.toLocaleString("pt-BR")}`,
           },
-        },
+        }, 
       },
     },
   });
