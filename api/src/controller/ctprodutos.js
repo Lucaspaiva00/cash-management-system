@@ -1,174 +1,54 @@
-// ================== CONFIG ==================
-const API = "https://cash-management-system.onrender.com/produtos";
+// api/controller/ctprodutos.js
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-// Formatação de moeda BRL
-const fmtBRL = (n) =>
-    new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-    }).format(Number(n || 0));
-
-
-// Elementos da página
-const form = document.querySelector("#caixaForms");
-const lista = document.querySelector("#produtosCadastrados");
-const elVenda = document.querySelector("#estoquevalorbruto");
-const elCusto = document.querySelector("#estoquevalorcusto");
-const elLucro = document.querySelector("#estoquevalorliquido");
-
-// Controle de edição
-let produtoEditando = null;
-
-// ================== EVENTOS ==================
-document.addEventListener("DOMContentLoaded", () => {
-    carregarProdutos();
-    form.addEventListener("submit", salvarProduto);
-});
-
-// ================== SALVAR / ATUALIZAR ==================
-async function salvarProduto(e) {
-    e.preventDefault();
-
-    const data = {
-        nome: form.nome.value.trim(),
-        precoVenda: parseFloat(form.precoVenda.value) || 0,
-        precoCompra: parseFloat(form.precoCompra.value) || 0,
-        estoque: parseInt(form.estoque.value) || 0,
-        marca: form.marca.value.trim(),
-        categoria: form.categoria.value.trim(),
-        empresaId: usuario.empresaId || 1,
-    };
-
+// Criar produto
+const create = async (req, res) => {
     try {
-        let resp;
-        if (produtoEditando) {
-            // Atualizar produto existente
-            resp = await fetch(`${API}/${produtoEditando.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-        } else {
-            // Criar novo produto
-            resp = await fetch(API, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-        }
-
-        const json = await resp.json();
-        if (!resp.ok) {
-            alert(json.error || "Erro ao salvar produto.");
-            return;
-        }
-
-        alert(produtoEditando ? "✅ Produto atualizado com sucesso!" : "✅ Produto cadastrado com sucesso!");
-        form.reset();
-        produtoEditando = null;
-
-        // Restaura botão
-        const btn = form.querySelector("button[type='submit']");
-        btn.innerHTML = '<i class="fas fa-save"></i> Salvar Produto';
-        btn.classList.remove("btn-warning");
-        btn.classList.add("btn-success");
-
-        carregarProdutos();
-    } catch (err) {
-        console.error("Erro ao salvar produto:", err);
-        alert("❌ Falha ao salvar produto.");
+        const data = req.body;
+        const novo = await prisma.produto.create({ data });
+        res.status(201).json(novo);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao criar produto." });
     }
-}
+};
 
-// ================== CARREGAR ==================
-async function carregarProdutos() {
-    lista.innerHTML = "<p>Carregando...</p>";
-
+// Listar produtos
+const read = async (req, res) => {
     try {
-        const resp = await fetch(`${API}?empresaId=${usuario.empresaId || 1}`);
-        const produtos = await resp.json();
-
-        if (!Array.isArray(produtos) || produtos.length === 0) {
-            lista.innerHTML = '<p class="text-muted">Nenhum produto cadastrado.</p>';
-            elVenda.textContent = elCusto.textContent = elLucro.textContent = "R$ 0,00";
-            return;
-        }
-
-        lista.innerHTML = produtos.map(cardProdutoHTML).join("");
-
-        const somaVenda = produtos.reduce((acc, p) => acc + (p.precoVenda * p.estoque), 0);
-        const somaCusto = produtos.reduce((acc, p) => acc + (p.precoCompra * p.estoque), 0);
-        elVenda.textContent = fmtBRL(somaVenda);
-        elCusto.textContent = fmtBRL(somaCusto);
-        elLucro.textContent = fmtBRL(somaVenda - somaCusto);
-    } catch (err) {
-        console.error("Erro ao carregar produtos:", err);
-        lista.innerHTML = "<p class='text-danger'>Erro ao carregar produtos.</p>";
+        const empresaId = parseInt(req.query.empresaId);
+        const produtos = await prisma.produto.findMany({ where: { empresaId } });
+        res.status(200).json(produtos);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao listar produtos." });
     }
-}
+};
 
-// ================== EDITAR ==================
-function editarProduto(p) {
-    produtoEditando = p;
-
-    // Preenche campos
-    form.nome.value = p.nome || "";
-    form.precoVenda.value = p.precoVenda || "";
-    form.precoCompra.value = p.precoCompra || "";
-    form.estoque.value = p.estoque || "";
-    form.marca.value = p.marca || "";
-    form.categoria.value = p.categoria || "";
-
-    // Muda botão
-    const btn = form.querySelector("button[type='submit']");
-    btn.innerHTML = '<i class="fas fa-save"></i> Atualizar Produto';
-    btn.classList.remove("btn-success");
-    btn.classList.add("btn-warning");
-}
-
-// ================== EXCLUIR ==================
-async function excluirProduto(id) {
-    if (!confirm("⚠️ Deseja realmente excluir este produto?")) return;
-
+// Atualizar produto
+const update = async (req, res) => {
     try {
-        const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
-        const json = await resp.json();
-
-        if (!resp.ok) {
-            alert(json.error || "Erro ao excluir produto.");
-            return;
-        }
-
-        alert("🗑️ Produto excluído com sucesso!");
-        carregarProdutos();
-    } catch (err) {
-        console.error("Erro ao excluir produto:", err);
-        alert("❌ Falha ao excluir produto.");
+        const id = parseInt(req.params.id);
+        const dados = req.body;
+        const atualizado = await prisma.produto.update({ where: { id }, data: dados });
+        res.status(200).json(atualizado);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao atualizar produto." });
     }
-}
+};
 
-// ================== TEMPLATE DE CARD ==================
-function cardProdutoHTML(p) {
-    return `
-  <div class="card card-produto border-0 shadow-sm p-3" style="flex:1 1 320px; max-width:360px;">
-    <div class="d-flex justify-content-between align-items-start">
-      <div>
-        <h5 class="mb-1 text-dark">${p.nome}</h5>
-        <p class="small text-muted mb-1">Categoria: ${p.categoria || "—"}</p>
-        <p class="small text-muted mb-1">Estoque: ${p.estoque || 0}</p>
-        <p class="small mb-1">
-          <span class="badge badge-success">Venda ${fmtBRL(p.precoVenda)}</span>
-          <span class="badge badge-danger">Custo ${fmtBRL(p.precoCompra)}</span>
-        </p>
-      </div>
-      <div>
-        <button class="btn btn-warning btn-sm mr-1" onclick='editarProduto(${JSON.stringify(p)})'>
-          <i class="fas fa-edit"></i>
-        </button>
-        <button class="btn btn-danger btn-sm" onclick='excluirProduto(${p.id})'>
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-    </div>
-  </div>`;
-}
+// Excluir produto
+const remove = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        await prisma.produto.delete({ where: { id } });
+        res.status(200).json({ message: "Produto excluído com sucesso!" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao excluir produto." });
+    }
+};
+
+module.exports = { create, read, update, remove };
