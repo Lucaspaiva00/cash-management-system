@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#btnSalvarEdicao").addEventListener("click", salvarEdicao);
 });
 
-// =================== CRIAR ===================
+// =============== CRIAR ===============
 async function salvarProduto(e) {
   e.preventDefault();
 
@@ -35,15 +35,14 @@ async function salvarProduto(e) {
   const json = await resp.json();
   if (!resp.ok) return alert(json.error || "Erro ao cadastrar produto.");
 
-  alert("✅ Produto cadastrado com sucesso!");
+  alert("✅ Produto cadastrado!");
   form.reset();
   carregarProdutos();
 }
 
-// =================== LISTAR ===================
+// =============== LISTAR ===============
 async function carregarProdutos() {
   lista.innerHTML = "<p>Carregando...</p>";
-
   const resp = await fetch(`${API}?empresaId=${usuario.empresaId || 1}`);
   const produtos = await resp.json();
 
@@ -51,15 +50,15 @@ async function carregarProdutos() {
     lista.innerHTML = '<p class="text-muted">Nenhum produto cadastrado.</p>';
     return;
   }
-
   lista.innerHTML = produtos.map(cardProdutoHTML).join("");
 }
 
-// =================== CARD ===================
+// =============== CARD HTML ===============
 function cardProdutoHTML(p) {
+  const dataString = encodeURIComponent(JSON.stringify(p)); // evitar erro no onclick
   return `
   <div class="card card-produto p-3">
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between align-items-start">
       <div>
         <h5 class="mb-1 text-dark">${p.nome}</h5>
         <p class="small text-muted mb-1">Categoria: ${p.categoria || "—"}</p>
@@ -70,30 +69,35 @@ function cardProdutoHTML(p) {
         </p>
       </div>
       <div>
-        <button class="btn btn-warning btn-sm mr-1" onclick='editarProduto(${JSON.stringify(p)})'><i class="fas fa-edit"></i></button>
-        <button class="btn btn-danger btn-sm" onclick='excluirProduto(${p.id})'><i class="fas fa-trash"></i></button>
+        <button class="btn btn-warning btn-sm mr-1" onclick='editarProduto("${dataString}")'>
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" onclick='excluirProduto(${p.id})'>
+          <i class="fas fa-trash"></i>
+        </button>
       </div>
     </div>
   </div>`;
 }
 
-// =================== EDITAR (ABRIR MODAL) ===================
-window.editarProduto = function (p) {
+// =============== EDITAR (MODAL) ===============
+window.editarProduto = function (jsonString) {
+  const p = JSON.parse(decodeURIComponent(jsonString));
   produtoEditando = p;
-  $("#modalEditarProduto").modal("show");
 
+  $("#modalEditarProduto").modal("show");
   document.querySelector("#edit-id").value = p.id;
-  document.querySelector("#edit-nome").value = p.nome || "";
-  document.querySelector("#edit-precoVenda").value = p.precoVenda || "";
-  document.querySelector("#edit-precoCompra").value = p.precoCompra || "";
-  document.querySelector("#edit-estoque").value = p.estoque || "";
-  document.querySelector("#edit-marca").value = p.marca || "";
-  document.querySelector("#edit-categoria").value = p.categoria || "";
+  document.querySelector("#edit-nome").value = p.nome;
+  document.querySelector("#edit-precoVenda").value = p.precoVenda;
+  document.querySelector("#edit-precoCompra").value = p.precoCompra;
+  document.querySelector("#edit-estoque").value = p.estoque;
+  document.querySelector("#edit-marca").value = p.marca;
+  document.querySelector("#edit-categoria").value = p.categoria;
 };
 
-// =================== SALVAR EDIÇÃO ===================
+// =============== SALVAR EDIÇÃO ===============
 async function salvarEdicao() {
-  if (!produtoEditando) return alert("Nenhum produto selecionado.");
+  if (!produtoEditando) return alert("Nenhum produto em edição.");
 
   const id = produtoEditando.id;
   const data = {
@@ -119,13 +123,11 @@ async function salvarEdicao() {
   carregarProdutos();
 }
 
-// =================== EXCLUIR ===================
+// =============== EXCLUIR ===============
 window.excluirProduto = async function (id) {
-  if (!confirm("Excluir este produto?")) return;
-
+  if (!confirm("Deseja realmente excluir este produto?")) return;
   const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
   const json = await resp.json();
-
   if (!resp.ok) return alert(json.error || "Erro ao excluir produto.");
   alert("🗑️ Produto excluído!");
   carregarProdutos();
