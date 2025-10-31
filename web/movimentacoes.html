@@ -12,6 +12,7 @@
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
+        /* === ESTILOS GERAIS === */
         body {
             background-color: #f8f9fc;
             font-family: "Roboto", Arial, sans-serif;
@@ -26,82 +27,75 @@
             background: linear-gradient(180deg, #111 0%, #222 100%);
         }
 
-        /* === CARDS DE RESUMO === */
-        .resumo-card {
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            transition: 0.3s ease;
-        }
-
-        .resumo-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-
         /* === FORMULÁRIO === */
-        .nova-movimentacao {
-            border-left: 6px solid #e63946;
-            border-radius: 12px;
-            background: #f9fafc;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        form#caixaForms .form-control {
+            font-size: 0.9rem;
+            height: 38px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            transition: 0.2s ease;
         }
 
-        .campo-input {
-            border-radius: 8px !important;
-            border: 1px solid #ddd !important;
-            background-color: #fff !important;
-            height: 42px;
-            font-size: 0.95rem;
-            transition: 0.25s ease-in-out;
+        form#caixaForms .form-control:focus {
+            border-color: #e63946;
+            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
         }
 
-        .campo-input:focus {
-            border-color: #e63946 !important;
-            box-shadow: 0 0 0 0.25rem rgba(230, 57, 70, 0.25) !important;
+        form#caixaForms .col-md-2,
+        form#caixaForms .col-md-3,
+        form#caixaForms .col-md-4 {
+            padding-right: 0.4rem;
+            padding-left: 0.4rem;
         }
 
-        .btn-modern {
-            background-color: #e63946 !important;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
-            transition: all 0.2s ease;
+        /* === CARDS DE RESUMO === */
+        .card-resumo {
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            transition: 0.2s ease;
         }
 
-        .btn-modern:hover {
-            background-color: #c92a37 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(230, 57, 70, 0.35);
+        .card-resumo:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
         }
 
-        .input-group-text {
-            border-radius: 8px 0 0 8px !important;
-            border: 1px solid #ddd !important;
-            border-right: none !important;
+        /* === BOTÃO === */
+        .btn-danger {
+            background-color: #e63946;
+            border-color: #e63946;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: 0.2s ease;
         }
 
-        /* === LISTA DE MOVIMENTAÇÕES === */
+        .btn-danger:hover {
+            background-color: #c92a37;
+            border-color: #c92a37;
+        }
+
+        /* === CARDS DE MOVIMENTAÇÕES === */
         #listaOperacoes {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+            justify-content: flex-start;
         }
 
         .card-op {
-            background-color: #fff;
+            background: #fff;
             border-radius: 10px;
-            border-left: 5px solid #007bff;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            flex: 1 1 320px;
+            max-width: 350px;
+            transition: 0.2s ease;
+            border-left: 6px solid #e63946;
             padding: 1rem;
-            flex: 1 1 300px;
-            max-width: 340px;
-            transition: 0.25s;
         }
 
         .card-op:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
         }
 
         .entrada {
@@ -112,13 +106,14 @@
             border-left-color: #e63946 !important;
         }
 
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-            }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.4em 0.6em;
+        }
 
-            .form-group {
-                width: 100%;
+        @media (max-width: 768px) {
+            #listaOperacoes {
+                justify-content: center;
             }
 
             .text-right {
@@ -130,7 +125,7 @@
 
 <body>
     <div id="wrapper">
-        <!-- Sidebar -->
+        <!-- ✅ SIDEBAR -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
             <!-- Marca -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -169,20 +164,19 @@
             </div>
         </ul>
 
-        <!-- Conteúdo -->
+        <!-- ✅ CONTEÚDO -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <h5 class="m-0 font-weight-bold text-dark">
-                        <i class="fa fa-university text-danger mr-2"></i>Movimentações do Caixa
-                    </h5>
+                    <h5 class="m-0 font-weight-bold text-dark"><i
+                            class="fa fa-university text-danger mr-2"></i>Movimentações do Caixa</h5>
                 </nav>
 
                 <div class="container-fluid">
-                    <!-- Cards de Resumo -->
+                    <!-- ✅ CARDS DE RESUMO -->
                     <div class="row text-center mb-4">
-                        <div class="col-md-4 mb-3">
-                            <div class="card resumo-card border-left-success shadow py-2">
+                        <div class="col-md-4 mb-4">
+                            <div class="card card-resumo border-left-success shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total
                                         Entradas</div>
@@ -190,8 +184,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card resumo-card border-left-danger shadow py-2">
+                        <div class="col-md-4 mb-4">
+                            <div class="card card-resumo border-left-danger shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Saídas
                                     </div>
@@ -199,8 +193,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card resumo-card border-left-dark shadow py-2">
+                        <div class="col-md-4 mb-4">
+                            <div class="card card-resumo border-left-dark shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Saldo Geral
                                     </div>
@@ -210,81 +204,61 @@
                         </div>
                     </div>
 
-                    <!-- Formulário -->
-                    <section class="nova-movimentacao p-4 mb-4">
-                        <h5 class="mb-4 font-weight-bold text-dark d-flex align-items-center">
-                            <i class="fas fa-plus-circle text-danger mr-2"></i>Nova Movimentação
-                        </h5>
-
-                        <form id="caixaForm" autocomplete="off">
-                            <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <label for="tipoOperacao" class="font-weight-medium text-muted">Tipo de
-                                        Operação</label>
-                                    <select id="tipoOperacao" name="tipoOperacao" class="form-control campo-input"
-                                        required>
-                                        <option value="">Selecione...</option>
-                                        <option value="ENTRADA">Entrada</option>
-                                        <option value="SAIDA">Saída</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group col-md-3">
-                                    <label for="meioPagamento" class="font-weight-medium text-muted">Meio de
-                                        Pagamento</label>
-                                    <select id="meioPagamento" name="meioPagamento" class="form-control campo-input"
-                                        required>
-                                        <option value="">Selecione...</option>
-                                        <option value="PIX">Pix</option>
-                                        <option value="CARTAO">Cartão</option>
-                                        <option value="DINHEIRO">Dinheiro</option>
-                                        <option value="BOLETO">Boleto</option>
-                                        <option value="TRANSFERENCIA">Transferência</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group col-md-3">
-                                    <label for="valor" class="font-weight-medium text-muted">Valor (R$)</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text bg-light border-0 text-secondary"><i
-                                                    class="fas fa-coins"></i></span>
-                                        </div>
-                                        <input type="number" step="0.01" id="valor" name="valor"
-                                            class="form-control campo-input" placeholder="0,00" required>
+                    <!-- ✅ FORMULÁRIO -->
+                    <div class="container-fluid mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="mb-3"><i class="fas fa-plus-circle text-danger"></i> Nova Movimentação</h5>
+                                <form id="caixaForms" class="form-row">
+                                    <div class="col-md-2 mb-2">
+                                        <label for="">Tipo de Operação</label>
+                                        <select name="tipoOperacao" id="tipoOperacao" class="form-control" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="ENTRADA">Entrada</option>
+                                            <option value="SAIDA">Saída</option>
+                                        </select>
                                     </div>
-                                </div>
-
-                                <div class="form-group col-md-3">
-                                    <label for="dataOperacao" class="font-weight-medium text-muted">Data</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text bg-light border-0 text-secondary"><i
-                                                    class="fas fa-calendar-alt"></i></span>
-                                        </div>
-                                        <input type="date" id="dataOperacao" name="dataOperacao"
-                                            class="form-control campo-input" required>
+                                    <div class="col-md-2 mb-2">
+                                        <label for="">Meio de Pagamento</label>
+                                        <select name="meioPagamento" id="meioPagamento" class="form-control" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="PIX">Pix</option>
+                                            <option value="CARTAO">Cartão</option>
+                                            <option value="DINHEIRO">Dinheiro</option>
+                                            <option value="BOLETO">Boleto</option>
+                                            <option value="TRANSFERENCIA">Transferência</option>
+                                        </select>
                                     </div>
-                                </div>
+                                    <div class="col-md-2 mb-2">
+                                        <label for="">Valor (R$)</label>
+                                        <input type="number" step="0.01" name="valor" id="valor" class="form-control"
+                                            placeholder="0,00" required>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label for="">Data</label>
+                                        <input type="date" name="dataOperacao" id="dataOperacao" class="form-control"
+                                            required>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label for="">Descrição</label>
+                                        <input type="text" name="descricao" id="descricao" class="form-control"
+                                            placeholder="Ex: Venda, pagamento..." required>
+                                    </div>
+                                    <div class="col-md-12 text-right mt-3">
+                                        <button type="submit" class="btn btn-danger px-4">
+                                            <i class="fas fa-save"></i> Salvar Movimentação
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
+                        </div>
+                    </div>
 
-                            <div class="form-group mt-3">
-                                <label for="descricao" class="font-weight-medium text-muted">Descrição</label>
-                                <input type="text" id="descricao" name="descricao" class="form-control campo-input"
-                                    placeholder="Ex: Venda, pagamento de fornecedor..." required>
-                            </div>
-
-                            <div class="text-right mt-4">
-                                <button type="submit" class="btn btn-danger px-5 py-2 btn-modern">
-                                    <i class="fas fa-save mr-2"></i>Salvar Movimentação
-                                </button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- Lista -->
-                    <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
-                    <div id="listaOperacoes"></div>
+                    <!-- ✅ LISTAGEM -->
+                    <div class="container-fluid mb-5">
+                        <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
+                        <div id="listaOperacoes"></div>
+                    </div>
                 </div>
             </div>
         </div>
