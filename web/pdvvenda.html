@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDV - Venda Rápida | Paiva Tech</title>
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fc;
+        }
+
+        .pdv-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        .total {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .produto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .produto-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn-finalizar {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
+                <div class="sidebar-brand-text mx-3">Paiva Tech</div>
+            </a>
+
+            <hr class="sidebar-divider my-0" />
+            <li class="nav-item"><a class="nav-link" href="index.html"><i
+                        class="fas fa-fw fa-tachometer-alt"></i>Dashboard</a></li>
+            <hr class="sidebar-divider" />
+            <div class="sidebar-heading">Páginas</div>
+            <li class="nav-item"><a class="nav-link" href="movimentacoes.html"><i class="fa fa-university"></i>Caixa</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="clientes.html"><i class="fas fa-users"></i>Clientes</a></li>
+            <li class="nav-item"><a class="nav-link" href="produtos.html"><i class="fas fa-boxes"></i>Produtos</a></li>
+            <li class="nav-item active"><a class="nav-link" href="pdv.html"><i class="fas fa-cash-register"></i>PDV</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="login.html"><i class="fas fa-sign-out-alt"></i>Sair</a></li>
+        </ul>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content" class="container-fluid">
+                <div class="pdv-container">
+                    <h3 class="text-center mb-4"><i class="fas fa-cash-register"></i> PDV - Venda Rápida</h3>
+
+                    <div class="form-row mb-3">
+                        <div class="col-md-6">
+                            <label>Cliente</label>
+                            <select id="cliente" class="form-control"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Método de Pagamento</label>
+                            <select id="pagamento" class="form-control">
+                                <option value="DINHEIRO">Dinheiro</option>
+                                <option value="PIX">PIX</option>
+                                <option value="CARTAO">Cartão</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row mb-3">
+                        <div class="col-md-6">
+                            <label>Produto</label>
+                            <select id="produto" class="form-control"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Quantidade</label>
+                            <input type="number" id="quantidade" class="form-control" min="1" value="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary btn-block" id="adicionar"><i class="fas fa-plus"></i>
+                                Adicionar</button>
+                        </div>
+                    </div>
+
+                    <div id="listaProdutos" class="mb-4"></div>
+
+                    <div class="text-right mb-3">
+                        <div>Total da Venda:</div>
+                        <div class="total" id="total">R$ 0,00</div>
+                    </div>
+
+                    <div class="form-row mb-4">
+                        <div class="col-md-6">
+                            <label>Valor Recebido</label>
+                            <input type="number" id="valorRecebido" class="form-control" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Troco</label>
+                            <input type="text" id="troco" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success btn-block btn-finalizar" id="finalizar">
+                        <i class="fas fa-check-circle"></i> Finalizar Venda
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/pdvvenda.js"></script>
+</body>
+
+</html>

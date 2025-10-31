@@ -7,6 +7,7 @@ const clientes = require("./controller/ctclientes");
 const produtos = require("./controller/ctprodutos");
 const proposta = require("./controller/ctpropostas");
 const usuario = require("./controller/ctusuario");
+const vendas = require("./controller/ctvenda");
 
 routes.get("/", (req, res) => {
   res.status(200).json({
@@ -39,5 +40,9 @@ routes.route("/produtos/:id").put(produtos.update).delete(produtos.remove);
 // Propostas
 routes.route("/propostas").get(proposta.read).post(proposta.create);
 routes.route("/propostas/:id").put(proposta.update).delete(proposta.remove);
+
+routes.get("/vendas", vendas.read);
+routes.post("/vendas", vendas.create);
+routes.delete("/vendas/:id", vendas.remove);
 
 module.exports = routes;

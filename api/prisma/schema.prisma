@@ -21,6 +21,7 @@ model Empresa {
   operacoes    Caixa[]
   criadoEm     DateTime   @default(now())
   atualizadoEm DateTime   @updatedAt
+  Venda        Venda[]
 }
 
 model Usuario {
@@ -50,6 +51,7 @@ model Cliente {
   criadoEm     DateTime   @default(now())
   atualizadoEm DateTime   @updatedAt
   propostas    Proposta[]
+  Venda        Venda[]
 }
 
 model Produto {
@@ -65,8 +67,9 @@ model Produto {
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+  criadoEm     DateTime    @default(now())
+  atualizadoEm DateTime    @updatedAt
+  VendaItem    VendaItem[]
 }
 
 model Proposta {
@@ -113,4 +116,33 @@ enum MeioPagamento {
   DINHEIRO
   BOLETO
   TRANSFERENCIA
+}
+
+model Venda {
+  id            Int           @id @default(autoincrement())
+  data          DateTime      @default(now())
+  total         Float
+  meioPagamento MeioPagamento
+  empresaId     Int
+  empresa       Empresa       @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  clienteId Int?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+
+  itens        VendaItem[]
+  criadoEm     DateTime    @default(now())
+  atualizadoEm DateTime    @updatedAt
+}
+
+model VendaItem {
+  id            Int      @id @default(autoincrement())
+  vendaId       Int
+  venda         Venda    @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+  produtoId     Int
+  produto       Produto  @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+  quantidade    Int
+  precoUnitario Float
+  subtotal      Float
+  criadoEm      DateTime @default(now())
+  atualizadoEm  DateTime @updatedAt
 }
