@@ -8,8 +8,6 @@ const fmtBRL = (n) =>
         currency: "BRL",
     }).format(Number(n || 0));
 
-// Usuário logado
-const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || { empresaId: 1 };
 
 // Elementos da página
 const form = document.querySelector("#caixaForms");
