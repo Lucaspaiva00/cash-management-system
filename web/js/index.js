@@ -109,9 +109,8 @@ async function carregarDashboard() {
     document.getElementById("clientes").innerText = clientes.length;
 
     // --- Empresas ---
-    // const empresas = await fetch(`${API}/empresas`).then((r) => r.json());
-    // document.getElementById("empresas").innerText = empresas.length;
-
+    const empresas = await fetch(`${API}/empresas`).then((r) => r.json());
+    document.getElementById("empresas").innerText = empresas.length;
 
   } catch (err) {
     console.error("Erro ao carregar dashboard:", err);
