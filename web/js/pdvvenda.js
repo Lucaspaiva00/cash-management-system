@@ -119,7 +119,7 @@ document.getElementById("finalizar").addEventListener("click", async () => {
         }
 
         const data = await resp.json();
-        alert("✅ Venda registrada com sucesso!");
+        alert("Venda registrada com sucesso!");
         gerarCupomPDF(data.data || body);
     } catch (err) {
         console.error(err);
