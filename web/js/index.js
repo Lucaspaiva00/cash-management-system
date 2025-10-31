@@ -52,20 +52,21 @@ async function carregarDashboard(periodo = "mesAtual") {
       return;
     }
 
-    const caixa = await safeFetch(`${API}/caixa?empresaId=${usuario.empresaId}`);
-    const propostas = await safeFetch(`${API}/propostas?empresaId=${usuario.empresaId}`);
-    const clientes = await safeFetch(`${API}/clientes?empresaId=${usuario.empresaId}`);
+    // ⚙️ Busca os dados do caixa (sem query param, pois backend não filtra)
+    const caixa = await safeFetch(`${API}/caixa`);
+    const propostas = await safeFetch(`${API}/propostas`);
+    const clientes = await safeFetch(`${API}/clientes`);
 
     // 🔹 Filtra conforme o período selecionado
     const hoje = new Date();
     const inicio = new Date();
-
     if (periodo === "7dias") inicio.setDate(hoje.getDate() - 7);
     if (periodo === "mesAtual") inicio.setDate(1);
     if (periodo === "ano") inicio.setMonth(0, 1);
 
+    // ✅ Corrigido: campo genérico (dataOperacao OU data)
     const caixaFiltrada = caixa.filter((op) => {
-      const data = new Date(op.dataOperacao);
+      const data = new Date(op.dataOperacao || op.data || op.createdAt);
       return data >= inicio && data <= hoje;
     });
 
@@ -73,12 +74,15 @@ async function carregarDashboard(periodo = "mesAtual") {
     const evolucao = {};
 
     caixaFiltrada.forEach((op) => {
-      const dia = new Date(op.dataOperacao).toLocaleDateString("pt-BR");
-      if (op.tipoOperacao === "ENTRADA") entrada += op.valor;
-      if (op.tipoOperacao === "SAIDA") saida += op.valor;
+      const tipo = op.tipoOperacao || op.tipo;
+      const valor = Number(op.valor) || 0;
+      const dia = new Date(op.dataOperacao || op.data || op.createdAt).toLocaleDateString("pt-BR");
+
+      if (tipo === "ENTRADA") entrada += valor;
+      if (tipo === "SAIDA") saida += valor;
 
       evolucao[dia] = evolucao[dia] || { entrada: 0, saida: 0 };
-      evolucao[dia][op.tipoOperacao === "ENTRADA" ? "entrada" : "saida"] += op.valor;
+      evolucao[dia][tipo === "ENTRADA" ? "entrada" : "saida"] += valor;
     });
 
     const lucro = entrada - saida;
@@ -99,6 +103,7 @@ async function carregarDashboard(periodo = "mesAtual") {
 
     renderizarGraficoBarras(entrada, saida, lucro);
     renderizarGraficoLinha(evolucao);
+
   } catch (err) {
     console.error("Erro ao carregar dashboard:", err);
   }
@@ -114,7 +119,8 @@ function atualizarValor(id, valor) {
 
 // === Gráficos ===
 function renderizarGraficoBarras(entrada, saida, lucro) {
-  const ctx = document.getElementById("graficoBarras").getContext("2d");
+  const ctx = document.getElementById("graficoBarras")?.getContext("2d");
+  if (!ctx) return;
   if (window.graficoBarrasInstance) window.graficoBarrasInstance.destroy();
 
   window.graficoBarrasInstance = new Chart(ctx, {
@@ -130,18 +136,14 @@ function renderizarGraficoBarras(entrada, saida, lucro) {
     },
     options: {
       plugins: { legend: { display: false } },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { callback: (v) => `R$ ${v.toLocaleString("pt-BR")}` },
-        },
-      },
+      scales: { y: { beginAtZero: true } },
     },
   });
 }
 
 function renderizarGraficoLinha(evolucao) {
-  const ctx = document.getElementById("graficoLinha").getContext("2d");
+  const ctx = document.getElementById("graficoLinha")?.getContext("2d");
+  if (!ctx) return;
   if (window.graficoLinhaInstance) window.graficoLinhaInstance.destroy();
 
   const dias = Object.keys(evolucao).sort((a, b) => {
@@ -158,20 +160,11 @@ function renderizarGraficoLinha(evolucao) {
     data: {
       labels: dias,
       datasets: [
-        { label: "Entradas", data: entradas, borderColor: "#007bff", borderWidth: 2, tension: 0.3 },
-        { label: "Saídas", data: saidas, borderColor: "#dc3545", borderWidth: 2, tension: 0.3 },
+        { label: "Entradas", data: entradas, borderColor: "#007bff", borderWidth: 2 },
+        { label: "Saídas", data: saidas, borderColor: "#dc3545", borderWidth: 2 },
       ],
     },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: "bottom" } },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { callback: (v) => `R$ ${v.toLocaleString("pt-BR")}` },
-        },
-      },
-    },
+    options: { plugins: { legend: { position: "bottom" } } },
   });
 }
 
@@ -181,7 +174,5 @@ document.addEventListener("DOMContentLoaded", () => {
   carregarDashboard();
 });
 
-// 🔹 Recarrega quando muda o filtro
-filtroPeriodo.addEventListener("change", (e) => {
-  carregarDashboard(e.target.value);
-});
+// 🔹 Atualiza ao trocar filtro
+filtroPeriodo?.addEventListener("change", (e) => carregarDashboard(e.target.value));
