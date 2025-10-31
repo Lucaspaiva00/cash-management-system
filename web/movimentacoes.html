@@ -21,50 +21,67 @@
             font-weight: 600;
         }
 
-        .card-form {
-            border: none;
-            border-left: 6px solid #e63946;
-            border-radius: 10px;
-            background-color: #f1f3f8;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+        /* === SIDEBAR === */
+        .sidebar-dark {
+            background: linear-gradient(180deg, #111 0%, #222 100%);
         }
 
-        .card-form:hover {
+        /* === CARDS DE RESUMO === */
+        .resumo-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: 0.3s ease;
+        }
+
+        .resumo-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
-        .card-form h5 {
-            color: #1a1a1a;
-            font-weight: 600;
+        /* === FORMULÁRIO === */
+        .nova-movimentacao {
+            border-left: 6px solid #e63946;
+            border-radius: 12px;
+            background: #f9fafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        #caixaForm .form-control {
-            border-radius: 6px;
-            border: 1px solid #ccc;
+        .campo-input {
+            border-radius: 8px !important;
+            border: 1px solid #ddd !important;
+            background-color: #fff !important;
+            height: 42px;
             font-size: 0.95rem;
-            height: 40px;
-            transition: all 0.2s;
+            transition: 0.25s ease-in-out;
         }
 
-        #caixaForm .form-control:focus {
-            border-color: #e63946;
-            box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
+        .campo-input:focus {
+            border-color: #e63946 !important;
+            box-shadow: 0 0 0 0.25rem rgba(230, 57, 70, 0.25) !important;
         }
 
-        .btn-danger {
-            background-color: #e63946;
-            border-color: #e63946;
-            border-radius: 6px;
-            font-weight: 500;
+        .btn-modern {
+            background-color: #e63946 !important;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
+            transition: all 0.2s ease;
         }
 
-        .btn-danger:hover {
-            background-color: #c92a37;
-            border-color: #c92a37;
+        .btn-modern:hover {
+            background-color: #c92a37 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(230, 57, 70, 0.35);
         }
 
+        .input-group-text {
+            border-radius: 8px 0 0 8px !important;
+            border: 1px solid #ddd !important;
+            border-right: none !important;
+        }
+
+        /* === LISTA DE MOVIMENTAÇÕES === */
         #listaOperacoes {
             display: flex;
             flex-wrap: wrap;
@@ -96,8 +113,12 @@
         }
 
         @media (max-width: 768px) {
-            #caixaForm .form-row {
+            .form-row {
                 flex-direction: column;
+            }
+
+            .form-group {
+                width: 100%;
             }
 
             .text-right {
@@ -113,13 +134,10 @@
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
             <!-- Marca -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
+                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
                 <div class="sidebar-brand-text mx-3">Paiva Tech</div>
             </a>
 
-            <!-- Dashboard -->
             <hr class="sidebar-divider my-0" />
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">
@@ -128,57 +146,23 @@
                 </a>
             </li>
 
-            <!-- Seção Páginas -->
             <hr class="sidebar-divider" />
             <div class="sidebar-heading">Páginas</div>
 
-            <!-- Caixa -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCaixa"
-                    aria-expanded="true" aria-controls="collapseCaixa">
-                    <i class="fa fa-university" aria-hidden="true"></i>
+                <a class="nav-link" href="movimentacoes.html">
+                    <i class="fa fa-university"></i>
                     <span>Caixa</span>
                 </a>
-                <div id="collapseCaixa" class="collapse" aria-labelledby="headingCaixa" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Movimentações</h6>
-                        <a class="collapse-item" href="movimentacoes.html">Cadastre uma Movimentação</a>
-                    </div>
-                </div>
             </li>
-
-            <!-- Clientes -->
-            <li class="nav-item">
-                <a class="nav-link" href="criarCliente.html">
-                    <i class="fas fa-users"></i>
-                    <span>Clientes</span>
-                </a>
-            </li>
-
-            <!-- Produtos -->
-            <li class="nav-item">
-                <a class="nav-link" href="produtos.html">
-                    <i class="fas fa-boxes"></i>
-                    <span>Produtos</span>
-                </a>
-            </li>
-
-            <!-- Propostas -->
-            <li class="nav-item">
-                <a class="nav-link" href="propostas.html">
-                    <i class="fas fa-file-invoice"></i>
-                    <span>Propostas</span>
-                </a>
-            </li>
-
-            <!-- Sair -->
-            <li class="nav-item">
-                <a class="nav-link" href="login.html">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sair</span>
-                </a>
-            </li>
-
+            <li class="nav-item"><a class="nav-link" href="criarCliente.html"><i
+                        class="fas fa-users"></i><span>Clientes</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="produtos.html"><i
+                        class="fas fa-boxes"></i><span>Produtos</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="propostas.html"><i
+                        class="fas fa-file-invoice"></i><span>Propostas</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="login.html"><i
+                        class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>
             <hr class="sidebar-divider d-none d-md-block" />
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
@@ -189,76 +173,114 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <h5 class="m-0 font-weight-bold text-dark"><i
-                            class="fa fa-university text-danger mr-2"></i>Movimentações do Caixa</h5>
+                    <h5 class="m-0 font-weight-bold text-dark">
+                        <i class="fa fa-university text-danger mr-2"></i>Movimentações do Caixa
+                    </h5>
                 </nav>
 
-                <div class="container-fluid mb-4">
-                    <!-- Filtro -->
-                    <div class="mb-3 d-flex flex-wrap gap-2">
-                        <select id="filtroTipo" class="form-control w-auto" onchange="carregarOperacoes()">
-                            <option value="">Todas</option>
-                            <option value="ENTRADA">Entradas</option>
-                            <option value="SAIDA">Saídas</option>
-                        </select>
+                <div class="container-fluid">
+                    <!-- Cards de Resumo -->
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="card resumo-card border-left-success shadow py-2">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total
+                                        Entradas</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalEntradas">R$ 0,00</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card resumo-card border-left-danger shadow py-2">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Saídas
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalSaidas">R$ 0,00</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card resumo-card border-left-dark shadow py-2">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Saldo Geral
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="saldoGeral">R$ 0,00</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Formulário -->
-                    <div class="card card-form mb-4">
-                        <div class="card-body">
-                            <h5 class="mb-4"><i class="fas fa-plus-circle text-danger"></i> Nova Movimentação</h5>
-                            <form id="caixaForm" autocomplete="off">
-                                <div class="form-row">
-                                    <div class="form-group col-md-3">
-                                        <label>Tipo de Operação</label>
-                                        <select name="tipoOperacao" id="tipoOperacao" class="form-control" required>
-                                            <option value="">Selecione...</option>
-                                            <option value="ENTRADA">Entrada</option>
-                                            <option value="SAIDA">Saída</option>
-                                        </select>
-                                    </div>
+                    <section class="nova-movimentacao p-4 mb-4">
+                        <h5 class="mb-4 font-weight-bold text-dark d-flex align-items-center">
+                            <i class="fas fa-plus-circle text-danger mr-2"></i>Nova Movimentação
+                        </h5>
 
-                                    <div class="form-group col-md-3">
-                                        <label>Meio de Pagamento</label>
-                                        <select name="meioPagamento" id="meioPagamento" class="form-control" required>
-                                            <option value="">Selecione...</option>
-                                            <option value="PIX">Pix</option>
-                                            <option value="CARTAO">Cartão</option>
-                                            <option value="DINHEIRO">Dinheiro</option>
-                                            <option value="BOLETO">Boleto</option>
-                                            <option value="TRANSFERENCIA">Transferência</option>
-                                        </select>
-                                    </div>
+                        <form id="caixaForm" autocomplete="off">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="tipoOperacao" class="font-weight-medium text-muted">Tipo de
+                                        Operação</label>
+                                    <select id="tipoOperacao" name="tipoOperacao" class="form-control campo-input"
+                                        required>
+                                        <option value="">Selecione...</option>
+                                        <option value="ENTRADA">Entrada</option>
+                                        <option value="SAIDA">Saída</option>
+                                    </select>
+                                </div>
 
-                                    <div class="form-group col-md-3">
-                                        <label>Valor (R$)</label>
-                                        <input type="number" step="0.01" name="valor" id="valor" class="form-control"
-                                            required>
-                                    </div>
+                                <div class="form-group col-md-3">
+                                    <label for="meioPagamento" class="font-weight-medium text-muted">Meio de
+                                        Pagamento</label>
+                                    <select id="meioPagamento" name="meioPagamento" class="form-control campo-input"
+                                        required>
+                                        <option value="">Selecione...</option>
+                                        <option value="PIX">Pix</option>
+                                        <option value="CARTAO">Cartão</option>
+                                        <option value="DINHEIRO">Dinheiro</option>
+                                        <option value="BOLETO">Boleto</option>
+                                        <option value="TRANSFERENCIA">Transferência</option>
+                                    </select>
+                                </div>
 
-                                    <div class="form-group col-md-3">
-                                        <label>Data</label>
-                                        <input type="date" name="dataOperacao" id="dataOperacao" class="form-control"
-                                            required>
+                                <div class="form-group col-md-3">
+                                    <label for="valor" class="font-weight-medium text-muted">Valor (R$)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-light border-0 text-secondary"><i
+                                                    class="fas fa-coins"></i></span>
+                                        </div>
+                                        <input type="number" step="0.01" id="valor" name="valor"
+                                            class="form-control campo-input" placeholder="0,00" required>
                                     </div>
                                 </div>
 
-                                <div class="form-row">
-                                    <div class="form-group col-md-12">
-                                        <label>Descrição</label>
-                                        <input type="text" name="descricao" id="descricao" class="form-control"
-                                            placeholder="Ex: Venda, pagamento de fornecedor..." required>
+                                <div class="form-group col-md-3">
+                                    <label for="dataOperacao" class="font-weight-medium text-muted">Data</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-light border-0 text-secondary"><i
+                                                    class="fas fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input type="date" id="dataOperacao" name="dataOperacao"
+                                            class="form-control campo-input" required>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="text-right">
-                                    <button type="submit" class="btn btn-danger px-4">
-                                        <i class="fas fa-save mr-1"></i> Salvar Movimentação
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                            <div class="form-group mt-3">
+                                <label for="descricao" class="font-weight-medium text-muted">Descrição</label>
+                                <input type="text" id="descricao" name="descricao" class="form-control campo-input"
+                                    placeholder="Ex: Venda, pagamento de fornecedor..." required>
+                            </div>
+
+                            <div class="text-right mt-4">
+                                <button type="submit" class="btn btn-danger px-5 py-2 btn-modern">
+                                    <i class="fas fa-save mr-2"></i>Salvar Movimentação
+                                </button>
+                            </div>
+                        </form>
+                    </section>
 
                     <!-- Lista -->
                     <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
