@@ -4,26 +4,20 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || { empresaId
 const form = document.querySelector("#caixaForms");
 const lista = document.querySelector("#produtosCadastrados");
 const btnSalvarEdicao = document.querySelector("#btnSalvarEdicao");
-
 let editandoId = null;
 
-// ==== FORMATAR MOEDA ====
-const fmtBRL = (n) => new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL"
-}).format(Number(n || 0));
+// Formatar R$
+const fmtBRL = (n) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(n || 0));
 
-// ==== AO CARREGAR ====
 document.addEventListener("DOMContentLoaded", () => {
   carregarProdutos();
   form.addEventListener("submit", salvarProduto);
   btnSalvarEdicao.addEventListener("click", salvarEdicao);
 });
 
-// ==== CRIAR ====
+// Criar produto
 async function salvarProduto(e) {
   e.preventDefault();
-
   const data = {
     nome: form.nome.value.trim(),
     precoVenda: parseFloat(form.precoVenda.value) || 0,
@@ -41,17 +35,16 @@ async function salvarProduto(e) {
   });
 
   const json = await resp.json();
-  if (!resp.ok) return alert(json.error || "Erro ao salvar produto.");
+  if (!resp.ok) return alert(json.error || "Erro ao cadastrar produto.");
 
   alert("✅ Produto cadastrado com sucesso!");
   form.reset();
   carregarProdutos();
 }
 
-// ==== LISTAR ====
+// Listar produtos
 async function carregarProdutos() {
   lista.innerHTML = "<p>Carregando...</p>";
-
   const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
   const produtos = await resp.json();
 
@@ -73,28 +66,22 @@ async function carregarProdutos() {
           </p>
         </div>
         <div>
-          <button class="btn btn-warning btn-sm mr-1" onclick="editarProduto(${p.id})">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="btn btn-danger btn-sm" onclick="excluirProduto(${p.id})">
-            <i class="fas fa-trash"></i>
-          </button>
+          <button class="btn btn-warning btn-sm mr-1" onclick="editarProduto(${p.id})"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="excluirProduto(${p.id})"><i class="fas fa-trash"></i></button>
         </div>
       </div>
     </div>
   `).join("");
 }
 
-// ==== EDITAR ====
+// Editar produto
 async function editarProduto(id) {
   try {
     const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
     const listaProdutos = await resp.json();
     const p = listaProdutos.find(x => x.id === id);
-
     if (!p) return alert("Produto não encontrado.");
 
-    // Preenche o modal
     editandoId = id;
     document.querySelector("#edit-id").value = p.id;
     document.querySelector("#edit-nome").value = p.nome;
@@ -111,7 +98,7 @@ async function editarProduto(id) {
   }
 }
 
-// ==== SALVAR EDIÇÃO ====
+// Salvar edição
 async function salvarEdicao() {
   if (!editandoId) return alert("Nenhum produto selecionado.");
 
@@ -133,19 +120,21 @@ async function salvarEdicao() {
   const json = await resp.json();
   if (!resp.ok) return alert(json.error || "Erro ao atualizar produto.");
 
-  alert("✅ Produto atualizado!");
+  alert("✅ Produto atualizado com sucesso!");
   $("#modalEditarProduto").modal("hide");
   carregarProdutos();
 }
 
-// ==== EXCLUIR ====
+// Excluir produto
 async function excluirProduto(id) {
   if (!confirm("Excluir este produto?")) return;
-
   const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
   const json = await resp.json();
   if (!resp.ok) return alert(json.error || "Erro ao excluir produto.");
-
   alert("🗑️ Produto removido!");
   carregarProdutos();
 }
+
+// 🔥 EXPOR FUNÇÕES AO ESCOPO GLOBAL (evita ReferenceError)
+window.editarProduto = editarProduto;
+window.excluirProduto = excluirProduto;

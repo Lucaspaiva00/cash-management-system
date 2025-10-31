@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gerenciamento de Produtos - Paiva Tech</title>
 
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
@@ -19,7 +19,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            justify-content: flex-start;
         }
 
         .card-produto {
@@ -40,7 +39,6 @@
 
 <body>
     <div id="wrapper">
-        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
@@ -68,7 +66,6 @@
                         class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>
         </ul>
 
-        <!-- Conteúdo -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -110,8 +107,7 @@
     </div>
 
     <!-- Modal de Edição -->
-    <div class="modal fade" id="modalEditarProduto" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalEditarProduto" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header bg-warning text-white">
@@ -136,8 +132,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning" id="btnSalvarEdicao"><i class="fas fa-save"></i>
+                    <button class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-warning" id="btnSalvarEdicao"><i class="fas fa-save"></i>
                         Salvar Alterações</button>
                 </div>
             </div>
