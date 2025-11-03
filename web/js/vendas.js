@@ -29,34 +29,37 @@ async function carregarResumo() {
     }
 }
 
-// 📈 Gráfico de barras
+// 📈 Gráfico
 function desenharGrafico(dados) {
     const ctx = document.getElementById("graficoVendas").getContext("2d");
     new Chart(ctx, {
         type: "bar",
         data: {
             labels: ["Dia", "Mês", "Ano"],
-            datasets: [{
-                label: "Total de Vendas (R$)",
-                data: [
-                    dados.dia._sum.total || 0,
-                    dados.mes._sum.total || 0,
-                    dados.ano._sum.total || 0,
-                ],
-                backgroundColor: ["#4e73df", "#1cc88a", "#f6c23e"],
-            }],
+            datasets: [
+                {
+                    label: "Total de Vendas (R$)",
+                    data: [
+                        dados.dia._sum.total || 0,
+                        dados.mes._sum.total || 0,
+                        dados.ano._sum.total || 0,
+                    ],
+                    backgroundColor: ["#007bff", "#28a745", "#ffc107"],
+                    borderRadius: 8,
+                },
+            ],
         },
         options: {
             responsive: true,
             plugins: {
                 legend: { display: false },
-                title: { display: true, text: "Resumo de Vendas" },
+                title: { display: true, text: "Resumo de Vendas", color: "#111", font: { size: 18 } },
             },
         },
     });
 }
 
-// 📋 Carregar tabela detalhada
+// 📋 Tabela
 async function carregarTabela() {
     try {
         const res = await fetch(`${BASE}/vendas?empresaId=${usuario.empresaId}`);
@@ -70,7 +73,7 @@ async function carregarTabela() {
             return;
         }
 
-        vendas.forEach(v => {
+        vendas.forEach((v) => {
             const nomeCliente = v.cliente ? v.cliente.nome : "Consumidor Final";
             const dataVenda = new Date(v.data).toLocaleDateString("pt-BR");
             const valor = v.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -90,7 +93,7 @@ async function carregarTabela() {
     }
 }
 
-// 📤 Exportar tabela para Excel (CSV)
+// 📤 Exportar CSV
 document.getElementById("btnExportar").addEventListener("click", () => {
     const tabela = document.getElementById("tabelaVendas");
     if (!tabela || tabela.rows.length === 0) {
@@ -99,7 +102,6 @@ document.getElementById("btnExportar").addEventListener("click", () => {
     }
 
     let csv = "ID;Cliente;Data;Pagamento;Valor (R$)\n";
-
     for (let i = 0; i < tabela.rows.length; i++) {
         const cells = tabela.rows[i].cells;
         csv += `${cells[0].innerText};${cells[1].innerText};${cells[2].innerText};${cells[3].innerText};${cells[4].innerText}\n`;
