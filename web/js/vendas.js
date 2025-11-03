@@ -5,7 +5,7 @@ if (!usuario || !usuario.empresaId) {
     window.location.href = "login.html";
 }
 
-// 📊 Carregar resumo (cards + gráfico)
+// 📊 Carregar resumo (cards + gráfico de barras)
 async function carregarResumo() {
     try {
         const res = await fetch(`${BASE}/vendas/resumo?empresaId=${usuario.empresaId}`);
@@ -22,49 +22,94 @@ async function carregarResumo() {
         document.getElementById("vAno").textContent = fmt(dados.ano._sum.total);
         document.getElementById("qAno").textContent = `${dados.ano._count.id} vendas`;
 
-        desenharGrafico(dados);
+        desenharGraficoBarras(dados);
     } catch (e) {
         console.error("Erro ao carregar resumo de vendas:", e);
-        alert("Falha ao carregar o relatório de vendas.");
     }
 }
 
-// 📈 Gráfico
-function desenharGrafico(dados) {
+// 📈 Gráfico de Barras - Resumo
+function desenharGraficoBarras(dados) {
     const ctx = document.getElementById("graficoVendas").getContext("2d");
     new Chart(ctx, {
         type: "bar",
         data: {
             labels: ["Dia", "Mês", "Ano"],
-            datasets: [
-                {
-                    label: "Total de Vendas (R$)",
-                    data: [
-                        dados.dia._sum.total || 0,
-                        dados.mes._sum.total || 0,
-                        dados.ano._sum.total || 0,
-                    ],
-                    backgroundColor: ["#007bff", "#28a745", "#ffc107"],
-                    borderRadius: 8,
-                },
-            ],
+            datasets: [{
+                label: "Total de Vendas (R$)",
+                data: [
+                    dados.dia._sum.total || 0,
+                    dados.mes._sum.total || 0,
+                    dados.ano._sum.total || 0,
+                ],
+                backgroundColor: ["#007bff", "#28a745", "#ffc107"],
+                borderRadius: 8,
+            }],
         },
         options: {
             responsive: true,
             plugins: {
                 legend: { display: false },
-                title: { display: true, text: "Resumo de Vendas", color: "#111", font: { size: 18 } },
+                title: { display: true, text: "Resumo de Vendas", font: { size: 18, weight: "bold" } },
             },
         },
     });
 }
 
-// 📋 Tabela
-async function carregarTabela() {
+// 📉 Gráfico de Linha - Vendas por Dia do Mês
+async function carregarGraficoMensal() {
     try {
         const res = await fetch(`${BASE}/vendas?empresaId=${usuario.empresaId}`);
         const vendas = await res.json();
 
+        const vendasPorDia = {};
+
+        vendas.forEach(v => {
+            const data = new Date(v.data);
+            const dia = data.getDate();
+            vendasPorDia[dia] = (vendasPorDia[dia] || 0) + Number(v.total);
+        });
+
+        const dias = Object.keys(vendasPorDia).sort((a, b) => a - b);
+        const valores = dias.map(d => vendasPorDia[d]);
+
+        const ctx = document.getElementById("graficoMensal").getContext("2d");
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: dias.map(d => `Dia ${d}`),
+                datasets: [{
+                    label: "Vendas Diárias (R$)",
+                    data: valores,
+                    fill: true,
+                    borderColor: "#dc3545",
+                    backgroundColor: "rgba(220,53,69,0.1)",
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: "#dc3545"
+                }],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: "top" },
+                    title: { display: true, text: "Tendência de Vendas Diárias", font: { size: 18, weight: "bold" } },
+                },
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    } catch (e) {
+        console.error("Erro ao gerar gráfico mensal:", e);
+    }
+}
+
+// 📋 Tabela de Vendas
+async function carregarTabela() {
+    try {
+        const res = await fetch(`${BASE}/vendas?empresaId=${usuario.empresaId}`);
+        const vendas = await res.json();
         const corpo = document.getElementById("tabelaVendas");
         corpo.innerHTML = "";
 
@@ -73,7 +118,7 @@ async function carregarTabela() {
             return;
         }
 
-        vendas.forEach((v) => {
+        vendas.forEach(v => {
             const nomeCliente = v.cliente ? v.cliente.nome : "Consumidor Final";
             const dataVenda = new Date(v.data).toLocaleDateString("pt-BR");
             const valor = v.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -85,8 +130,7 @@ async function carregarTabela() {
           <td>${dataVenda}</td>
           <td>${v.meioPagamento}</td>
           <td>${valor}</td>
-        </tr>
-      `;
+        </tr>`;
         });
     } catch (e) {
         console.error("Erro ao carregar tabela de vendas:", e);
@@ -96,10 +140,7 @@ async function carregarTabela() {
 // 📤 Exportar CSV
 document.getElementById("btnExportar").addEventListener("click", () => {
     const tabela = document.getElementById("tabelaVendas");
-    if (!tabela || tabela.rows.length === 0) {
-        alert("Nenhuma venda para exportar!");
-        return;
-    }
+    if (!tabela || tabela.rows.length === 0) return alert("Nenhuma venda para exportar!");
 
     let csv = "ID;Cliente;Data;Pagamento;Valor (R$)\n";
     for (let i = 0; i < tabela.rows.length; i++) {
@@ -119,4 +160,5 @@ document.getElementById("btnExportar").addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
     carregarResumo();
     carregarTabela();
+    carregarGraficoMensal();
 });

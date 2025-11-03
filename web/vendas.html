@@ -95,6 +95,7 @@
             border-radius: 10px;
             padding: 1rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
         }
 
         h4 i {
@@ -105,7 +106,6 @@
 
 <body>
     <div id="wrapper">
-        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
@@ -135,7 +135,6 @@
                         class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>
         </ul>
 
-        <!-- Conteúdo -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div class="container-fluid mt-4">
                 <h3 class="text-center mb-4"><i class="fas fa-chart-line text-danger"></i> Relatório de Vendas</h3>
@@ -174,8 +173,9 @@
                     </div>
                 </div>
 
-                <!-- Gráfico -->
+                <!-- Gráficos -->
                 <canvas id="graficoVendas" height="100"></canvas>
+                <canvas id="graficoMensal" height="100"></canvas>
 
                 <!-- Relatório detalhado -->
                 <hr class="my-4">
