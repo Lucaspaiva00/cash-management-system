@@ -124,28 +124,78 @@ document.getElementById("finalizar").addEventListener("click", async () => {
 });
 
 function gerarCupomPDF(venda) {
-    const conteudo = `
-*** CUPOM NÃO FISCAL ***
-PAIVA TECH - PDV
+    const total = venda.valor?.toFixed(2) ||
+        produtosVenda.reduce((a, b) => a + (b.preco * b.qtd), 0).toFixed(2);
 
-Data: ${new Date().toLocaleString()}
-Pagamento: ${venda.meioPagamento}
+    // Biblioteca do PDF
+    const { jsPDF } = window.jspdf;
 
-Produtos:
-${produtosVenda.map(p => `${p.nome} x${p.qtd} - R$ ${(p.preco * p.qtd).toFixed(2)}`).join("\n")}
+    const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: [80, 200], // formato de cupom
+    });
 
-TOTAL: R$ ${(venda.valor?.toFixed(2) || produtosVenda.reduce((a, b) => a + (b.preco * b.qtd), 0).toFixed(2))}
---------------------------------
-Obrigado pela preferência!
-`;
+    const logoUrl = "https://i.ibb.co/7v9Kfz9/paivatech-logo.png"; // troque se quiser seu logo
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 10;
 
-    const blob = new Blob([conteudo], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "cupom-venda.txt";
-    a.click();
-    URL.revokeObjectURL(url);
+    // Cabeçalho
+    doc.addImage(logoUrl, "PNG", (pageWidth / 2) - 15, y, 30, 12);
+    y += 18;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("PAIVA TECH - PDV", pageWidth / 2, y, { align: "center" });
+
+    y += 6;
+    doc.setFontSize(9);
+    doc.text(`Data: ${new Date().toLocaleString("pt-BR")}`, pageWidth / 2, y, { align: "center" });
+
+    y += 6;
+    doc.text(`Forma de Pagamento: ${venda.meioPagamento}`, pageWidth / 2, y, { align: "center" });
+
+    // Linha divisória
+    y += 4;
+    doc.setLineWidth(0.2);
+    doc.line(5, y, pageWidth - 5, y);
+    y += 5;
+
+    // Tabela de produtos
+    doc.setFont("helvetica", "bold");
+    doc.text("PRODUTO", 5, y);
+    doc.text("QTD", 38, y);
+    doc.text("TOTAL", 60, y);
+    y += 3;
+    doc.setFont("helvetica", "normal");
+
+    produtosVenda.forEach((p) => {
+        doc.text(p.nome.substring(0, 20), 5, y);
+        doc.text(String(p.qtd), 40, y);
+        doc.text(`R$ ${(p.preco * p.qtd).toFixed(2)}`, 55, y);
+        y += 5;
+    });
+
+    // Linha
+    y += 2;
+    doc.line(5, y, pageWidth - 5, y);
+    y += 6;
+
+    // Total
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text(`TOTAL: R$ ${total}`, pageWidth / 2, y, { align: "center" });
+
+    // Rodapé
+    y += 10;
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(9);
+    doc.text("** CUPOM NÃO FISCAL **", pageWidth / 2, y, { align: "center" });
+    y += 5;
+    doc.text("Obrigado pela preferência!", pageWidth / 2, y, { align: "center" });
+
+    // Download
+    doc.save("cupom-venda.pdf");
 }
+
 
 document.addEventListener("DOMContentLoaded", carregarSelects);
