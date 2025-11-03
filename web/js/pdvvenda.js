@@ -136,18 +136,16 @@ function gerarCupomPDF(venda) {
         format: [80, 200], // formato de cupom
     });
 
-    const logoUrl = "https://i.ibb.co/7v9Kfz9/paivatech-logo.png"; // troque se quiser seu logo
     const pageWidth = doc.internal.pageSize.getWidth();
     let y = 10;
 
-    // Cabeçalho
-    doc.addImage(logoUrl, "PNG", (pageWidth / 2) - 15, y, 30, 12);
-    y += 18;
+    // Cabeçalho (sem logo)
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
+    doc.setFontSize(13);
     doc.text("PAIVA TECH - PDV", pageWidth / 2, y, { align: "center" });
 
     y += 6;
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.text(`Data: ${new Date().toLocaleString("pt-BR")}`, pageWidth / 2, y, { align: "center" });
 
@@ -175,7 +173,7 @@ function gerarCupomPDF(venda) {
         y += 5;
     });
 
-    // Linha
+    // Linha separadora
     y += 2;
     doc.line(5, y, pageWidth - 5, y);
     y += 6;
