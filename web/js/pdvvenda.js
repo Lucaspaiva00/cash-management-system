@@ -11,23 +11,21 @@ let listaClientesBD = [];
 
 async function carregarSelects() {
     try {
-        const clientes = await fetch(`${BASE}/clientes?empresaId=${usuario.empresaId}`).then(r => r.json());
-        const produtos = await fetch(`${BASE}/produtos?empresaId=${usuario.empresaId}`).then(r => r.json());
+        const [clientes, produtos] = await Promise.all([
+            fetch(`${BASE}/clientes?empresaId=${usuario.empresaId}`).then(r => r.json()),
+            fetch(`${BASE}/produtos?empresaId=${usuario.empresaId}`).then(r => r.json())
+        ]);
 
         listaClientesBD = clientes;
         listaProdutosBD = produtos;
 
-        // Clientes
         document.getElementById("cliente").innerHTML =
-            '<option value="">Consumidor Final</option>' +
+            `<option value="">Consumidor Final</option>` +
             clientes.map(c => `<option value="${c.id}">${c.nome}</option>`).join("");
 
-        // Produtos
         document.getElementById("produto").innerHTML =
-            '<option value="">Selecione...</option>' +
-            produtos.map(p =>
-                `<option value="${p.id}">${p.nome} - R$ ${p.precoVenda?.toFixed(2) || 0}</option>`
-            ).join("");
+            `<option value="">Selecione...</option>` +
+            produtos.map(p => `<option value="${p.id}">${p.nome} - R$ ${p.precoVenda?.toFixed(2) || 0}</option>`).join("");
     } catch (err) {
         console.error("Erro ao carregar selects:", err);
         alert("Falha ao carregar clientes e produtos.");
@@ -36,6 +34,13 @@ async function carregarSelects() {
 
 function atualizarLista() {
     const lista = document.getElementById("listaProdutos");
+
+    if (produtosVenda.length === 0) {
+        lista.innerHTML = `<p class="text-muted text-center">Nenhum produto adicionado.</p>`;
+        document.getElementById("total").innerText = "R$ 0,00";
+        return;
+    }
+
     lista.innerHTML = produtosVenda.map((p, i) => `
     <div class="produto-item">
       <span>${p.nome} (x${p.qtd})</span>
@@ -45,10 +50,7 @@ function atualizarLista() {
   `).join("");
 
     const total = produtosVenda.reduce((acc, p) => acc + p.preco * p.qtd, 0);
-    document.getElementById("total").innerText = total.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-    });
+    document.getElementById("total").innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     calcularTroco();
 }
 
@@ -60,19 +62,14 @@ function removerProduto(i) {
 document.getElementById("adicionar").addEventListener("click", () => {
     const produtoId = parseInt(document.getElementById("produto").value);
     const qtd = parseInt(document.getElementById("quantidade").value);
+
     if (!produtoId || qtd <= 0) return alert("Selecione um produto e quantidade válida!");
 
     const produto = listaProdutosBD.find(p => p.id === produtoId);
     if (!produto) return alert("Produto não encontrado.");
     if (produto.estoque < qtd) return alert(`Estoque insuficiente (${produto.estoque} disponível)`);
 
-    produtosVenda.push({
-        produtoId,
-        nome: produto.nome,
-        preco: produto.precoVenda || 0,
-        qtd,
-    });
-
+    produtosVenda.push({ produtoId, nome: produto.nome, preco: produto.precoVenda || 0, qtd });
     document.getElementById("produto").value = "";
     document.getElementById("quantidade").value = 1;
     atualizarLista();
@@ -84,10 +81,7 @@ function calcularTroco() {
     const total = produtosVenda.reduce((acc, p) => acc + p.preco * p.qtd, 0);
     const recebido = parseFloat(document.getElementById("valorRecebido").value) || 0;
     const troco = Math.max(recebido - total, 0);
-    document.getElementById("troco").value = troco.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-    });
+    document.getElementById("troco").value = troco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 document.getElementById("finalizar").addEventListener("click", async () => {
@@ -115,32 +109,33 @@ document.getElementById("finalizar").addEventListener("click", async () => {
 
         if (!resp.ok) {
             const text = await resp.text();
-            throw new Error(`Erro HTTP ${resp.status}: ${text.slice(0, 100)}`);
+            throw new Error(`Erro HTTP ${resp.status}: ${text.slice(0, 120)}`);
         }
 
         const data = await resp.json();
-        alert("Venda registrada com sucesso!");
+        alert("✅ Venda registrada com sucesso!");
         gerarCupomPDF(data.data || body);
+        produtosVenda = [];
+        atualizarLista();
     } catch (err) {
         console.error(err);
         alert("Erro ao finalizar venda:\n" + err.message);
     }
-
 });
 
 function gerarCupomPDF(venda) {
     const conteudo = `
 *** CUPOM NÃO FISCAL ***
+PAIVA TECH - PDV
 
-Paiva Tech - PDV
 Data: ${new Date().toLocaleString()}
 Pagamento: ${venda.meioPagamento}
 
 Produtos:
 ${produtosVenda.map(p => `${p.nome} x${p.qtd} - R$ ${(p.preco * p.qtd).toFixed(2)}`).join("\n")}
 
-TOTAL: R$ ${venda.valor?.toFixed(2) || produtosVenda.reduce((a, b) => a + (b.preco * b.qtd), 0).toFixed(2)}
-
+TOTAL: R$ ${(venda.valor?.toFixed(2) || produtosVenda.reduce((a, b) => a + (b.preco * b.qtd), 0).toFixed(2))}
+--------------------------------
 Obrigado pela preferência!
 `;
 

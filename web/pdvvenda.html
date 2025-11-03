@@ -2,33 +2,57 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PDV - Venda Rápida | Paiva Tech</title>
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+
     <style>
-        .sidebar-dark {
-            background: linear-gradient(180deg, #111 0%, #222 100%);
-        }
-
-        /* === HEADER CINZA === */
-        .topbar {
-            background-color: #f1f3f8 !important;
-            border-bottom: 1px solid #dee2e6;
-        }
-
         body {
-            background-color: #f8f9fc;
+            background: #f4f5fa;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .sidebar-dark {
+            background: linear-gradient(180deg, #000 0%, #111 100%);
         }
 
         .pdv-container {
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 25px;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             margin-top: 40px;
+        }
+
+        .pdv-container h3 {
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #444;
+        }
+
+        select,
+        input {
+            border-radius: 8px !important;
+        }
+
+        .produto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+            padding: 8px 0;
+        }
+
+        .produto-item:last-child {
+            border-bottom: none;
         }
 
         .total {
@@ -37,53 +61,74 @@
             color: #28a745;
         }
 
-        .produto-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eaeaea;
+        .btn-primary {
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            transition: 0.2s;
+            font-weight: 600;
         }
 
-        .produto-item:last-child {
-            border-bottom: none;
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: scale(1.05);
         }
 
         .btn-finalizar {
+            background: #28a745;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
             font-size: 1.2rem;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-finalizar:hover {
+            background: #1e7e34;
+            transform: scale(1.03);
+        }
+
+        #listaProdutos {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 10px 15px;
+            max-height: 280px;
+            overflow-y: auto;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            align-items: flex-end;
+        }
+
+        .text-right div:first-child {
+            font-weight: 600;
+            color: #555;
         }
     </style>
 </head>
 
 <body>
     <div id="wrapper">
+        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
                 <div class="sidebar-brand-text mx-3">Paiva Tech</div>
             </a>
-
             <hr class="sidebar-divider my-0" />
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-
+            <li class="nav-item"><a class="nav-link" href="index.html"><i
+                        class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a></li>
             <hr class="sidebar-divider" />
             <div class="sidebar-heading">Páginas</div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="movimentacoes.html">
-                    <i class="fa fa-university"></i>
-                    <span>Caixa</span>
-                </a>
-            </li>
-            <li class="nav-item"><a class="nav-link" href="pdvvenda.html"><i
-                        class="fas fa-users"></i><span>PDV</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="vendas.html"><i class="fas fa-users"></i><span>Relatório de
-                        Vendas</span></a></li>
+            <li class="nav-item active"><a class="nav-link" href="pdvvenda.html"><i
+                        class="fas fa-cash-register"></i><span>PDV</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="vendas.html"><i class="fas fa-chart-line"></i><span>Relatório
+                        de Vendas</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="movimentacoes.html"><i
+                        class="fa fa-university"></i><span>Caixa</span></a></li>
             <li class="nav-item"><a class="nav-link" href="criarCliente.html"><i
                         class="fas fa-users"></i><span>Clientes</span></a></li>
             <li class="nav-item"><a class="nav-link" href="produtos.html"><i
@@ -92,76 +137,74 @@
                         class="fas fa-file-invoice"></i><span>Propostas</span></a></li>
             <li class="nav-item"><a class="nav-link" href="login.html"><i
                         class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>
-
-            <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
         </ul>
 
+        <!-- Conteúdo -->
         <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content" class="container-fluid">
-                <div class="pdv-container">
-                    <h3 class="text-center mb-4"><i class="fas fa-cash-register"></i> PDV - Venda Rápida</h3>
+            <div class="container-fluid pdv-container">
+                <h3 class="text-center"><i class="fas fa-cash-register text-success"></i> PDV - Venda Rápida</h3>
 
-                    <div class="form-row mb-3">
-                        <div class="col-md-6">
-                            <label>Cliente</label>
-                            <select id="cliente" class="form-control"></select>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Método de Pagamento</label>
-                            <select id="pagamento" class="form-control">
-                                <option value="DINHEIRO">Dinheiro</option>
-                                <option value="PIX">PIX</option>
-                                <option value="CARTAO">Cartão</option>
-                            </select>
-                        </div>
+                <!-- Cliente e pagamento -->
+                <div class="form-row mb-3">
+                    <div class="col-md-6">
+                        <label>Cliente</label>
+                        <select id="cliente" class="form-control"></select>
                     </div>
-
-                    <div class="form-row mb-3">
-                        <div class="col-md-6">
-                            <label>Produto</label>
-                            <select id="produto" class="form-control"></select>
-                        </div>
-                        <div class="col-md-3">
-                            <label>Quantidade</label>
-                            <input type="number" id="quantidade" class="form-control" min="1" value="1">
-                        </div>
-                        <div class="col-md-3">
-                            <label>&nbsp;</label>
-                            <button class="btn btn-primary btn-block" id="adicionar"><i class="fas fa-plus"></i>
-                                Adicionar</button>
-                        </div>
+                    <div class="col-md-6">
+                        <label>Método de Pagamento</label>
+                        <select id="pagamento" class="form-control">
+                            <option value="DINHEIRO">Dinheiro</option>
+                            <option value="PIX">PIX</option>
+                            <option value="CARTAO">Cartão</option>
+                        </select>
                     </div>
-
-                    <div id="listaProdutos" class="mb-4"></div>
-
-                    <div class="text-right mb-3">
-                        <div>Total da Venda:</div>
-                        <div class="total" id="total">R$ 0,00</div>
-                    </div>
-
-                    <div class="form-row mb-4">
-                        <div class="col-md-6">
-                            <label>Valor Recebido</label>
-                            <input type="number" id="valorRecebido" class="form-control" min="0" step="0.01" value="0">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Troco</label>
-                            <input type="text" id="troco" class="form-control" readonly>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-success btn-block btn-finalizar" id="finalizar">
-                        <i class="fas fa-check-circle"></i> Finalizar Venda
-                    </button>
                 </div>
+
+                <!-- Produtos -->
+                <div class="form-row mb-3">
+                    <div class="col-md-6">
+                        <label>Produto</label>
+                        <select id="produto" class="form-control"></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Quantidade</label>
+                        <input type="number" id="quantidade" class="form-control" min="1" value="1">
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary btn-block" id="adicionar"><i class="fas fa-plus"></i>
+                            Adicionar</button>
+                    </div>
+                </div>
+
+                <!-- Lista de produtos -->
+                <div id="listaProdutos"></div>
+
+                <!-- Totais -->
+                <div class="text-right mb-3">
+                    <div>Total da Venda:</div>
+                    <div class="total" id="total">R$ 0,00</div>
+                </div>
+
+                <!-- Pagamento -->
+                <div class="form-row mb-4">
+                    <div class="col-md-6">
+                        <label>Valor Recebido</label>
+                        <input type="number" id="valorRecebido" class="form-control" min="0" step="0.01" value="0">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Troco</label>
+                        <input type="text" id="troco" class="form-control" readonly>
+                    </div>
+                </div>
+
+                <!-- Finalizar -->
+                <button class="btn btn-success btn-block btn-finalizar" id="finalizar">
+                    <i class="fas fa-check-circle"></i> Finalizar Venda
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/pdvvenda.js"></script>
 </body>
 
