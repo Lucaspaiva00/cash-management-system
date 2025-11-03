@@ -43,5 +43,6 @@ routes.route("/propostas/:id").put(proposta.update).delete(proposta.remove);
 routes.get("/vendas", vendas.read);
 routes.post("/vendas", vendas.create);
 routes.delete("/vendas/:id", vendas.remove);
+routes.get("/vendas/resumo", vendas.resumo);
 
 module.exports = routes;

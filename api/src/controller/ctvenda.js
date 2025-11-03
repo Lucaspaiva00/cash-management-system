@@ -1,13 +1,26 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+// Listar vendas (com filtro opcional por data)
 const read = async (req, res) => {
     try {
         const empresaId = parseInt(req.query.empresaId);
-        if (!empresaId) return res.status(400).json({ error: "Informe o ID da empresa." });
+        const { inicio, fim } = req.query;
+
+        if (!empresaId)
+            return res.status(400).json({ error: "Informe o ID da empresa." });
+
+        const where = { empresaId };
+
+        if (inicio && fim) {
+            where.data = {
+                gte: new Date(inicio),
+                lte: new Date(fim),
+            };
+        }
 
         const vendas = await prisma.venda.findMany({
-            where: { empresaId },
+            where,
             orderBy: { id: "desc" },
             include: {
                 cliente: true,
@@ -21,6 +34,7 @@ const read = async (req, res) => {
         return res.status(500).json({ error: "Erro ao listar vendas." });
     }
 };
+
 
 const create = async (req, res) => {
     try {
@@ -109,4 +123,44 @@ const remove = async (req, res) => {
     }
 };
 
-module.exports = { create, read, remove };
+const resumo = async (req, res) => {
+    try {
+        const empresaId = parseInt(req.query.empresaId);
+        if (!empresaId) return res.status(400).json({ error: "Informe o ID da empresa." });
+
+        const agora = new Date();
+        const inicioDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 0, 0, 0);
+        const fimDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), 23, 59, 59);
+
+        const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1, 0, 0, 0);
+        const fimMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0, 23, 59, 59);
+
+        const inicioAno = new Date(agora.getFullYear(), 0, 1, 0, 0, 0);
+        const fimAno = new Date(agora.getFullYear(), 11, 31, 23, 59, 59);
+
+        const [dia, mes, ano] = await Promise.all([
+            prisma.venda.aggregate({
+                where: { empresaId, data: { gte: inicioDia, lte: fimDia } },
+                _sum: { total: true },
+                _count: { id: true },
+            }),
+            prisma.venda.aggregate({
+                where: { empresaId, data: { gte: inicioMes, lte: fimMes } },
+                _sum: { total: true },
+                _count: { id: true },
+            }),
+            prisma.venda.aggregate({
+                where: { empresaId, data: { gte: inicioAno, lte: fimAno } },
+                _sum: { total: true },
+                _count: { id: true },
+            }),
+        ]);
+
+        res.status(200).json({ dia, mes, ano });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao gerar resumo de vendas." });
+    }
+};
+
+module.exports = { create, read, remove, resumo };

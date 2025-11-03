@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Vendas | Paiva Tech</title>
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fc;
+        }
+
+        .card h5 {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table th {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .btn-success i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
+                <div class="sidebar-brand-text mx-3">Paiva Tech</div>
+            </a>
+
+            <hr class="sidebar-divider my-0" />
+            <li class="nav-item"><a class="nav-link" href="index.html"><i
+                        class="fas fa-fw fa-tachometer-alt"></i>Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="pdvvenda.html"><i class="fas fa-cash-register"></i>PDV</a>
+            </li>
+            <li class="nav-item active"><a class="nav-link" href="vendas.html"><i
+                        class="fas fa-chart-line"></i>Vendas</a></li>
+        </ul>
+
+        <!-- Conteúdo -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div class="container-fluid mt-4">
+                <h3 class="text-center mb-4"><i class="fas fa-chart-line"></i> Relatório de Vendas</h3>
+
+                <!-- Cards -->
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-left-primary shadow py-3">
+                            <div class="card-body">
+                                <h5>Vendas do Dia</h5>
+                                <h3 id="vDia">R$ 0,00</h3>
+                                <p id="qDia" class="text-muted"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-left-success shadow py-3">
+                            <div class="card-body">
+                                <h5>Vendas do Mês</h5>
+                                <h3 id="vMes">R$ 0,00</h3>
+                                <p id="qMes" class="text-muted"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-left-warning shadow py-3">
+                            <div class="card-body">
+                                <h5>Vendas do Ano</h5>
+                                <h3 id="vAno">R$ 0,00</h3>
+                                <p id="qAno" class="text-muted"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico -->
+                <canvas id="graficoVendas" height="100"></canvas>
+
+                <!-- Relatório detalhado -->
+                <hr class="my-4">
+                <h4 class="text-center mb-3"><i class="fas fa-list"></i> Vendas Registradas</h4>
+
+                <div class="d-flex justify-content-end mb-3">
+                    <button id="btnExportar" class="btn btn-success">
+                        <i class="fas fa-file-excel"></i> Exportar para Excel
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Pagamento</th>
+                                <th>Valor (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaVendas"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/vendas.js"></script>
+</body>
+
+</html>
