@@ -128,7 +128,7 @@ async function gerarCupomPDF(venda) {
         produtosVenda.reduce((a, b) => a + (b.preco * b.qtd), 0).toFixed(2);
 
     // Buscar informações da empresa
-    let nomeEmpresa = "PAIVA TECH - PDV";
+    let nomeEmpresa = "PAIVA TEC - PDV";
     try {
         const res = await fetch(`${BASE}/empresas/${usuario.empresaId}`);
         if (res.ok) {
