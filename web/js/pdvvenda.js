@@ -123,9 +123,28 @@ document.getElementById("finalizar").addEventListener("click", async () => {
     }
 });
 
-function gerarCupomPDF(venda) {
+async function gerarCupomPDF(venda) {
     const total = venda.valor?.toFixed(2) ||
         produtosVenda.reduce((a, b) => a + (b.preco * b.qtd), 0).toFixed(2);
+
+    // Buscar informações da empresa
+    let nomeEmpresa = "PAIVA TECH - PDV";
+    try {
+        const res = await fetch(`${BASE}/empresas/${usuario.empresaId}`);
+        if (res.ok) {
+            const empresa = await res.json();
+            nomeEmpresa = empresa.nome || nomeEmpresa;
+        }
+    } catch (e) {
+        console.warn("Erro ao carregar nome da empresa:", e);
+    }
+
+    // Buscar nome do cliente (se houver)
+    let nomeCliente = "Consumidor Final";
+    if (venda.clienteId) {
+        const cliente = listaClientesBD.find(c => c.id == venda.clienteId);
+        if (cliente) nomeCliente = cliente.nome;
+    }
 
     // Biblioteca do PDF
     const { jsPDF } = window.jspdf;
@@ -139,15 +158,18 @@ function gerarCupomPDF(venda) {
     const pageWidth = doc.internal.pageSize.getWidth();
     let y = 10;
 
-    // Cabeçalho (sem logo)
+    // Cabeçalho com nome da empresa
     doc.setFont("helvetica", "bold");
     doc.setFontSize(13);
-    doc.text("PAIVA TECH - PDV", pageWidth / 2, y, { align: "center" });
+    doc.text(nomeEmpresa.toUpperCase(), pageWidth / 2, y, { align: "center" });
 
     y += 6;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.text(`Data: ${new Date().toLocaleString("pt-BR")}`, pageWidth / 2, y, { align: "center" });
+
+    y += 5;
+    doc.text(`Cliente: ${nomeCliente}`, pageWidth / 2, y, { align: "center" });
 
     y += 6;
     doc.text(`Forma de Pagamento: ${venda.meioPagamento}`, pageWidth / 2, y, { align: "center" });
@@ -192,8 +214,9 @@ function gerarCupomPDF(venda) {
     doc.text("Obrigado pela preferência!", pageWidth / 2, y, { align: "center" });
 
     // Download
-    doc.save("cupom-venda.pdf");
+    doc.save(`cupom-${nomeEmpresa.replace(/\s+/g, "_")}.pdf`);
 }
+
 
 
 document.addEventListener("DOMContentLoaded", carregarSelects);
