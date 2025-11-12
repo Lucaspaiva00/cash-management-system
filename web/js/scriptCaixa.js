@@ -1,66 +1,57 @@
 const API = "https://cash-management-system.onrender.com/caixa";
-const empresaId =
-  JSON.parse(localStorage.getItem("usuarioLogado"))?.empresaId || 1;
+const empresaId = JSON.parse(localStorage.getItem("usuarioLogado"))?.empresaId || 1;
 
 const fmtBRL = (n) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
     Number(n || 0)
   );
 
-// ===============================
-// 🎯 DOM
-// ===============================
+// === DOM ===
 const form = document.querySelector("#caixaForm");
 const lista = document.querySelector("#listaOperacoes");
 const filtroTipo = document.querySelector("#filtroTipo");
-
-// opcionais (se existir, atualiza)
+const inputInicio = document.querySelector("#filtroInicio");
+const inputFim = document.querySelector("#filtroFim");
+const btnLimparFiltros = document.querySelector("#btnLimparFiltros");
 const elTotalEntradas = document.querySelector("#totalEntradas");
 const elTotalSaidas = document.querySelector("#totalSaidas");
 const elSaldoGeral = document.querySelector("#saldoGeral");
 
-// opcionais (se existir, ativa)
-const inputInicio = document.querySelector("#filtroInicio"); // <input type="date" id="filtroInicio">
-const inputFim = document.querySelector("#filtroFim");       // <input type="date" id="filtroFim">
-const btnExportCSV = document.querySelector("#exportCSV");   // <button id="exportCSV">
-
-// estado local
 let OPERACOES = [];
 
-// ===============================
-// 🚀 INIT
-// ===============================
+// === INIT ===
 document.addEventListener("DOMContentLoaded", () => {
-  // listeners
   if (form) form.addEventListener("submit", salvarOperacao);
   if (filtroTipo) filtroTipo.addEventListener("change", carregarOperacoes);
   if (inputInicio) inputInicio.addEventListener("change", carregarOperacoes);
   if (inputFim) inputFim.addEventListener("change", carregarOperacoes);
-  if (btnExportCSV) btnExportCSV.addEventListener("click", exportarCSV);
+  if (btnLimparFiltros)
+    btnLimparFiltros.addEventListener("click", limparFiltros);
 
-  garantirModalEdicao(); // cria modal de edição se não existir
-
+  garantirModalEdicao();
   carregarOperacoes();
 });
 
-// ===============================
-// 🟩 CREATE
-// ===============================
+// === CREATE ===
 async function salvarOperacao(e) {
   e.preventDefault();
 
   const payload = {
-    tipoOperacao: (form.tipoOperacao?.value || "").trim(), // ENTRADA | SAIDA
-    meioPagamento: (form.meioPagamento?.value || "").trim(), // PIX | CARTAO | ...
-    descricao: (form.descricao?.value || "").trim(),
-    valor: parseFloat(form.valor?.value),
-    dataOperacao: form.dataOperacao?.value || undefined, // deixa o back aplicar default/parse
+    tipoOperacao: form.tipoOperacao.value.trim(),
+    meioPagamento: form.meioPagamento.value.trim(),
+    descricao: form.descricao.value.trim(),
+    valor: parseFloat(form.valor.value),
+    dataOperacao: form.dataOperacao.value,
     empresaId,
   };
 
-  // validação mínima (aceita R$ 0,00? normalmente não; aqui exigimos > 0)
-  if (!payload.tipoOperacao || !payload.meioPagamento || isNaN(payload.valor) || payload.valor <= 0) {
-    alert("Preencha Tipo, Meio de Pagamento e um Valor maior que zero.");
+  if (
+    !payload.tipoOperacao ||
+    !payload.meioPagamento ||
+    isNaN(payload.valor) ||
+    payload.valor <= 0
+  ) {
+    alert("Preencha Tipo, Meio de Pagamento e Valor maior que zero.");
     return;
   }
 
@@ -71,50 +62,36 @@ async function salvarOperacao(e) {
       body: JSON.stringify(payload),
     });
 
-    const json = await resp.json().catch(() => ({}));
-    if (!resp.ok) {
-      console.error("Erro ao salvar:", json);
-      alert(json.error || "Erro ao salvar operação.");
-      return;
-    }
-
+    if (!resp.ok) throw new Error("Erro ao salvar operação.");
     form.reset();
     carregarOperacoes();
   } catch (err) {
-    console.error(err);
-    alert("Falha de comunicação com o servidor.");
+    alert("Erro ao salvar operação: " + err.message);
   }
 }
 
-// ===============================
-// 📋 READ
-// ===============================
+// === READ + FILTRO ===
 async function carregarOperacoes() {
   lista.innerHTML = `<p class="text-muted">Carregando...</p>`;
-
   let url = `${API}?empresaId=${empresaId}`;
-  if (filtroTipo && filtroTipo.value) {
-    url += `&tipoOperacao=${encodeURIComponent(filtroTipo.value)}`; // se o back suportar
-  }
 
   try {
     const resp = await fetch(url);
     const dados = await resp.json();
 
-    if (!Array.isArray(dados)) {
-      lista.innerHTML = `<p class="text-danger">Erro ao carregar movimentações.</p>`;
-      return;
-    }
+    if (!Array.isArray(dados)) throw new Error("Erro ao carregar.");
 
-    // guarda no estado
     OPERACOES = dados
       .map((op) => ({
         ...op,
-        // normaliza data
         _dataTs: op.dataOperacao ? new Date(op.dataOperacao).getTime() : 0,
       }))
-      // filtro de data no front (se inputs existirem)
       .filter((op) => {
+        // filtro por tipo
+        if (filtroTipo && filtroTipo.value) {
+          if (op.tipoOperacao !== filtroTipo.value) return false;
+        }
+        // filtro por intervalo de datas
         if (inputInicio && inputInicio.value) {
           const ini = new Date(inputInicio.value).setHours(0, 0, 0, 0);
           if (op._dataTs < ini) return false;
@@ -125,26 +102,70 @@ async function carregarOperacoes() {
         }
         return true;
       })
-      // ordena por data desc
       .sort((a, b) => b._dataTs - a._dataTs);
 
     if (OPERACOES.length === 0) {
       lista.innerHTML = `<p class="text-muted">Nenhuma movimentação encontrada.</p>`;
-      atualizarTotais(OPERACOES);
+      atualizarTotais([]);
       return;
     }
 
     lista.innerHTML = OPERACOES.map(cardOperacao).join("");
     atualizarTotais(OPERACOES);
   } catch (err) {
-    console.error(err);
-    lista.innerHTML = `<p class="text-danger">Erro ao carregar movimentações.</p>`;
+    lista.innerHTML = `<p class="text-danger">Erro: ${err.message}</p>`;
   }
 }
 
-// ===============================
-// 🟨 UPDATE (modal de edição)
-// ===============================
+// === LIMPAR FILTROS ===
+function limparFiltros() {
+  filtroTipo.value = "";
+  inputInicio.value = "";
+  inputFim.value = "";
+  carregarOperacoes();
+}
+
+// === CARD (UI) ===
+function cardOperacao(op) {
+  const tipo = op.tipoOperacao.toUpperCase() === "ENTRADA" ? "entrada" : "saida";
+  const corValor = tipo === "entrada" ? "text-success" : "text-danger";
+  const valorFmt = fmtBRL(op.valor);
+
+  // 🔧 Corrige data (sem fuso)
+  const dataBR = op.dataOperacao
+    ? new Date(op.dataOperacao + "T00:00:00").toLocaleDateString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    })
+    : "—";
+
+  return `
+    <div class="card-op ${tipo}">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h6 class="mb-1">${op.tipoOperacao}</h6>
+          <p class="small text-muted mb-1">${op.meioPagamento} • ${dataBR}</p>
+          <p class="mb-1">${op.descricao}</p>
+          <strong class="${corValor}">${valorFmt}</strong>
+        </div>
+        <div>
+          <button class="btn btn-sm btn-outline-secondary mr-2" title="Editar"
+            onclick='abrirModalEdicao(${JSON.stringify(safeClone(op))})'>
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" title="Excluir"
+            onclick="excluirOperacao(${op.id})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function safeClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+// === UPDATE ===
 function garantirModalEdicao() {
   if (document.querySelector("#modalEdicaoCaixa")) return;
   const modal = document.createElement("div");
@@ -160,20 +181,17 @@ function garantirModalEdicao() {
             </button>
           </div>
           <div class="modal-body">
-            
             <input type="hidden" id="edit_id">
-
             <div class="form-group">
               <label>Tipo de Operação</label>
-              <select id="edit_tipoOperacao" class="form-control" required>
+              <select id="edit_tipoOperacao" class="form-control">
                 <option value="ENTRADA">Entrada</option>
                 <option value="SAIDA">Saída</option>
               </select>
             </div>
-
             <div class="form-group">
               <label>Meio de Pagamento</label>
-              <select id="edit_meioPagamento" class="form-control" required>
+              <select id="edit_meioPagamento" class="form-control">
                 <option value="PIX">Pix</option>
                 <option value="CARTAO">Cartão</option>
                 <option value="DINHEIRO">Dinheiro</option>
@@ -181,22 +199,18 @@ function garantirModalEdicao() {
                 <option value="TRANSFERENCIA">Transferência</option>
               </select>
             </div>
-
             <div class="form-group">
               <label>Valor (R$)</label>
               <input type="number" step="0.01" id="edit_valor" class="form-control" required>
             </div>
-
             <div class="form-group">
               <label>Data</label>
               <input type="date" id="edit_dataOperacao" class="form-control" required>
             </div>
-
             <div class="form-group">
               <label>Descrição</label>
-              <input type="text" id="edit_descricao" class="form-control" placeholder="Descrição">
+              <input type="text" id="edit_descricao" class="form-control">
             </div>
-
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
@@ -208,29 +222,29 @@ function garantirModalEdicao() {
   </div>`;
   document.body.appendChild(modal);
 
-  // submit edição
-  const formEditarOp = modal.querySelector("#formEditarOp");
-  formEditarOp.addEventListener("submit", salvarEdicaoOperacao);
+  modal
+    .querySelector("#formEditarOp")
+    .addEventListener("submit", salvarEdicaoOperacao);
 }
 
 function abrirModalEdicao(op) {
-  // preenche
   document.querySelector("#edit_id").value = op.id;
-  document.querySelector("#edit_tipoOperacao").value = op.tipoOperacao || "ENTRADA";
-  document.querySelector("#edit_meioPagamento").value = op.meioPagamento || "PIX";
-  document.querySelector("#edit_valor").value = Number(op.valor || 0);
+  document.querySelector("#edit_tipoOperacao").value =
+    op.tipoOperacao || "ENTRADA";
+  document.querySelector("#edit_meioPagamento").value =
+    op.meioPagamento || "PIX";
+  document.querySelector("#edit_valor").value = op.valor || 0;
   document.querySelector("#edit_dataOperacao").value = op.dataOperacao
-    ? new Date(op.dataOperacao).toISOString().substring(0, 10)
+    ? new Date(op.dataOperacao + "T00:00:00")
+      .toISOString()
+      .substring(0, 10)
     : "";
   document.querySelector("#edit_descricao").value = op.descricao || "";
-
-  // abre modal (Bootstrap)
   $("#modalEdicaoCaixa").modal("show");
 }
 
 async function salvarEdicaoOperacao(e) {
   e.preventDefault();
-
   const id = Number(document.querySelector("#edit_id").value);
   const payload = {
     tipoOperacao: document.querySelector("#edit_tipoOperacao").value,
@@ -240,11 +254,6 @@ async function salvarEdicaoOperacao(e) {
     descricao: document.querySelector("#edit_descricao").value.trim(),
   };
 
-  if (!id || !payload.tipoOperacao || !payload.meioPagamento || isNaN(payload.valor) || payload.valor <= 0) {
-    alert("Preencha corretamente os campos.");
-    return;
-  }
-
   try {
     const resp = await fetch(`${API}/${id}`, {
       method: "PUT",
@@ -252,135 +261,37 @@ async function salvarEdicaoOperacao(e) {
       body: JSON.stringify(payload),
     });
 
-    const json = await resp.json().catch(() => ({}));
-    if (!resp.ok) {
-      console.error("Erro ao atualizar:", json);
-      alert(json.error || "Erro ao atualizar movimentação.");
-      return;
-    }
-
+    if (!resp.ok) throw new Error("Erro ao atualizar movimentação.");
     $("#modalEdicaoCaixa").modal("hide");
     carregarOperacoes();
   } catch (err) {
-    console.error(err);
-    alert("Falha de comunicação ao atualizar.");
+    alert(err.message);
   }
 }
 
-// ===============================
-// 🟥 DELETE
-// ===============================
+// === DELETE ===
 async function excluirOperacao(id) {
   if (!confirm("Deseja excluir esta movimentação?")) return;
-
   try {
     const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
-    if (!resp.ok) {
-      const json = await resp.json().catch(() => ({}));
-      alert(json.error || "Erro ao excluir movimentação.");
-      return;
-    }
+    if (!resp.ok) throw new Error("Erro ao excluir movimentação.");
     carregarOperacoes();
   } catch (err) {
-    console.error(err);
-    alert("Falha de comunicação ao excluir.");
+    alert(err.message);
   }
 }
 
-// ===============================
-// 📊 TOTAIS (opcional)
-// ===============================
+// === TOTAIS ===
 function atualizarTotais(items = []) {
   const entradas = items
-    .filter((i) => (i.tipoOperacao || "").toUpperCase() === "ENTRADA")
+    .filter((i) => i.tipoOperacao === "ENTRADA")
     .reduce((acc, i) => acc + (Number(i.valor) || 0), 0);
-
   const saidas = items
-    .filter((i) => (i.tipoOperacao || "").toUpperCase() === "SAIDA")
+    .filter((i) => i.tipoOperacao === "SAIDA")
     .reduce((acc, i) => acc + (Number(i.valor) || 0), 0);
-
   const saldo = entradas - saidas;
 
   if (elTotalEntradas) elTotalEntradas.textContent = fmtBRL(entradas);
   if (elTotalSaidas) elTotalSaidas.textContent = fmtBRL(saidas);
   if (elSaldoGeral) elSaldoGeral.textContent = fmtBRL(saldo);
-}
-
-// ===============================
-// 🧱 UI: Card
-// ===============================
-function cardOperacao(op) {
-  const tipo = (op.tipoOperacao || "").toUpperCase() === "ENTRADA" ? "entrada" : "saida";
-  const classeBorda = tipo === "entrada" ? "entrada" : "saida";
-  const corValor = tipo === "entrada" ? "text-success" : "text-danger";
-  const dataBR = op.dataOperacao
-    ? new Date(op.dataOperacao).toLocaleDateString("pt-BR")
-    : "—";
-  const valorFmt = fmtBRL(op.valor);
-
-  // botão editar chama modal
-  return `
-    <div class="card-op ${classeBorda}">
-      <div class="d-flex justify-content-between align-items-start">
-        <div>
-          <h6 class="mb-1">${op.tipoOperacao || "—"}</h6>
-          <p class="small text-muted mb-1">${op.meioPagamento || "—"} • ${dataBR}</p>
-          <p class="mb-1">${op.descricao || "Sem descrição"}</p>
-          <strong class="${corValor}">${valorFmt}</strong>
-        </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-outline-secondary mr-2" title="Editar"
-            onclick='abrirModalEdicao(${JSON.stringify(safeClone(op))})'>
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-danger" title="Excluir"
-            onclick="excluirOperacao(${op.id})">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    </div>`;
-}
-
-// evita erro ao serializar funções/undefined
-function safeClone(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-// ===============================
-// ⬇️ Export CSV (opcional)
-// ===============================
-function exportarCSV() {
-  if (!OPERACOES.length) {
-    alert("Não há movimentações para exportar.");
-    return;
-  }
-  const header = [
-    "ID",
-    "TipoOperacao",
-    "MeioPagamento",
-    "Valor",
-    "DataOperacao",
-    "Descricao",
-  ];
-  const rows = OPERACOES.map((o) => [
-    o.id,
-    o.tipoOperacao || "",
-    o.meioPagamento || "",
-    String(o.valor || 0).replace(".", ","),
-    o.dataOperacao ? new Date(o.dataOperacao).toISOString().substring(0, 10) : "",
-    (o.descricao || "").replaceAll("\n", " ").replaceAll(";", ","),
-  ]);
-
-  const csv = [header, ...rows].map((r) => r.join(";")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `movimentacoes_${new Date().toISOString().substring(0, 10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 }

@@ -204,6 +204,45 @@
                         </div>
                     </div>
 
+                    <!-- ✅ FILTROS -->
+                    <div class="container-fluid mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="mb-3"><i class="fas fa-filter text-danger"></i> Filtros de Pesquisa</h5>
+                                <div class="form-row">
+                                    <div class="col-md-3 mb-2">
+                                        <label>Tipo de Operação</label>
+                                        <select id="filtroTipo" class="form-control">
+                                            <option value="">Todas</option>
+                                            <option value="ENTRADA">Entradas</option>
+                                            <option value="SAIDA">Saídas</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label>Data Inicial</label>
+                                        <input type="date" id="filtroInicio" class="form-control">
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label>Data Final</label>
+                                        <input type="date" id="filtroFim" class="form-control">
+                                    </div>
+                                    <div class="col-md-3 mb-2 d-flex align-items-end">
+                                        <button id="btnLimparFiltros" class="btn btn-outline-secondary w-100">
+                                            <i class="fas fa-undo"></i> Limpar Filtros
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ✅ LISTAGEM -->
+                    <div class="container-fluid mb-5">
+                        <h5 class="mb-3"><i class="fas fa-list"></i> Movimentações Registradas</h5>
+                        <div id="listaOperacoes"></div>
+                    </div>
+
+
                     <!-- ✅ FORMULÁRIO -->
                     <div class="container-fluid mb-4">
                         <div class="card shadow-sm">
