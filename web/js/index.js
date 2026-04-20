@@ -10,14 +10,62 @@ let graficoDistribuicao = null;
 let graficoUltimosMeses = null;
 
 const indicadores = [
-  { id: "creditos", nome: "Crédito do Mês", cor: "primary", icone: "fa-arrow-up", moeda: true },
-  { id: "debitos", nome: "Débito do Mês", cor: "danger", icone: "fa-arrow-down", moeda: true },
-  { id: "lucro", nome: "Lucro Líquido", cor: "success", icone: "fa-balance-scale", moeda: true },
-  { id: "propostas", nome: "Propostas do Mês", cor: "info", icone: "fa-file-invoice", moeda: true },
-  { id: "aprovadas", nome: "Propostas Aprovadas", cor: "success", icone: "fa-check-circle", moeda: false },
-  { id: "pendentes", nome: "Propostas Pendentes", cor: "warning", icone: "fa-hourglass-half", moeda: false },
-  { id: "clientes", nome: "Clientes Cadastrados", cor: "secondary", icone: "fa-users", moeda: false },
-  { id: "empresas", nome: "Empresas", cor: "dark", icone: "fa-building", moeda: false },
+  {
+    id: "creditos",
+    nome: "Crédito do Mês",
+    cor: "primary",
+    icone: "fa-arrow-up",
+    moeda: true,
+  },
+  {
+    id: "debitos",
+    nome: "Débito do Mês",
+    cor: "danger",
+    icone: "fa-arrow-down",
+    moeda: true,
+  },
+  {
+    id: "lucro",
+    nome: "Lucro Líquido",
+    cor: "success",
+    icone: "fa-balance-scale",
+    moeda: true,
+  },
+  {
+    id: "propostas",
+    nome: "Propostas do Mês",
+    cor: "info",
+    icone: "fa-file-invoice",
+    moeda: true,
+  },
+  {
+    id: "aprovadas",
+    nome: "Propostas Aprovadas",
+    cor: "success",
+    icone: "fa-check-circle",
+    moeda: false,
+  },
+  {
+    id: "pendentes",
+    nome: "Propostas Pendentes",
+    cor: "warning",
+    icone: "fa-hourglass-half",
+    moeda: false,
+  },
+  {
+    id: "clientes",
+    nome: "Clientes Cadastrados",
+    cor: "secondary",
+    icone: "fa-users",
+    moeda: false,
+  },
+  {
+    id: "empresas",
+    nome: "Empresas",
+    cor: "dark",
+    icone: "fa-building",
+    moeda: false,
+  },
 ];
 
 function criarCards() {
@@ -40,6 +88,17 @@ function criarCards() {
       </div>
     `;
   });
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const texto = await response.text();
+    throw new Error(`Erro ${response.status} ao acessar ${url}: ${texto}`);
+  }
+
+  return response.json();
 }
 
 function formatarMoeda(valor) {
@@ -76,10 +135,11 @@ function getDiasNoMes(ano, mes) {
 
 function dataEstaNoMes(dataString, ano, mes) {
   if (!dataString) return false;
+
   const data = new Date(dataString);
   if (isNaN(data.getTime())) return false;
 
-  return data.getFullYear() === ano && (data.getMonth() + 1) === mes;
+  return data.getFullYear() === ano && data.getMonth() + 1 === mes;
 }
 
 function destruirGraficos() {
@@ -90,7 +150,6 @@ function destruirGraficos() {
 
 function montarGraficoFluxoMensal(caixaFiltrado, ano, mes) {
   const diasNoMes = getDiasNoMes(ano, mes);
-
   const labels = [];
   const entradas = [];
   const saidas = [];
@@ -108,11 +167,17 @@ function montarGraficoFluxoMensal(caixaFiltrado, ano, mes) {
     const indiceDia = data.getDate() - 1;
     const valor = Number(item.valor || 0);
 
-    if (item.tipoOperacao === "ENTRADA") entradas[indiceDia] += valor;
-    if (item.tipoOperacao === "SAIDA") saidas[indiceDia] += valor;
+    if (item.tipoOperacao === "ENTRADA") {
+      entradas[indiceDia] += valor;
+    }
+
+    if (item.tipoOperacao === "SAIDA") {
+      saidas[indiceDia] += valor;
+    }
   });
 
   const ctx = document.getElementById("graficoFluxoMensal").getContext("2d");
+
   graficoFluxoMensal = new Chart(ctx, {
     type: "bar",
     data: {
@@ -140,7 +205,9 @@ function montarGraficoFluxoMensal(caixaFiltrado, ano, mes) {
       maintainAspectRatio: false,
       responsive: true,
       plugins: {
-        legend: { position: "top" },
+        legend: {
+          position: "top",
+        },
         tooltip: {
           callbacks: {
             label: function (context) {
@@ -165,6 +232,7 @@ function montarGraficoFluxoMensal(caixaFiltrado, ano, mes) {
 
 function montarGraficoDistribuicao(entrada, saida) {
   const ctx = document.getElementById("graficoDistribuicao").getContext("2d");
+
   graficoDistribuicao = new Chart(ctx, {
     type: "doughnut",
     data: {
@@ -185,7 +253,9 @@ function montarGraficoDistribuicao(entrada, saida) {
       maintainAspectRatio: false,
       responsive: true,
       plugins: {
-        legend: { position: "bottom" },
+        legend: {
+          position: "bottom",
+        },
         tooltip: {
           callbacks: {
             label: function (context) {
@@ -203,7 +273,7 @@ function montarGraficoUltimosMeses(caixa, anoSelecionado, mesSelecionado) {
   const lucros = [];
 
   for (let i = 5; i >= 0; i--) {
-    const base = new Date(anoSelecionado, (mesSelecionado - 1) - i, 1);
+    const base = new Date(anoSelecionado, mesSelecionado - 1 - i, 1);
     const ano = base.getFullYear();
     const mes = base.getMonth() + 1;
 
@@ -220,12 +290,17 @@ function montarGraficoUltimosMeses(caixa, anoSelecionado, mesSelecionado) {
     });
 
     labels.push(
-      base.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" })
+      base.toLocaleDateString("pt-BR", {
+        month: "short",
+        year: "2-digit",
+      })
     );
+
     lucros.push(entradas - saidas);
   }
 
   const ctx = document.getElementById("graficoUltimosMeses").getContext("2d");
+
   graficoUltimosMeses = new Chart(ctx, {
     type: "line",
     data: {
@@ -247,7 +322,9 @@ function montarGraficoUltimosMeses(caixa, anoSelecionado, mesSelecionado) {
       maintainAspectRatio: false,
       responsive: true,
       plugins: {
-        legend: { display: true },
+        legend: {
+          display: true,
+        },
         tooltip: {
           callbacks: {
             label: function (context) {
@@ -289,11 +366,10 @@ async function carregarDashboard() {
 
     labelPeriodoSelecionado.innerText = `Exibindo dados de ${getNomeMesAno(ano, mes)}`;
 
-    const [caixa, propostas, clientes, empresas] = await Promise.all([
-      fetch(`${API}/caixa?empresaId=${usuario.empresaId}`).then((r) => r.json()),
-      fetch(`${API}/propostas?empresaId=${usuario.empresaId}`).then((r) => r.json()),
-      fetch(`${API}/clientes?empresaId=${usuario.empresaId}`).then((r) => r.json()),
-      fetch(`${API}/empresas`).then((r) => r.json()),
+    const [caixa, propostas, clientes] = await Promise.all([
+      fetchJson(`${API}/caixa?empresaId=${usuario.empresaId}`),
+      fetchJson(`${API}/propostas?empresaId=${usuario.empresaId}`),
+      fetchJson(`${API}/clientes?empresaId=${usuario.empresaId}`),
     ]);
 
     const caixaFiltrado = caixa.filter((item) =>
@@ -309,6 +385,7 @@ async function carregarDashboard() {
 
     caixaFiltrado.forEach((item) => {
       const valor = Number(item.valor || 0);
+
       if (item.tipoOperacao === "ENTRADA") entrada += valor;
       if (item.tipoOperacao === "SAIDA") saida += valor;
     });
@@ -334,7 +411,7 @@ async function carregarDashboard() {
     atualizarValor("aprovadas", aprovadas, false);
     atualizarValor("pendentes", pendentes, false);
     atualizarValor("clientes", clientes.length, false);
-    atualizarValor("empresas", empresas.length, false);
+    atualizarValor("empresas", 1, false);
 
     destruirGraficos();
     montarGraficoFluxoMensal(caixaFiltrado, ano, mes);
@@ -342,7 +419,7 @@ async function carregarDashboard() {
     montarGraficoUltimosMeses(caixa, ano, mes);
   } catch (error) {
     console.error("Erro ao carregar dashboard:", error);
-    alert("Erro ao carregar dashboard.");
+    alert("Erro ao carregar dashboard. Verifique o console para mais detalhes.");
   }
 }
 
