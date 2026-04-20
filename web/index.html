@@ -6,53 +6,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Painel Central - Paiva Tech</title>
 
-    <!-- Estilos globais -->
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <link href="css2/sb-admin-2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
 
-    <!-- Chart.js (precisa vir antes do script principal) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* === SIDEBAR === */
         .sidebar-dark {
             background: linear-gradient(180deg, #111 0%, #222 100%);
         }
 
-        /* === HEADER CINZA === */
         .topbar {
             background-color: #f1f3f8 !important;
             border-bottom: 1px solid #dee2e6;
         }
 
         .card {
-            border-radius: 10px;
+            border-radius: 12px;
             transition: all 0.25s ease;
         }
 
         .card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
         }
 
         .text-title {
-            font-weight: bold;
+            font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        #filtroPeriodo {
-            border-radius: 6px;
-            font-size: 0.9rem;
-        }
-
-        canvas {
-            max-height: 300px;
+            font-size: 0.78rem;
+            letter-spacing: 0.4px;
         }
 
         body {
             background-color: #f8f9fc !important;
+        }
+
+        .filtro-box,
+        .grafico-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 0.15rem 1rem rgba(58, 59, 69, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .grafico-titulo {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #4e73df;
+            margin-bottom: 16px;
+        }
+
+        .resumo-periodo {
+            font-size: 0.95rem;
+            color: #5a5c69;
+            font-weight: 600;
+        }
+
+        .chart-area-custom {
+            position: relative;
+            height: 340px;
+        }
+
+        .chart-area-small {
+            position: relative;
+            height: 320px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            border-radius: 8px;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -66,6 +95,7 @@
             </a>
 
             <hr class="sidebar-divider my-0" />
+
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -82,31 +112,116 @@
                     <span>Caixa</span>
                 </a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="pdvvenda.html"><i
-                        class="fas fa-users"></i><span>PDV</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="vendas.html"><i
-                        class="fas fa-users"></i><span>Relatório de Vendas</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="criarCliente.html"><i
-                        class="fas fa-users"></i><span>Clientes</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="produtos.html"><i
-                        class="fas fa-boxes"></i><span>Produtos</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="propostas.html"><i
-                        class="fas fa-file-invoice"></i><span>Propostas</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="login.html"><i
-                        class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="pdvvenda.html">
+                    <i class="fas fa-cash-register"></i>
+                    <span>PDV</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="vendas.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Relatório de Vendas</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="criarCliente.html">
+                    <i class="fas fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="produtos.html">
+                    <i class="fas fa-boxes"></i>
+                    <span>Produtos</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="propostas.html">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Propostas</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="login.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </li>
 
             <hr class="sidebar-divider d-none d-md-block" />
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
         </ul>
+
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
                     <h5 class="m-0 font-weight-bold text-dark">Painel Central</h5>
                 </nav>
+
                 <div class="container-fluid">
+                    <!-- FILTRO -->
+                    <div class="filtro-box">
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label for="filtroMes" class="font-weight-bold">Mês de lançamento</label>
+                                <input type="month" id="filtroMes" class="form-control" />
+                            </div>
+
+                            <div class="col-md-2 mb-3">
+                                <button class="btn btn-primary btn-block" id="btnAplicarFiltro">
+                                    <i class="fas fa-filter mr-1"></i> Filtrar
+                                </button>
+                            </div>
+
+                            <div class="col-md-7 mb-3 d-flex align-items-center">
+                                <div class="resumo-periodo" id="labelPeriodoSelecionado"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARDS -->
                     <div class="row" id="cardsResumo"></div>
+
+                    <!-- GRÁFICOS -->
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-7">
+                            <div class="grafico-box">
+                                <div class="grafico-titulo">Fluxo diário do mês selecionado</div>
+                                <div class="chart-area-custom">
+                                    <canvas id="graficoFluxoMensal"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="grafico-box">
+                                <div class="grafico-titulo">Distribuição do mês</div>
+                                <div class="chart-area-small">
+                                    <canvas id="graficoDistribuicao"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="grafico-box">
+                                <div class="grafico-titulo">Lucro líquido dos últimos 6 meses</div>
+                                <div class="chart-area-custom">
+                                    <canvas id="graficoUltimosMeses"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,8 +231,6 @@
     <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
     <script src="js2/sb-admin-2.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="js/index.js"></script>
 </body>

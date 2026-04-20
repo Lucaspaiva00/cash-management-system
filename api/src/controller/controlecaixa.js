@@ -29,11 +29,24 @@ const create = async (req, res) => {
 const read = async (req, res) => {
     try {
         const empresaId = parseInt(req.query.empresaId);
-        if (!empresaId) return res.status(400).json({ error: "Informe o ID da empresa." });
+        const { inicio, fim } = req.query;
+
+        if (!empresaId) {
+            return res.status(400).json({ error: "Informe o ID da empresa." });
+        }
+
+        const where = { empresaId };
+
+        if (inicio && fim) {
+            where.dataOperacao = {
+                gte: new Date(inicio),
+                lte: new Date(fim),
+            };
+        }
 
         const lista = await prisma.caixa.findMany({
-            where: { empresaId },
-            orderBy: { id: "desc" },
+            where,
+            orderBy: { dataOperacao: "desc" },
         });
 
         res.status(200).json(lista);

@@ -1,115 +1,164 @@
 * {
     margin: 0;
-    position: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-
-/* #chartDiv {
-    width: 100%;
-    height: auto;
-    margin: auto;
-    opacity: 1.0;
-} */
-
-/* #caixaForm {
-    height: 300px;
-    width: 400px;
-    padding: 20px 0px 50px 0px;
-}
-
-#caixaForm input {
-    width: 300px;
-    padding: 8px;
-    margin-top: 5px;
-} */
-
-
-/* #caixaForms {
-    width: 100%;
-    padding: 20px 0px 50px 0px;
-    padding: 10px;
-}
-
-#caixaForms input {
-    width: 300px;
-    padding: 8px;
-    margin-top: 5px;
-} */
 
 body {
-    background: rgb(255, 255, 255);
+    background: #f6f8fc;
+    font-family: "Nunito", sans-serif;
 }
 
-header {
-    width: 100%;
-    background: black;
-
+/* Sidebar */
+.sidebar-dark {
+    background: linear-gradient(180deg, #101114 0%, #1a1d24 100%) !important;
 }
 
-.container_header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.sidebar .nav-item .nav-link span {
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
-.div_logo {
-    width: 33%;
+.sidebar .sidebar-brand {
+    height: 72px;
 }
 
-.div_logo img {
-    width: 120px;
+.sidebar .sidebar-brand-text {
+    font-weight: 800;
+    letter-spacing: 0.5px;
 }
 
-.div_nav {
-    width: 33%;
+/* Topbar */
+.topbar {
+    background: linear-gradient(180deg, #f7f8fc 0%, #eef1f7 100%) !important;
+    border-bottom: 1px solid #dde3ee;
 }
 
-.div_nav a {
-    text-decoration: none;
-    color: white;
-    margin: 10px;
-    font-size: 18px;
-    font-family: 'Courier New', Courier, monospace;
+.topbar h5 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #2c2f36 !important;
 }
 
-.container {
-    width: 100%;
-    margin-top: 10%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Cards */
+.card-resumo {
+    border: none !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+    background: #ffffff;
+    transition: all 0.25s ease;
 }
 
-.container_formulario {
-    width: 300px;
-    border: 1px solid white;
-    padding: 25px;
-    border-radius: 15px;
+.card-resumo:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 35px rgba(31, 45, 61, 0.12) !important;
 }
 
-.container_formulario input {
-    padding: 10px;
-    margin: 5px;
-    width: 250px;
-    border-radius: 15px;
-    border: 1px solid white;
+.text-title {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
 }
 
-#btn_login {
-    background: black;
-    color: white;
+.card-resumo .h5 {
+    font-size: 1.8rem;
+    font-weight: 800 !important;
+    color: #2d3748 !important;
 }
 
-.div_img img {
-    width: 50px;
+/* Boxes gerais */
+.filtro-box,
+.grafico-box {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    border: 1px solid #edf1f7;
+    margin-bottom: 24px;
 }
 
-.div_img {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
+.grafico-titulo {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #2f3a4d;
+    margin-bottom: 18px;
 }
 
-#legend {
-    font-size: 26px;
+.resumo-periodo {
+    font-size: 0.96rem;
+    color: #5c667a;
+    font-weight: 700;
+}
+
+/* Inputs */
+label {
+    font-size: 0.92rem;
+    color: #364152;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    height: 46px;
+    border-radius: 12px !important;
+    border: 1px solid #d8dfeb !important;
+    box-shadow: none !important;
+    font-weight: 600;
+}
+
+.form-control:focus {
+    border-color: #4e73df !important;
+    box-shadow: 0 0 0 0.15rem rgba(78, 115, 223, 0.15) !important;
+}
+
+/* Botão */
+.btn-primary {
+    height: 46px;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    border: none !important;
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%) !important;
+    box-shadow: 0 8px 18px rgba(78, 115, 223, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(78, 115, 223, 0.3);
+}
+
+/* Área dos gráficos */
+.chart-area-custom {
+    position: relative;
+    height: 340px;
+}
+
+.chart-area-small {
+    position: relative;
+    height: 320px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .topbar h5 {
+        font-size: 1.25rem;
+    }
+
+    .card-resumo .h5 {
+        font-size: 1.45rem;
+    }
+
+    .filtro-box,
+    .grafico-box {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .chart-area-custom {
+        height: 280px;
+    }
+
+    .chart-area-small {
+        height: 260px;
+    }
 }

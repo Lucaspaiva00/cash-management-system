@@ -55,11 +55,23 @@ const create = async (req, res) => {
 const read = async (req, res) => {
     try {
         const empresaId = parseInt(req.query.empresaId);
-        if (!empresaId)
+        const { inicio, fim } = req.query;
+
+        if (!empresaId) {
             return res.status(400).json({ error: "empresaId é obrigatório." });
+        }
+
+        const where = { empresaId };
+
+        if (inicio && fim) {
+            where.data = {
+                gte: new Date(inicio),
+                lte: new Date(fim),
+            };
+        }
 
         const propostas = await prisma.proposta.findMany({
-            where: { empresaId },
+            where,
             include: { cliente: { select: { id: true, nome: true } } },
             orderBy: { data: "desc" },
         });
@@ -67,12 +79,12 @@ const read = async (req, res) => {
         return res.status(200).json(propostas);
     } catch (error) {
         console.error("❌ Erro ao listar propostas:", error);
-        return res
-            .status(500)
-            .json({ error: "Erro interno ao listar propostas.", detalhes: error.message });
+        return res.status(500).json({
+            error: "Erro interno ao listar propostas.",
+            detalhes: error.message
+        });
     }
 };
-
 /**
  * Atualizar proposta
  */
