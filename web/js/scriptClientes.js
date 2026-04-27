@@ -120,8 +120,8 @@ async function carregarClientes() {
 
             <hr class="my-2">
 
-            <p class="mb-1 small text-muted"><i class="fas fa-dog mr-1 text-secondary"></i> Serviço: ${c.servico || "—"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-paw mr-1 text-secondary"></i> Porte do cachorro: ${c.porteCachorro || "—"}</p>
+            <p class="mb-1 small text-muted"><i class="fas fa-align-left mr-1 text-secondary"></i> Serviço: ${c.servico || "—"}</p>
+            <p class="mb-1 small text-muted"><i class="fas fa-align-left mr-1 text-secondary"></i> Serviço mais detalhado: ${c.porteCachorro || "—"}</p>
             <p class="mb-1 small text-muted"><i class="fas fa-calendar-check mr-1 text-secondary"></i> Pacote Quinzenal: ${c.pacoteQuinzenal ? "Sim" : "Não"}</p>
             <p class="mb-1 small text-muted"><i class="fas fa-calendar-alt mr-1 text-secondary"></i> Pacote Mensal: ${c.pacoteMensal ? "Sim" : "Não"}</p>
             <p class="mb-1 small text-muted"><i class="fas fa-align-left mr-1 text-secondary"></i> Descrição: ${c.descricao || "—"}</p>
