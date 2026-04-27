@@ -8,27 +8,31 @@ datasource db {
 }
 
 model Empresa {
-  id           Int        @id @default(autoincrement())
-  nome         String     @db.VarChar(150)
-  cnpj         String?    @unique
-  email        String?    @unique
-  telefone     String?    @db.VarChar(20)
-  endereco     String?    @db.VarChar(255)
-  usuario      Usuario?
-  clientes     Cliente[]
-  produtos     Produto[]
-  propostas    Proposta[]
-  operacoes    Caixa[]
-  criadoEm     DateTime   @default(now())
-  atualizadoEm DateTime   @updatedAt
-  Venda        Venda[]
+  id       Int     @id @default(autoincrement())
+  nome     String  @db.VarChar(150)
+  cnpj     String? @unique
+  email    String? @unique
+  telefone String? @db.VarChar(20)
+  endereco String? @db.VarChar(255)
+
+  usuario   Usuario?
+  clientes  Cliente[]
+  produtos  Produto[]
+  propostas Proposta[]
+  operacoes Caixa[]
+  Venda     Venda[]
+  agendas   Agenda[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 }
 
 model Usuario {
-  id        Int     @id @default(autoincrement())
-  nome      String  @db.VarChar(100)
-  email     String  @unique
-  senha     String  @db.VarChar(255)
+  id    Int    @id @default(autoincrement())
+  nome  String @db.VarChar(100)
+  email String @unique
+  senha String @db.VarChar(255)
+
   empresaId Int     @unique
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
@@ -45,13 +49,23 @@ model Cliente {
   telefone String? @db.VarChar(20)
   endereco String? @db.VarChar(255)
 
+  // NOVOS CAMPOS SOLICITADOS PELO CLIENTE
+  descricao       String? @db.VarChar(255)
+  servico         String? @db.VarChar(100)
+  pacoteQuinzenal Boolean @default(false)
+  pacoteMensal    Boolean @default(false)
+  porteCachorro   String? @db.VarChar(50)
+
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
-  criadoEm     DateTime   @default(now())
-  atualizadoEm DateTime   @updatedAt
-  propostas    Proposta[]
-  Venda        Venda[]
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  propostas Proposta[]
+  Venda     Venda[]
+  operacoes Caixa[]
+  agendas   Agenda[]
 }
 
 model Produto {
@@ -98,6 +112,13 @@ model Caixa {
   descricao     String?       @db.VarChar(255)
   valor         Float
 
+  // NOVO CAMPO PARA JUROS DA MÁQUINA
+  jurosMaquina Float? @default(0)
+
+  // NOVO RELACIONAMENTO PARA TRAZER O NOME DO CLIENTE NO CAIXA
+  clienteId Int?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
@@ -123,8 +144,9 @@ model Venda {
   data          DateTime      @default(now())
   total         Float
   meioPagamento MeioPagamento
-  empresaId     Int
-  empresa       Empresa       @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   clienteId Int?
   cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
@@ -135,14 +157,43 @@ model Venda {
 }
 
 model VendaItem {
-  id            Int      @id @default(autoincrement())
-  vendaId       Int
-  venda         Venda    @relation(fields: [vendaId], references: [id], onDelete: Cascade)
-  produtoId     Int
-  produto       Produto  @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+  id Int @id @default(autoincrement())
+
+  vendaId Int
+  venda   Venda @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  produtoId Int
+  produto   Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+
   quantidade    Int
   precoUnitario Float
   subtotal      Float
-  criadoEm      DateTime @default(now())
-  atualizadoEm  DateTime @updatedAt
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Agenda {
+  id Int @id @default(autoincrement())
+
+  data       DateTime
+  horario    String       @db.VarChar(20)
+  servico    String?      @db.VarChar(100)
+  observacao String?      @db.VarChar(255)
+  status     StatusAgenda @default(AGENDADO)
+
+  clienteId Int
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+enum StatusAgenda {
+  AGENDADO
+  CONCLUIDO
+  CANCELADO
 }

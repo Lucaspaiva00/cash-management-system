@@ -9,6 +9,9 @@ const proposta = require("./controller/ctpropostas");
 const usuario = require("./controller/ctusuario");
 const vendas = require("./controller/ctvenda");
 
+// 🔥 NOVO CONTROLLER (AGENDA)
+const agenda = require("./controller/agenda.controller");
+
 routes.get("/", (req, res) => {
   res.status(200).json({
     status: "✅ API do Sistema de Gerenciamento de Caixa está online!",
@@ -21,7 +24,7 @@ routes.post("/auth/signup", usuario.signup);
 
 // Usuários
 routes.post("/usuarios/login", usuario.login);
-routes.route("/usuarios").get(usuario.read).post(usuario.create); // mantém para casos internos quando já existe empresa
+routes.route("/usuarios").get(usuario.read).post(usuario.create);
 routes.route("/usuarios/:id").put(usuario.update).delete(usuario.remove);
 
 // Caixa
@@ -40,9 +43,19 @@ routes.route("/produtos/:id").put(produtos.update).delete(produtos.remove);
 routes.route("/propostas").get(proposta.read).post(proposta.create);
 routes.route("/propostas/:id").put(proposta.update).delete(proposta.remove);
 
+// Vendas
 routes.get("/vendas", vendas.read);
 routes.post("/vendas", vendas.create);
 routes.delete("/vendas/:id", vendas.remove);
 routes.get("/vendas/resumo", vendas.resumo);
+
+// =============================
+// 🔥 AGENDA (NOVO)
+// =============================
+routes.route("/agenda").get(agenda.read).post(agenda.create);
+routes.route("/agenda/:id").get(agenda.readOne).put(agenda.update).delete(agenda.remove);
+
+// Atualizar apenas status
+routes.put("/agenda/:id/status", agenda.updateStatus);
 
 module.exports = routes;
