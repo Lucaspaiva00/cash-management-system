@@ -1,4 +1,6 @@
 const API = "https://cash-management-system.onrender.com/caixa";
+const API_CLIENTES = "https://cash-management-system.onrender.com/clientes";
+
 const empresaId = JSON.parse(localStorage.getItem("usuarioLogado"))?.empresaId || 1;
 
 const fmtBRL = (n) =>
@@ -14,6 +16,9 @@ const elTotalEntradas = document.querySelector("#totalEntradas");
 const elTotalSaidas = document.querySelector("#totalSaidas");
 const elSaldoGeral = document.querySelector("#saldoGeral");
 
+// 🔥 NOVO
+const selectCliente = document.querySelector("#clienteId");
+
 let OPERACOES = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,8 +26,30 @@ document.addEventListener("DOMContentLoaded", () => {
   [filtroTipo, inputInicio, inputFim].forEach(el => el?.addEventListener("change", carregarOperacoes));
   btnLimparFiltros?.addEventListener("click", limparFiltros);
   garantirModalEdicao();
+
+  // 🔥 NOVO
+  carregarClientes();
+
   carregarOperacoes();
 });
+
+// 🔥 NOVO
+async function carregarClientes() {
+  try {
+    if (!selectCliente) return;
+
+    const resp = await fetch(`${API_CLIENTES}?empresaId=${empresaId}`);
+    const clientes = await resp.json();
+
+    selectCliente.innerHTML = `<option value="">Sem cliente</option>`;
+
+    clientes.forEach(c => {
+      selectCliente.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+    });
+  } catch (err) {
+    console.error("Erro ao carregar clientes", err);
+  }
+}
 
 async function salvarOperacao(e) {
   e.preventDefault();
@@ -34,6 +61,10 @@ async function salvarOperacao(e) {
     valor: parseFloat(form.valor.value),
     dataOperacao: form.dataOperacao.value,
     empresaId,
+
+    // 🔥 NOVOS CAMPOS
+    clienteId: form.clienteId ? form.clienteId.value || null : null,
+    jurosMaquina: form.jurosMaquina ? parseFloat(form.jurosMaquina.value) || 0 : 0
   };
 
   if (!payload.tipoOperacao || !payload.meioPagamento || isNaN(payload.valor) || payload.valor <= 0) {
@@ -104,6 +135,11 @@ function criarCard(op) {
           <h6 class="mb-1">${op.tipoOperacao}</h6>
           <p class="small text-muted mb-1">${op.meioPagamento} • ${dataFmt}</p>
           <p class="mb-1">${op.descricao}</p>
+
+          <!-- 🔥 NOVOS CAMPOS VISUAIS -->
+          <p class="small text-muted mb-1"><strong>Cliente:</strong> ${op.cliente?.nome || "—"}</p>
+          <p class="small text-muted mb-1"><strong>Juros:</strong> ${fmtBRL(op.jurosMaquina || 0)}</p>
+
           <strong class="${corValor}">${valorFmt}</strong>
         </div>
         <div>

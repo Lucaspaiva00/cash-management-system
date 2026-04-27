@@ -55,6 +55,14 @@ caixaForms.addEventListener("submit", async (e) => {
     endereco: normaliza(caixaForms.endereco.value),
     telefone: normaliza(caixaForms.telefone.value),
     email: normaliza(caixaForms.email.value),
+
+    // NOVOS CAMPOS
+    descricao: normaliza(caixaForms.descricao.value),
+    servico: normaliza(caixaForms.servico.value),
+    pacoteQuinzenal: caixaForms.pacoteQuinzenal.checked,
+    pacoteMensal: caixaForms.pacoteMensal.checked,
+    porteCachorro: normaliza(caixaForms.porteCachorro.value),
+
     empresaId: Number(usuario.empresaId),
   };
 
@@ -109,6 +117,14 @@ async function carregarClientes() {
             <p class="mb-1 small text-muted"><i class="fas fa-phone mr-1 text-secondary"></i> ${c.telefone || "—"}</p>
             <p class="mb-1 small text-muted"><i class="fas fa-envelope mr-1 text-secondary"></i> ${c.email || "—"}</p>
             <p class="mb-1 small text-muted"><i class="fas fa-id-card mr-1 text-secondary"></i> CPF: ${c.cpf || "—"} | CNPJ: ${c.cnpj || "—"}</p>
+
+            <hr class="my-2">
+
+            <p class="mb-1 small text-muted"><i class="fas fa-dog mr-1 text-secondary"></i> Serviço: ${c.servico || "—"}</p>
+            <p class="mb-1 small text-muted"><i class="fas fa-paw mr-1 text-secondary"></i> Porte do cachorro: ${c.porteCachorro || "—"}</p>
+            <p class="mb-1 small text-muted"><i class="fas fa-calendar-check mr-1 text-secondary"></i> Pacote Quinzenal: ${c.pacoteQuinzenal ? "Sim" : "Não"}</p>
+            <p class="mb-1 small text-muted"><i class="fas fa-calendar-alt mr-1 text-secondary"></i> Pacote Mensal: ${c.pacoteMensal ? "Sim" : "Não"}</p>
+            <p class="mb-1 small text-muted"><i class="fas fa-align-left mr-1 text-secondary"></i> Descrição: ${c.descricao || "—"}</p>
           </div>
           <div class="mt-3 d-flex justify-content-end">
             <button class="btn btn-warning btn-sm mr-2" onclick="editarCliente(${c.id})" title="Editar">
@@ -159,6 +175,13 @@ async function editarCliente(id) {
     caixaForms.endereco.value = c.endereco || "";
     caixaForms.telefone.value = c.telefone || "";
     caixaForms.email.value = c.email || "";
+
+    // NOVOS CAMPOS
+    caixaForms.descricao.value = c.descricao || "";
+    caixaForms.servico.value = c.servico || "";
+    caixaForms.pacoteQuinzenal.checked = !!c.pacoteQuinzenal;
+    caixaForms.pacoteMensal.checked = !!c.pacoteMensal;
+    caixaForms.porteCachorro.value = c.porteCachorro || "";
 
     editandoId = id;
     setModoEdicao(true);
