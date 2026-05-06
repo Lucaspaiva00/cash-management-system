@@ -440,3 +440,24 @@ document.addEventListener("DOMContentLoaded", () => {
     filtroMes.addEventListener("change", carregarDashboard);
   }
 });
+
+// ===== MENU MOBILE =====
+const menuToggleMobile = document.getElementById("menuToggleMobile");
+const sidebar = document.querySelector(".sidebar");
+
+if (menuToggleMobile && sidebar) {
+  menuToggleMobile.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+  });
+}
+
+// fechar ao clicar fora
+document.addEventListener("click", function (e) {
+  if (
+    sidebar &&
+    !sidebar.contains(e.target) &&
+    !menuToggleMobile.contains(e.target)
+  ) {
+    sidebar.classList.remove("active");
+  }
+});

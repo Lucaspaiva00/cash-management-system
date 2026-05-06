@@ -162,3 +162,32 @@ label {
         height: 260px;
     }
 }
+
+/* ===== MENU MOBILE ===== */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        width: 260px;
+        height: 100%;
+        z-index: 1050;
+        transition: 0.3s;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    #content-wrapper {
+        margin-left: 0 !important;
+    }
+}
+
+/* Botão hambúrguer */
+#menuToggleMobile {
+    font-size: 20px;
+    background: none;
+    border: none;
+    color: #2c2f36;
+}
