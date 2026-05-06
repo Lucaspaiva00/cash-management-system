@@ -441,23 +441,39 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ===== MENU MOBILE =====
-const menuToggleMobile = document.getElementById("menuToggleMobile");
-const sidebar = document.querySelector(".sidebar");
+document.addEventListener("DOMContentLoaded", () => {
+  criarCards();
 
-if (menuToggleMobile && sidebar) {
-  menuToggleMobile.addEventListener("click", () => {
-    sidebar.classList.toggle("active");
-  });
-}
+  if (filtroMes) {
+    filtroMes.value = getMesAtualInput();
+  }
 
-// fechar ao clicar fora
-document.addEventListener("click", function (e) {
-  if (
-    sidebar &&
-    !sidebar.contains(e.target) &&
-    !menuToggleMobile.contains(e.target)
-  ) {
-    sidebar.classList.remove("active");
+  carregarDashboard();
+
+  if (btnAplicarFiltro) {
+    btnAplicarFiltro.addEventListener("click", carregarDashboard);
+  }
+
+  if (filtroMes) {
+    filtroMes.addEventListener("change", carregarDashboard);
+  }
+
+  // ===== MENU MOBILE =====
+  const menuToggleMobile = document.getElementById("menuToggleMobile");
+  const sidebar = document.querySelector(".sidebar");
+
+  if (menuToggleMobile && sidebar) {
+    menuToggleMobile.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+    });
+
+    document.addEventListener("click", function (e) {
+      if (
+        !sidebar.contains(e.target) &&
+        !menuToggleMobile.contains(e.target)
+      ) {
+        sidebar.classList.remove("active");
+      }
+    });
   }
 });
