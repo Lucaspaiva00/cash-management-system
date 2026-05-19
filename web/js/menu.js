@@ -8,6 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     menuBtn.addEventListener("click", () => {
 
+        /* REMOVE CLASSES DO SB ADMIN */
+
+        document.body.classList.remove("sidebar-toggled");
+
+        sidebar.classList.remove("toggled");
+
+        /* ABRE MENU */
+
         sidebar.classList.toggle("active");
 
         overlay.classList.toggle("active");
