@@ -182,13 +182,21 @@
 
 @media (max-width: 768px) {
 
-    body.sidebar-toggled #accordionSidebar {
-        width: 280px !important;
-    }
+    #accordionSidebar {
 
-    #accordionSidebar.toggled {
+        position: fixed !important;
+
+        top: 0 !important;
+
+        left: -280px;
+
         width: 280px !important;
-        overflow: visible !important;
+
+        height: 100vh !important;
+
+        z-index: 9999 !important;
+
+        transition: left .3s ease !important;
     }
 
 }

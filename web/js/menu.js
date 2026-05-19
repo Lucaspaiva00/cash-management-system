@@ -1,35 +1,42 @@
 window.onload = function () {
 
-    const button = document.querySelector("#menuToggleMobile");
+    const button = document.getElementById("menuToggleMobile");
 
-    const sidebar = document.querySelector("#accordionSidebar");
+    const sidebar = document.getElementById("accordionSidebar");
 
     const overlay = document.querySelector(".mobile-overlay");
 
-    if (!button) {
-        console.log("BOTÃO NÃO ENCONTRADO");
-        return;
-    }
-
-    if (!sidebar) {
-        console.log("SIDEBAR NÃO ENCONTRADA");
-        return;
-    }
+    let aberto = false;
 
     button.onclick = function () {
 
         console.log("MENU CLICADO");
 
-        sidebar.classList.toggle("active");
+        if (!aberto) {
 
-        overlay.classList.toggle("active");
+            sidebar.style.left = "0";
+
+            overlay.classList.add("active");
+
+            aberto = true;
+
+        } else {
+
+            sidebar.style.left = "-280px";
+
+            overlay.classList.remove("active");
+
+            aberto = false;
+        }
     };
 
     overlay.onclick = function () {
 
-        sidebar.classList.remove("active");
+        sidebar.style.left = "-280px";
 
         overlay.classList.remove("active");
+
+        aberto = false;
     };
 
 };
