@@ -146,3 +146,27 @@
     }
 
 }
+
+@media (max-width: 768px) {
+
+    #accordionSidebar {
+        width: 280px !important;
+        min-width: 280px !important;
+    }
+
+    .sidebar {
+        width: 280px !important;
+        min-width: 280px !important;
+
+        transform: translateX(-100%) !important;
+    }
+
+    .sidebar.active {
+        transform: translateX(0) !important;
+    }
+
+}
+
+#wrapper {
+    overflow-x: visible !important;
+}
