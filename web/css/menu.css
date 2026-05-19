@@ -1,8 +1,9 @@
-/* =========================================
-   MENU MOBILE - PAIVA TECH
-========================================= */
+/* ========================================
+   MENU MOBILE FINAL
+======================================== */
 
 .mobile-overlay {
+
     position: fixed;
     inset: 0;
 
@@ -11,9 +12,9 @@
     opacity: 0;
     visibility: hidden;
 
-    transition: 0.25s ease;
+    transition: 0.25s;
 
-    z-index: 998;
+    z-index: 1040;
 }
 
 .mobile-overlay.active {
@@ -21,48 +22,74 @@
     visibility: visible;
 }
 
-/* MOBILE */
-
 @media (max-width: 768px) {
 
     /* SIDEBAR */
 
-    .sidebar {
+    #accordionSidebar {
+
         position: fixed !important;
 
         top: 0;
         left: 0;
 
-        width: 280px;
-        height: 100vh;
+        width: 280px !important;
+        min-width: 280px !important;
 
-        z-index: 999;
+        height: 100vh !important;
 
         overflow-y: auto;
 
-        transform: translateX(-100%);
+        background: linear-gradient(180deg, #111 0%, #1b1b1b 100%);
+
+        z-index: 1050;
+
+        transform: translateX(-100%) !important;
 
         transition: transform 0.28s ease !important;
-
-        box-shadow:
-            0 0 30px rgba(0, 0, 0, 0.35);
     }
 
-    .sidebar.active {
-        transform: translateX(0);
+    #accordionSidebar.active {
+        transform: translateX(0) !important;
     }
 
-    /* WRAPPER */
+    /* MOSTRA TEXTO */
 
-    #content-wrapper {
-        width: 100%;
-        margin-left: 0 !important;
+    #accordionSidebar .nav-item .nav-link span {
+
+        display: inline !important;
+
+        font-size: 0.95rem !important;
     }
 
-    /* BODY */
+    /* NAV LINKS */
 
-    body.menu-open {
-        overflow: hidden;
+    #accordionSidebar .nav-link {
+
+        width: 100% !important;
+
+        padding: 14px 20px !important;
+
+        display: flex !important;
+        align-items: center;
+
+        gap: 12px;
+
+        color: white !important;
+    }
+
+    #accordionSidebar .nav-link i {
+
+        min-width: 20px;
+
+        text-align: center;
+    }
+
+    /* LOGO */
+
+    #accordionSidebar .sidebar-brand {
+
+        height: 80px !important;
     }
 
     /* BOTÃO */
@@ -84,89 +111,14 @@
 
         font-size: 18px;
 
-        color: #111827;
-
         box-shadow:
             0 4px 14px rgba(0, 0, 0, 0.08);
-
-        transition: 0.2s ease;
     }
 
-    /* LINKS */
+    /* BODY */
 
-    .sidebar .nav-item {
-        margin-bottom: 4px;
+    body.menu-open {
+        overflow: hidden;
     }
 
-    .sidebar .nav-link {
-
-        padding: 14px 18px !important;
-
-        border-radius: 12px;
-
-        margin: 0 10px;
-
-        transition: 0.2s ease;
-    }
-
-    .sidebar .nav-link:hover {
-        background: rgba(255, 255, 255, 0.08);
-    }
-
-    .sidebar .nav-link span {
-        font-size: 0.95rem;
-    }
-
-    .sidebar-heading {
-        padding-left: 18px;
-        margin-top: 12px;
-    }
-
-    .sidebar-brand {
-        min-height: 74px;
-    }
-
-    /* REMOVE COMPORTAMENTO DO SB ADMIN */
-
-    .sidebar.toggled {
-        width: 280px !important;
-        overflow: auto !important;
-    }
-
-}
-
-@media (max-width: 768px) {
-
-    .sidebar {
-        transform: translateX(-100%) !important;
-    }
-
-    .sidebar.active {
-        transform: translateX(0) !important;
-    }
-
-}
-
-@media (max-width: 768px) {
-
-    #accordionSidebar {
-        width: 280px !important;
-        min-width: 280px !important;
-    }
-
-    .sidebar {
-        width: 280px !important;
-        min-width: 280px !important;
-
-        transform: translateX(-100%) !important;
-    }
-
-    .sidebar.active {
-        transform: translateX(0) !important;
-    }
-
-}
-
-#wrapper {
-    overflow-x: visible !important;
 }

@@ -2,18 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const menuBtn = document.getElementById("menuToggleMobile");
 
-    const sidebar = document.querySelector(".sidebar");
+    const sidebar = document.getElementById("accordionSidebar");
 
     const overlay = document.querySelector(".mobile-overlay");
 
-    if (!menuBtn || !sidebar || !overlay) {
-        console.log("Elementos do menu não encontrados");
-        return;
-    }
-
     menuBtn.addEventListener("click", () => {
-
-        console.log("clicou");
 
         sidebar.classList.toggle("active");
 
