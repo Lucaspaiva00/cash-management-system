@@ -1,10 +1,11 @@
-/* =========================
-   MENU MOBILE
-========================= */
+/* =========================================
+   MENU MOBILE - PAIVA TECH
+========================================= */
 
 .mobile-overlay {
     position: fixed;
     inset: 0;
+
     background: rgba(0, 0, 0, 0.45);
 
     opacity: 0;
@@ -12,7 +13,7 @@
 
     transition: 0.25s ease;
 
-    z-index: 1040;
+    z-index: 998;
 }
 
 .mobile-overlay.active {
@@ -20,39 +21,45 @@
     visibility: visible;
 }
 
-/* SIDEBAR MOBILE */
+/* MOBILE */
 
 @media (max-width: 768px) {
+
+    /* SIDEBAR */
 
     .sidebar {
         position: fixed !important;
 
         top: 0;
-        left: -290px;
+        left: 0;
 
         width: 280px;
         height: 100vh;
 
+        z-index: 999;
+
         overflow-y: auto;
 
-        z-index: 1050;
+        transform: translateX(-100%);
 
-        transition: left 0.28s ease;
+        transition: transform 0.28s ease !important;
 
         box-shadow:
             0 0 30px rgba(0, 0, 0, 0.35);
-
-        padding-top: 8px;
     }
 
     .sidebar.active {
-        left: 0;
+        transform: translateX(0);
     }
+
+    /* WRAPPER */
 
     #content-wrapper {
         width: 100%;
         margin-left: 0 !important;
     }
+
+    /* BODY */
 
     body.menu-open {
         overflow: hidden;
@@ -61,6 +68,7 @@
     /* BOTÃO */
 
     #menuToggleMobile {
+
         width: 42px;
         height: 42px;
 
@@ -84,10 +92,6 @@
         transition: 0.2s ease;
     }
 
-    #menuToggleMobile:active {
-        transform: scale(0.96);
-    }
-
     /* LINKS */
 
     .sidebar .nav-item {
@@ -95,6 +99,7 @@
     }
 
     .sidebar .nav-link {
+
         padding: 14px 18px !important;
 
         border-radius: 12px;
@@ -119,6 +124,13 @@
 
     .sidebar-brand {
         min-height: 74px;
+    }
+
+    /* REMOVE COMPORTAMENTO DO SB ADMIN */
+
+    .sidebar.toggled {
+        width: 280px !important;
+        overflow: auto !important;
     }
 
 }

@@ -5,7 +5,7 @@ const sidebar = document.querySelector(".sidebar");
 const overlay = document.querySelector(".mobile-overlay");
 
 function openMenu() {
-
+    
     sidebar.classList.add("active");
 
     overlay.classList.add("active");
