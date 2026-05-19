@@ -1,6 +1,6 @@
-/* ========================================
-   MENU MOBILE FINAL
-======================================== */
+/* =========================================
+   MENU MOBILE FINAL - PAIVA TECH
+========================================= */
 
 .mobile-overlay {
 
@@ -12,7 +12,7 @@
     opacity: 0;
     visibility: hidden;
 
-    transition: 0.25s;
+    transition: 0.25s ease;
 
     z-index: 1040;
 }
@@ -21,6 +21,8 @@
     opacity: 1;
     visibility: visible;
 }
+
+/* MOBILE */
 
 @media (max-width: 768px) {
 
@@ -35,34 +37,42 @@
 
         width: 280px !important;
         min-width: 280px !important;
+        max-width: 280px !important;
 
         height: 100vh !important;
 
-        overflow-y: auto;
+        overflow-y: auto !important;
 
-        background: linear-gradient(180deg, #111 0%, #1b1b1b 100%);
+        z-index: 1050 !important;
 
-        z-index: 1050;
+        background: linear-gradient(180deg, #111 0%, #1b1b1b 100%) !important;
 
         transform: translateX(-100%) !important;
 
         transition: transform 0.28s ease !important;
+
+        display: flex !important;
+        flex-direction: column !important;
     }
+
+    /* MENU ABERTO */
 
     #accordionSidebar.active {
         transform: translateX(0) !important;
     }
 
-    /* MOSTRA TEXTO */
+    /* REMOVE WIDTH PEQUENA DO SB ADMIN */
 
-    #accordionSidebar .nav-item .nav-link span {
-
-        display: inline !important;
-
-        font-size: 0.95rem !important;
+    .sidebar.toggled {
+        width: 280px !important;
+        overflow: visible !important;
     }
 
-    /* NAV LINKS */
+    /* LINKS */
+
+    #accordionSidebar .nav-item {
+        width: 100%;
+    }
 
     #accordionSidebar .nav-link {
 
@@ -71,25 +81,70 @@
         padding: 14px 20px !important;
 
         display: flex !important;
-        align-items: center;
+        align-items: center !important;
 
-        gap: 12px;
+        gap: 14px;
 
         color: white !important;
     }
 
+    /* ÍCONES */
+
     #accordionSidebar .nav-link i {
 
-        min-width: 20px;
+        min-width: 22px;
 
         text-align: center;
+
+        font-size: 15px;
     }
 
-    /* LOGO */
+    /* TEXTO */
+
+    #accordionSidebar .nav-link span {
+
+        display: inline !important;
+
+        font-size: 0.95rem !important;
+
+        opacity: 1 !important;
+
+        visibility: visible !important;
+    }
+
+    /* BRAND */
 
     #accordionSidebar .sidebar-brand {
 
-        height: 80px !important;
+        min-height: 74px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* HEADING */
+
+    #accordionSidebar .sidebar-heading {
+
+        display: block !important;
+
+        padding-left: 20px !important;
+
+        margin-top: 10px;
+    }
+
+    /* WRAPPER */
+
+    #wrapper {
+        overflow-x: visible !important;
+    }
+
+    /* CONTENT */
+
+    #content-wrapper {
+        width: 100% !important;
+        margin-left: 0 !important;
     }
 
     /* BOTÃO */
@@ -110,6 +165,8 @@
         justify-content: center;
 
         font-size: 18px;
+
+        color: #111827;
 
         box-shadow:
             0 4px 14px rgba(0, 0, 0, 0.08);

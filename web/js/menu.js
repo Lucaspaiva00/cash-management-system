@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.classList.toggle("active");
 
         document.body.classList.toggle("menu-open");
+
     });
 
     overlay.addEventListener("click", () => {
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.classList.remove("active");
 
         document.body.classList.remove("menu-open");
+
     });
 
 });
