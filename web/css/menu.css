@@ -134,3 +134,15 @@
     }
 
 }
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        transform: translateX(-100%) !important;
+    }
+
+    .sidebar.active {
+        transform: translateX(0) !important;
+    }
+
+}
