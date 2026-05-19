@@ -1,37 +1,35 @@
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = function () {
 
-    const menuBtn = document.getElementById("menuToggleMobile");
+    const button = document.querySelector("#menuToggleMobile");
 
-    const sidebar = document.getElementById("accordionSidebar");
+    const sidebar = document.querySelector("#accordionSidebar");
 
     const overlay = document.querySelector(".mobile-overlay");
 
-    menuBtn.addEventListener("click", () => {
+    if (!button) {
+        console.log("BOTÃO NÃO ENCONTRADO");
+        return;
+    }
 
-        /* REMOVE CLASSES DO SB ADMIN */
+    if (!sidebar) {
+        console.log("SIDEBAR NÃO ENCONTRADA");
+        return;
+    }
 
-        document.body.classList.remove("sidebar-toggled");
+    button.onclick = function () {
 
-        sidebar.classList.remove("toggled");
-
-        /* ABRE MENU */
+        console.log("MENU CLICADO");
 
         sidebar.classList.toggle("active");
 
         overlay.classList.toggle("active");
+    };
 
-        document.body.classList.toggle("menu-open");
-
-    });
-
-    overlay.addEventListener("click", () => {
+    overlay.onclick = function () {
 
         sidebar.classList.remove("active");
 
         overlay.classList.remove("active");
+    };
 
-        document.body.classList.remove("menu-open");
-
-    });
-
-});
+};
