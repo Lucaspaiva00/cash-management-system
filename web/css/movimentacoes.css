@@ -1,0 +1,62 @@
+ .sidebar-dark {
+     background: linear-gradient(180deg, #111 0%, #222 100%);
+ }
+
+ .topbar {
+     background-color: #f1f3f8 !important;
+     border-bottom: 1px solid #dee2e6;
+ }
+
+ .btn-danger {
+     background-color: #e63946;
+     border-color: #e63946;
+     border-radius: 6px;
+     font-weight: 500;
+     transition: 0.2s ease;
+ }
+
+ .btn-danger:hover {
+     background-color: #c92a37;
+     border-color: #c92a37;
+ }
+
+ #listaOperacoes {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 1rem;
+     justify-content: flex-start;
+ }
+
+ .card-op {
+     background: #fff;
+     border-radius: 10px;
+     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+     flex: 1 1 320px;
+     max-width: 350px;
+     transition: 0.2s ease;
+     border-left: 6px solid #e63946;
+     padding: 1rem;
+ }
+
+ .card-op:hover {
+     transform: translateY(-4px);
+     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+ }
+
+ .entrada {
+     border-left-color: #28a745 !important;
+ }
+
+ .saida {
+     border-left-color: #e63946 !important;
+ }
+
+ @media (max-width: 768px) {
+     #listaOperacoes {
+         justify-content: center;
+     }
+
+     .text-right {
+         text-align: center !important;
+     }
+ }
