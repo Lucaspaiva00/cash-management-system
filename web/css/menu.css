@@ -200,3 +200,18 @@
     }
 
 }
+
+@media (max-width: 768px) {
+
+    #content-wrapper {
+        width: 100% !important;
+        margin-left: 0 !important;
+        position: relative;
+        z-index: 1;
+    }
+
+    #accordionSidebar {
+        z-index: 9999 !important;
+    }
+
+}
