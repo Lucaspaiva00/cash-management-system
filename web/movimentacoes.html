@@ -9,6 +9,7 @@
 
     <title>Movimentações do Caixa - Paiva Tech</title>
 
+    <!-- CSS -->
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,20 +32,26 @@
         <!-- SIDEBAR -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
 
+            <!-- BRAND -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
 
                 <div class="sidebar-brand-icon rotate-n-15">
+
                     <i class="fas fa-laugh-wink"></i>
+
                 </div>
 
                 <div class="sidebar-brand-text mx-3">
+
                     Paiva Tech
+
                 </div>
 
             </a>
 
             <hr class="sidebar-divider my-0" />
 
+            <!-- DASHBOARD -->
             <li class="nav-item active">
 
                 <a class="nav-link" href="index.html">
@@ -60,9 +67,12 @@
             <hr class="sidebar-divider" />
 
             <div class="sidebar-heading">
+
                 Páginas
+
             </div>
 
+            <!-- CAIXA -->
             <li class="nav-item">
 
                 <a class="nav-link" href="movimentacoes.html">
@@ -75,6 +85,7 @@
 
             </li>
 
+            <!-- PDV -->
             <li class="nav-item">
 
                 <a class="nav-link" href="pdvvenda.html">
@@ -87,6 +98,7 @@
 
             </li>
 
+            <!-- AGENDA -->
             <li class="nav-item">
 
                 <a class="nav-link" href="agenda.html">
@@ -99,6 +111,7 @@
 
             </li>
 
+            <!-- RELATORIO -->
             <li class="nav-item">
 
                 <a class="nav-link" href="vendas.html">
@@ -111,6 +124,7 @@
 
             </li>
 
+            <!-- CLIENTES -->
             <li class="nav-item">
 
                 <a class="nav-link" href="criarCliente.html">
@@ -123,6 +137,7 @@
 
             </li>
 
+            <!-- PRODUTOS -->
             <li class="nav-item">
 
                 <a class="nav-link" href="produtos.html">
@@ -135,6 +150,7 @@
 
             </li>
 
+            <!-- PROPOSTAS -->
             <li class="nav-item">
 
                 <a class="nav-link" href="propostas.html">
@@ -147,6 +163,7 @@
 
             </li>
 
+            <!-- SAIR -->
             <li class="nav-item">
 
                 <a class="nav-link" href="login.html">
@@ -169,7 +186,7 @@
                 <!-- TOPBAR -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- BOTÃO MOBILE -->
+                    <!-- MENU MOBILE -->
                     <button id="menuToggleMobile">
 
                         <i class="fas fa-bars"></i>
@@ -203,6 +220,7 @@
 
                             <form id="caixaForm" class="form-row" autocomplete="off">
 
+                                <!-- TIPO -->
                                 <div class="col-md-4 mb-2">
 
                                     <label>Tipo de Operação</label>
@@ -219,6 +237,7 @@
 
                                 </div>
 
+                                <!-- PAGAMENTO -->
                                 <div class="col-md-4 mb-2">
 
                                     <label>Meio de Pagamento</label>
@@ -241,6 +260,7 @@
 
                                 </div>
 
+                                <!-- VALOR -->
                                 <div class="col-md-4 mb-2">
 
                                     <label>Valor (R$)</label>
@@ -250,6 +270,7 @@
 
                                 </div>
 
+                                <!-- DATA -->
                                 <div class="col-md-4 mb-2">
 
                                     <label>Data</label>
@@ -259,6 +280,7 @@
 
                                 </div>
 
+                                <!-- CLIENTE -->
                                 <div class="col-md-4 mb-2">
 
                                     <label>Cliente</label>
@@ -271,6 +293,7 @@
 
                                 </div>
 
+                                <!-- JUROS -->
                                 <div class="col-md-4 mb-2">
 
                                     <label>Juros Máquina</label>
@@ -280,6 +303,7 @@
 
                                 </div>
 
+                                <!-- DESCRIÇÃO -->
                                 <div class="col-md-12 mb-2">
 
                                     <label>Descrição</label>
@@ -288,6 +312,7 @@
 
                                 </div>
 
+                                <!-- BOTAO -->
                                 <div class="col-md-12 text-right mt-3">
 
                                     <button type="submit" class="btn btn-danger px-4">
@@ -308,13 +333,101 @@
 
                 </div>
 
+                <!-- FILTROS -->
+                <div class="container-fluid mb-4">
+
+                    <div class="card shadow-sm">
+
+                        <div class="card-body">
+
+                            <h5 class="mb-3">
+
+                                <i class="fas fa-filter text-danger"></i>
+
+                                Filtros de Pesquisa
+
+                            </h5>
+
+                            <div class="form-row">
+
+                                <!-- TIPO -->
+                                <div class="col-md-3 mb-2">
+
+                                    <label>Tipo de Operação</label>
+
+                                    <select id="filtroTipo" class="form-control">
+
+                                        <option value="">Todas</option>
+
+                                        <option value="ENTRADA">Entradas</option>
+
+                                        <option value="SAIDA">Saídas</option>
+
+                                    </select>
+
+                                </div>
+
+                                <!-- DATA INICIO -->
+                                <div class="col-md-3 mb-2">
+
+                                    <label>Data Inicial</label>
+
+                                    <input type="date" id="filtroInicio" class="form-control">
+
+                                </div>
+
+                                <!-- DATA FIM -->
+                                <div class="col-md-3 mb-2">
+
+                                    <label>Data Final</label>
+
+                                    <input type="date" id="filtroFim" class="form-control">
+
+                                </div>
+
+                                <!-- LIMPAR -->
+                                <div class="col-md-3 mb-2 d-flex align-items-end">
+
+                                    <button id="btnLimparFiltros" class="btn btn-outline-secondary w-100">
+
+                                        <i class="fas fa-undo"></i>
+
+                                        Limpar Filtros
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- LISTAGEM -->
+                <div class="container-fluid mb-5">
+
+                    <h5 class="mb-3">
+
+                        <i class="fas fa-list"></i>
+
+                        Movimentações Registradas
+
+                    </h5>
+
+                    <div id="listaOperacoes"></div>
+
+                </div>
+
             </div>
 
         </div>
 
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- JS -->
     <script src="vendor2/jquery/jquery.min.js"></script>
 
     <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
