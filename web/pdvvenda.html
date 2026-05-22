@@ -2,175 +2,386 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDV - Venda Rápida | Paiva Tech</title>
-    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/menu.css">
-    <link rel="stylesheet" href="css/pdv.css">
-    <style>
 
-    </style>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PDV - Venda Rápida | Paiva Tech</title>
+
+    <!-- CSS -->
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/pdv-menu.css">
+
+    <link rel="stylesheet" href="css/pdv.css">
+
 </head>
 
 <body>
+
     <div class="mobile-overlay"></div>
+
     <div id="wrapper">
-        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- SIDEBAR -->
+        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
+
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
-                <div class="sidebar-brand-text mx-3">Paiva Tech</div>
+
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+
+                <div class="sidebar-brand-text mx-3">
+                    Paiva Tech
+                </div>
+
             </a>
 
-            <hr class="sidebar-divider my-0" />
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="index.html">
+
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">
+
+                Páginas
+
+            </div>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="movimentacoes.html">
+
+                    <i class="fa fa-university"></i>
+
+                    <span>Caixa</span>
+
+                </a>
+
+            </li>
 
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
 
-            <hr class="sidebar-divider" />
-            <div class="sidebar-heading">Páginas</div>
-
-            <li class="nav-item">
-                <a class="nav-link" href="movimentacoes.html">
-                    <i class="fa fa-university"></i>
-                    <span>Caixa</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
                 <a class="nav-link" href="pdvvenda.html">
+
                     <i class="fas fa-cash-register"></i>
+
                     <span>PDV</span>
+
                 </a>
+
             </li>
+
             <li class="nav-item">
+
                 <a class="nav-link" href="agenda.html">
-                    <i class="fas fa-cash-register"></i>
+
+                    <i class="fas fa-calendar"></i>
+
                     <span>Agenda</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="vendas.html">
+
                     <i class="fas fa-chart-line"></i>
+
                     <span>Relatório de Vendas</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="criarCliente.html">
+
                     <i class="fas fa-users"></i>
+
                     <span>Clientes</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="produtos.html">
+
                     <i class="fas fa-boxes"></i>
+
                     <span>Produtos</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="propostas.html">
+
                     <i class="fas fa-file-invoice"></i>
+
                     <span>Propostas</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="login.html">
+
                     <i class="fas fa-sign-out-alt"></i>
+
                     <span>Sair</span>
+
                 </a>
+
             </li>
 
-            <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
         </ul>
-        <button id="menuToggleMobile">
-            <i class="fas fa-bars"></i>
-        </button>
-        <!-- Conteúdo -->
+
+        <!-- CONTENT -->
         <div id="content-wrapper" class="d-flex flex-column">
-            <div class="container-fluid pdv-container">
-                <h3 class="text-center"><i class="fas fa-cash-register text-success"></i> PDV - Venda Rápida</h3>
 
-                <!-- Cliente e pagamento -->
-                <div class="form-row mb-3">
-                    <div class="col-md-6">
-                        <label>Cliente</label>
-                        <select id="cliente" class="form-control"></select>
+            <div id="content">
+
+                <!-- TOPBAR -->
+
+                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+
+                    <button id="menuToggleMobile" class="btn d-md-none mr-3">
+
+                        <i class="fas fa-bars"></i>
+
+                    </button>
+
+                    
+
+                </nav>
+
+                <!-- CONTEÚDO -->
+
+                <div class="container-fluid">
+
+                    <!-- CARD PRINCIPAL -->
+
+                    <div class="card shadow mb-4">
+
+                        <div class="card-header py-3">
+
+                            <h6 class="m-0 font-weight-bold text-success">
+
+                                <i class="fas fa-cash-register"></i>
+
+                                Nova Venda
+
+                            </h6>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <!-- CLIENTE E PAGAMENTO -->
+
+                            <div class="row">
+
+                                <div class="col-lg-6 mb-3">
+
+                                    <label>Cliente</label>
+
+                                    <select id="cliente" class="form-control">
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+
+                                    <label>Método de Pagamento</label>
+
+                                    <select id="pagamento" class="form-control">
+
+                                        <option value="DINHEIRO">
+                                            Dinheiro
+                                        </option>
+
+                                        <option value="PIX">
+                                            PIX
+                                        </option>
+
+                                        <option value="CARTAO">
+                                            Cartão
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            <!-- PRODUTO -->
+
+                            <div class="row">
+
+                                <div class="col-lg-6 mb-3">
+
+                                    <label>Produto</label>
+
+                                    <select id="produto" class="form-control">
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-lg-3 mb-3">
+
+                                    <label>Quantidade</label>
+
+                                    <input type="number" id="quantidade" class="form-control" min="1" value="1">
+
+                                </div>
+
+                                <div class="col-lg-3 mb-3 d-flex align-items-end">
+
+                                    <button id="adicionar" class="btn btn-primary btn-block">
+
+                                        <i class="fas fa-plus"></i>
+
+                                        Adicionar
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
                     </div>
-                    <div class="col-md-6">
-                        <label>Método de Pagamento</label>
-                        <select id="pagamento" class="form-control">
-                            <option value="DINHEIRO">Dinheiro</option>
-                            <option value="PIX">PIX</option>
-                            <option value="CARTAO">Cartão</option>
-                        </select>
+
+                    <!-- LISTA PRODUTOS -->
+
+                    <div class="card shadow mb-4">
+
+                        <div class="card-header py-3">
+
+                            <h6 class="m-0 font-weight-bold text-primary">
+
+                                Produtos da Venda
+
+                            </h6>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div id="listaProdutos"></div>
+
+                        </div>
+
                     </div>
+
+                    <!-- TOTAL -->
+
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+
+                                    <label>Valor Recebido</label>
+
+                                    <input type="number" id="valorRecebido" class="form-control" min="0" step="0.01"
+                                        value="0">
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <label>Troco</label>
+
+                                    <input type="text" id="troco" class="form-control" readonly>
+
+                                </div>
+
+                            </div>
+
+                            <hr>
+
+                            <div class="text-right">
+
+                                <h5>Total da Venda</h5>
+
+                                <h2 class="font-weight-bold text-success" id="total">
+
+                                    R$ 0,00
+
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- BOTÃO FINALIZAR -->
+
+                    <button id="finalizar" class="btn btn-success btn-lg btn-block mb-5">
+
+                        <i class="fas fa-check-circle"></i>
+
+                        Finalizar Venda
+
+                    </button>
+
                 </div>
 
-                <!-- Produtos -->
-                <div class="form-row mb-3">
-                    <div class="col-md-6">
-                        <label>Produto</label>
-                        <select id="produto" class="form-control"></select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Quantidade</label>
-                        <input type="number" id="quantidade" class="form-control" min="1" value="1">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-primary btn-block" id="adicionar"><i class="fas fa-plus"></i>
-                            Adicionar</button>
-                    </div>
-                </div>
-
-                <!-- Lista de produtos -->
-                <div id="listaProdutos"></div>
-
-                <!-- Totais -->
-                <div class="text-right mb-3">
-                    <div>Total da Venda:</div>
-                    <div class="total" id="total">R$ 0,00</div>
-                </div>
-
-                <!-- Pagamento -->
-                <div class="form-row mb-4">
-                    <div class="col-md-6">
-                        <label>Valor Recebido</label>
-                        <input type="number" id="valorRecebido" class="form-control" min="0" step="0.01" value="0">
-                    </div>
-                    <div class="col-md-6">
-                        <label>Troco</label>
-                        <input type="text" id="troco" class="form-control" readonly>
-                    </div>
-                </div>
-
-                <!-- Finalizar -->
-                <button class="btn btn-success btn-block btn-finalizar" id="finalizar">
-                    <i class="fas fa-check-circle"></i> Finalizar Venda
-                </button>
             </div>
+
         </div>
+
     </div>
 
-    <!-- 1️⃣ Primeiro, carregue a biblioteca jsPDF -->
+    <!-- JS -->
+
+    <script src="vendor2/jquery/jquery.min.js"></script>
+
+    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+
+    <script src="js2/sb-admin-2.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- 2️⃣ Depois, seu script -->
     <script src="js/pdvvenda.js"></script>
-    <script src="js/menu.js"></script>
+
+    <script src="js/menu-pdv.js"></script>
 
 </body>
 
