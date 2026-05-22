@@ -8,10 +8,10 @@
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="css2/sb-admin-2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/menu-vendas.css">
     <link rel="stylesheet" href="css/vendas.css">
     <style>
-        
+
     </style>
 </head>
 
@@ -98,73 +98,94 @@
         </ul>
 
         <div id="content-wrapper" class="d-flex flex-column">
-            <button id="menuToggleMobile">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="container-fluid mt-4">
-                <h3 class="text-center mb-4"><i class="fas fa-chart-line text-danger"></i> Relatório de Vendas</h3>
+            <div id="content-wrapper" class="d-flex flex-column">
 
-                <!-- Cards -->
-                <div class="row text-center">
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-left-primary shadow py-3">
-                            <div class="card-body">
-                                <i class="fas fa-calendar-day fa-2x mb-2 text-primary"></i>
-                                <h5>Vendas do Dia</h5>
-                                <h3 id="vDia">R$ 0,00</h3>
-                                <p id="qDia" class="text-muted"></p>
+                <div id="content">
+
+                    <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+
+                        <button id="menuToggleMobile" class="btn d-md-none mr-3">
+
+                            <i class="fas fa-bars"></i>
+
+                        </button>
+
+                        <h5 class="m-0 font-weight-bold text-dark">
+
+                            <i class="fas fa-chart-line text-danger mr-2"></i>
+
+                            Relatório de Vendas
+
+                        </h5>
+
+                    </nav>
+
+                    <div class="container-fluid">
+                        <div class="container-fluid mt-4">
+                            <!-- Cards -->
+                            <div class="row text-center">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-left-primary shadow py-3">
+                                        <div class="card-body">
+                                            <i class="fas fa-calendar-day fa-2x mb-2 text-primary"></i>
+                                            <h5>Vendas do Dia</h5>
+                                            <h3 id="vDia">R$ 0,00</h3>
+                                            <p id="qDia" class="text-muted"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-left-success shadow py-3">
+                                        <div class="card-body">
+                                            <i class="fas fa-calendar-alt fa-2x mb-2 text-success"></i>
+                                            <h5>Vendas do Mês</h5>
+                                            <h3 id="vMes">R$ 0,00</h3>
+                                            <p id="qMes" class="text-muted"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-left-warning shadow py-3">
+                                        <div class="card-body">
+                                            <i class="fas fa-chart-line fa-2x mb-2 text-warning"></i>
+                                            <h5>Vendas do Ano</h5>
+                                            <h3 id="vAno">R$ 0,00</h3>
+                                            <p id="qAno" class="text-muted"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gráficos -->
+                            <canvas id="graficoVendas" height="100"></canvas>
+                            <canvas id="graficoMensal" height="100"></canvas>
+
+                            <!-- Relatório detalhado -->
+                            <hr class="my-4">
+                            <h4 class="text-center mb-3"><i class="fas fa-list"></i> Vendas Registradas</h4>
+
+                            <div class="d-flex justify-content-end mb-3">
+                                <button id="btnExportar" class="btn btn-danger">
+                                    <i class="fas fa-file-excel"></i> Exportar para Excel
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Cliente</th>
+                                            <th>Data</th>
+                                            <th>Pagamento</th>
+                                            <th>Valor (R$)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelaVendas"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-left-success shadow py-3">
-                            <div class="card-body">
-                                <i class="fas fa-calendar-alt fa-2x mb-2 text-success"></i>
-                                <h5>Vendas do Mês</h5>
-                                <h3 id="vMes">R$ 0,00</h3>
-                                <p id="qMes" class="text-muted"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-left-warning shadow py-3">
-                            <div class="card-body">
-                                <i class="fas fa-chart-line fa-2x mb-2 text-warning"></i>
-                                <h5>Vendas do Ano</h5>
-                                <h3 id="vAno">R$ 0,00</h3>
-                                <p id="qAno" class="text-muted"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gráficos -->
-                <canvas id="graficoVendas" height="100"></canvas>
-                <canvas id="graficoMensal" height="100"></canvas>
-
-                <!-- Relatório detalhado -->
-                <hr class="my-4">
-                <h4 class="text-center mb-3"><i class="fas fa-list"></i> Vendas Registradas</h4>
-
-                <div class="d-flex justify-content-end mb-3">
-                    <button id="btnExportar" class="btn btn-danger">
-                        <i class="fas fa-file-excel"></i> Exportar para Excel
-                    </button>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Data</th>
-                                <th>Pagamento</th>
-                                <th>Valor (R$)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaVendas"></tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -172,7 +193,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/vendas.js"></script>
-    <script src="js/menu.js"></script>
+    <script src="js/menu-vendas.js"></script>
 </body>
 
 </html>
