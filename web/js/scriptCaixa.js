@@ -156,8 +156,8 @@ async function carregarClientes() {
     clientes.forEach(cliente => {
 
       selectCliente.innerHTML += `
-                <option value="${cliente.id}">
-                    ${cliente.nome}
+                <option value="${clienteId.id}">
+                    ${clienteId.nome}
                 </option>
             `;
 
