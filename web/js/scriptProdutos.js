@@ -5,7 +5,6 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado")) || { empresaId
 // ================== ELEMENTOS ==================
 const form = document.querySelector("#caixaForms");
 const lista = document.querySelector("#produtosCadastrados");
-const btnSalvarEdicao = document.querySelector("#btnSalvarEdicao");
 let editandoId = null;
 
 // ================== FUNÇÕES AUXILIARES ==================
@@ -41,42 +40,140 @@ function alertar(msg, tipo = "info") {
 document.addEventListener("DOMContentLoaded", () => {
   carregarProdutos();
   form.addEventListener("submit", salvarProduto);
-  btnSalvarEdicao.addEventListener("click", salvarEdicao);
 });
 
 // ================== CRUD ==================
 
-// Criar produto
 async function salvarProduto(e) {
+
   e.preventDefault();
 
   const data = {
+
     nome: form.nome.value.trim(),
-    precoVenda: parseFloat(form.precoVenda.value) || 0,
-    precoCompra: parseFloat(form.precoCompra.value) || 0,
-    estoque: parseInt(form.estoque.value) || 0,
-    marca: form.marca.value.trim(),
-    categoria: form.categoria.value.trim(),
-    empresaId: usuario.empresaId
+
+    descricao:
+      form.descricao?.value?.trim() || "",
+
+    sku:
+      form.sku?.value?.trim() || "",
+
+    codigoBarras:
+      form.codigoBarras?.value?.trim() || "",
+
+    marca:
+      form.marca.value.trim(),
+
+    categoria:
+      form.categoria.value.trim(),
+
+    unidade:
+      form.unidade?.value || "UN",
+
+    precoCompra:
+      parseFloat(form.precoCompra.value) || 0,
+
+    precoVenda:
+      parseFloat(form.precoVenda.value) || 0,
+
+    estoque:
+      parseInt(form.estoque.value) || 0,
+
+    estoqueMinimo:
+      parseInt(form.estoqueMinimo?.value) || 0,
+
+    ncm:
+      form.ncm?.value || "",
+
+    cest:
+      form.cest?.value || "",
+
+    cfop:
+      form.cfop?.value || "",
+
+    origem:
+      form.origem?.value || "NACIONAL",
+
+    aliquotaIcms:
+      parseFloat(form.aliquotaIcms?.value) || null,
+
+    aliquotaPis:
+      parseFloat(form.aliquotaPis?.value) || null,
+
+    aliquotaCofins:
+      parseFloat(form.aliquotaCofins?.value) || null,
+
+    aliquotaIpi:
+      parseFloat(form.aliquotaIpi?.value) || null,
+
+    empresaId:
+      usuario.empresaId
+
   };
 
+  const metodo =
+    editandoId ? "PUT" : "POST";
+
+  const url =
+    editandoId
+      ? `${API}/${editandoId}`
+      : API;
+
   try {
-    const resp = await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+
+    const resp = await fetch(url, {
+
+      method: metodo,
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
       body: JSON.stringify(data)
+
     });
 
-    const json = await resp.json();
-    if (!resp.ok) throw new Error(json.error || "Erro ao cadastrar produto.");
+    const json =
+      await resp.json();
 
-    alertar("✅ Produto cadastrado com sucesso!", "success");
+    if (!resp.ok) {
+
+      throw new Error(
+        json.error ||
+        "Erro ao salvar produto."
+      );
+
+    }
+
+    alertar(
+
+      editandoId
+        ? "✅ Produto atualizado com sucesso!"
+        : "✅ Produto cadastrado com sucesso!",
+
+      "success"
+
+    );
+
     form.reset();
+
+    editandoId = null;
+
+    $("#modalProduto").modal("hide");
+
     carregarProdutos();
+
   } catch (err) {
-    console.error("Erro ao salvar produto:", err);
-    alertar(err.message, "error");
+
+    console.error(err);
+
+    alertar(
+      err.message,
+      "error"
+    );
+
   }
+
 }
 
 // Listar produtos
@@ -102,134 +199,102 @@ async function carregarProdutos() {
 // Editar produto
 async function editarProduto(id) {
 
-    try {
+  try {
 
-        const resp =
-            await fetch(
-                `${API}?empresaId=${usuario.empresaId}`
-            );
+    const resp =
+      await fetch(
+        `${API}?empresaId=${usuario.empresaId}`
+      );
 
-        const produtos =
-            await resp.json();
+    const produtos =
+      await resp.json();
 
-        const p =
-            produtos.find(
-                item => item.id === id
-            );
+    const p =
+      produtos.find(
+        item => item.id === id
+      );
 
-        if (!p) {
+    if (!p) {
 
-            return alertar(
-                "Produto não encontrado.",
-                "warning"
-            );
-
-        }
-
-        editandoId = id;
-
-        form.nome.value =
-            p.nome || "";
-
-        form.descricao.value =
-            p.descricao || "";
-
-        form.sku.value =
-            p.sku || "";
-
-        form.codigoBarras.value =
-            p.codigoBarras || "";
-
-        form.marca.value =
-            p.marca || "";
-
-        form.categoria.value =
-            p.categoria || "";
-
-        form.unidade.value =
-            p.unidade || "UN";
-
-        form.precoCompra.value =
-            p.precoCompra || 0;
-
-        form.precoVenda.value =
-            p.precoVenda || 0;
-
-        form.estoque.value =
-            p.estoque || 0;
-
-        form.estoqueMinimo.value =
-            p.estoqueMinimo || 0;
-
-        form.ncm.value =
-            p.ncm || "";
-
-        form.cest.value =
-            p.cest || "";
-
-        form.cfop.value =
-            p.cfop || "";
-
-        form.origem.value =
-            p.origem || "NACIONAL";
-
-        form.aliquotaIcms.value =
-            p.aliquotaIcms || "";
-
-        form.aliquotaPis.value =
-            p.aliquotaPis || "";
-
-        form.aliquotaCofins.value =
-            p.aliquotaCofins || "";
-
-        form.aliquotaIpi.value =
-            p.aliquotaIpi || "";
-
-        $("#modalProduto").modal("show");
-
-    } catch (error) {
-
-        console.error(error);
-
-        alertar(
-            "Erro ao carregar produto.",
-            "error"
-        );
+      return alertar(
+        "Produto não encontrado.",
+        "warning"
+      );
 
     }
 
-}
+    editandoId = id;
 
-// Salvar edição
-async function salvarEdicao() {
-  if (!editandoId) return alertar("Nenhum produto selecionado.", "warning");
+    form.nome.value =
+      p.nome || "";
 
-  const data = {
-    nome: document.querySelector("#edit-nome").value.trim(),
-    precoVenda: parseFloat(document.querySelector("#edit-precoVenda").value) || 0,
-    precoCompra: parseFloat(document.querySelector("#edit-precoCompra").value) || 0,
-    estoque: parseInt(document.querySelector("#edit-estoque").value) || 0,
-    marca: document.querySelector("#edit-marca").value.trim(),
-    categoria: document.querySelector("#edit-categoria").value.trim()
-  };
+    form.descricao.value =
+      p.descricao || "";
 
-  try {
-    const resp = await fetch(`${API}/${editandoId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    form.sku.value =
+      p.sku || "";
 
-    const json = await resp.json();
-    if (!resp.ok) throw new Error(json.error || "Erro ao atualizar produto.");
+    form.codigoBarras.value =
+      p.codigoBarras || "";
 
-    alertar("✅ Produto atualizado com sucesso!", "success");
-    $("#modalEditarProduto").modal("hide");
-    carregarProdutos();
-  } catch (err) {
-    console.error(err);
-    alertar("Erro ao atualizar produto: " + err.message, "error");
+    form.marca.value =
+      p.marca || "";
+
+    form.categoria.value =
+      p.categoria || "";
+
+    form.unidade.value =
+      p.unidade || "UN";
+
+    form.precoCompra.value =
+      p.precoCompra || 0;
+
+    form.precoVenda.value =
+      p.precoVenda || 0;
+
+    form.estoque.value =
+      p.estoque || 0;
+
+    form.estoqueMinimo.value =
+      p.estoqueMinimo || 0;
+
+    form.ncm.value =
+      p.ncm || "";
+
+    form.cest.value =
+      p.cest || "";
+
+    form.cfop.value =
+      p.cfop || "";
+
+    form.origem.value =
+      p.origem || "NACIONAL";
+
+    form.aliquotaIcms.value =
+      p.aliquotaIcms || "";
+
+    form.aliquotaPis.value =
+      p.aliquotaPis || "";
+
+    form.aliquotaCofins.value =
+      p.aliquotaCofins || "";
+
+    form.aliquotaIpi.value =
+      p.aliquotaIpi || "";
+
+    $("#modalProduto").modal("show");
+
+  } catch (error) {
+
+    console.error(error);
+
+    alertar(
+      "Erro ao carregar produto.",
+      "error"
+    );
+
   }
+
 }
 
 // Excluir produto
