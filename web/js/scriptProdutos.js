@@ -101,26 +101,103 @@ async function carregarProdutos() {
 
 // Editar produto
 async function editarProduto(id) {
-  try {
-    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
-    const produtos = await resp.json();
-    const p = produtos.find((x) => x.id === id);
-    if (!p) return alertar("Produto não encontrado.", "warning");
 
-    editandoId = id;
-    document.querySelector("#edit-id").value = p.id;
-    document.querySelector("#edit-nome").value = p.nome;
-    document.querySelector("#edit-precoVenda").value = p.precoVenda;
-    document.querySelector("#edit-precoCompra").value = p.precoCompra;
-    document.querySelector("#edit-estoque").value = p.estoque;
-    document.querySelector("#edit-marca").value = p.marca;
-    document.querySelector("#edit-categoria").value = p.categoria;
+    try {
 
-    $("#modalEditarProduto").modal("show");
-  } catch (err) {
-    console.error(err);
-    alertar("Erro ao abrir produto para edição.", "error");
-  }
+        const resp =
+            await fetch(
+                `${API}?empresaId=${usuario.empresaId}`
+            );
+
+        const produtos =
+            await resp.json();
+
+        const p =
+            produtos.find(
+                item => item.id === id
+            );
+
+        if (!p) {
+
+            return alertar(
+                "Produto não encontrado.",
+                "warning"
+            );
+
+        }
+
+        editandoId = id;
+
+        form.nome.value =
+            p.nome || "";
+
+        form.descricao.value =
+            p.descricao || "";
+
+        form.sku.value =
+            p.sku || "";
+
+        form.codigoBarras.value =
+            p.codigoBarras || "";
+
+        form.marca.value =
+            p.marca || "";
+
+        form.categoria.value =
+            p.categoria || "";
+
+        form.unidade.value =
+            p.unidade || "UN";
+
+        form.precoCompra.value =
+            p.precoCompra || 0;
+
+        form.precoVenda.value =
+            p.precoVenda || 0;
+
+        form.estoque.value =
+            p.estoque || 0;
+
+        form.estoqueMinimo.value =
+            p.estoqueMinimo || 0;
+
+        form.ncm.value =
+            p.ncm || "";
+
+        form.cest.value =
+            p.cest || "";
+
+        form.cfop.value =
+            p.cfop || "";
+
+        form.origem.value =
+            p.origem || "NACIONAL";
+
+        form.aliquotaIcms.value =
+            p.aliquotaIcms || "";
+
+        form.aliquotaPis.value =
+            p.aliquotaPis || "";
+
+        form.aliquotaCofins.value =
+            p.aliquotaCofins || "";
+
+        form.aliquotaIpi.value =
+            p.aliquotaIpi || "";
+
+        $("#modalProduto").modal("show");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alertar(
+            "Erro ao carregar produto.",
+            "error"
+        );
+
+    }
+
 }
 
 // Salvar edição
