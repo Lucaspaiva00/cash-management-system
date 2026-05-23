@@ -18,6 +18,13 @@ const lista =
         "#listaCentros"
     );
 
+const filtroBusca =
+    document.querySelector(
+        "#filtroBusca"
+    );
+
+let CENTROS = [];
+
 document.addEventListener(
     "DOMContentLoaded",
     () => {
@@ -29,49 +36,78 @@ document.addEventListener(
             salvarCentro
         );
 
+        filtroBusca?.addEventListener(
+            "input",
+            aplicarFiltros
+        );
+
     }
 );
 
+function atualizarResumo(lista) {
+
+    document.getElementById(
+        "totalCentros"
+    ).textContent =
+        lista.length;
+
+    document.getElementById(
+        "totalAtivos"
+    ).textContent =
+        lista.length;
+
+}
+
 async function carregarCentros() {
 
-    const resp =
-        await fetch(
-            `${API}?empresaId=${empresaId}`
+    try {
+
+        const resp =
+            await fetch(
+                `${API}?empresaId=${empresaId}`
+            );
+
+        CENTROS =
+            await resp.json();
+
+        atualizarResumo(
+            CENTROS
         );
 
-    const dados =
-        await resp.json();
+        renderizarCentros(
+            CENTROS
+        );
 
-    lista.innerHTML =
-        dados.map(c => `
+    } catch (erro) {
 
-        <tr>
+        console.error(
+            erro
+        );
 
-            <td>${c.nome}</td>
+    }
 
-            <td>
+}
 
-                <button
-                    class="btn btn-sm btn-primary"
-                    onclick="editarCentro(${c.id},'${c.nome}')">
+function aplicarFiltros() {
 
-                    <i class="fas fa-edit"></i>
+    const busca =
+        filtroBusca.value
+            .toLowerCase()
+            .trim();
 
-                </button>
+    const filtrados =
+        CENTROS.filter(
+            centro =>
+                centro.nome
+                    .toLowerCase()
+                    .includes(
+                        busca
+                    )
+        );
 
-                <button
-                    class="btn btn-sm btn-danger"
-                    onclick="excluirCentro(${c.id})">
-
-                    <i class="fas fa-trash"></i>
-
-                </button>
-
-            </td>
-
-        </tr>
-
-    `).join("");
+    renderizarCentros(
+        filtrados
+    );
 
 }
 
@@ -89,72 +125,326 @@ async function salvarCentro(e) {
         nome:
             document.querySelector(
                 "#nome"
-            ).value,
+            ).value
+                .trim(),
 
         empresaId
+
     };
 
-    const metodo =
-        id
-            ? "PUT"
-            : "POST";
+    try {
 
-    const url =
-        id
-            ? `${API}/${id}`
-            : API;
+        const metodo =
+            id
+                ? "PUT"
+                : "POST";
 
-    await fetch(url, {
+        const url =
+            id
+                ? `${API}/${id}`
+                : API;
 
-        method:
-            metodo,
+        const resp =
+            await fetch(
+                url,
+                {
+                    method:
+                        metodo,
 
-        headers: {
-            "Content-Type":
-                "application/json"
-        },
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-        body:
-            JSON.stringify(
-                payload
-            )
+                    body:
+                        JSON.stringify(
+                            payload
+                        )
+                }
+            );
 
-    });
+        if (!resp.ok)
+            throw new Error(
+                "Erro ao salvar."
+            );
 
-    form.reset();
+        form.reset();
 
-    document.querySelector(
-        "#centroId"
-    ).value = "";
+        document.querySelector(
+            "#centroId"
+        ).value = "";
 
-    carregarCentros();
+        carregarCentros();
+
+    } catch (erro) {
+
+        alert(
+            erro.message
+        );
+
+    }
 
 }
 
-function editarCentro(id, nome) {
+function criarCard(centro) {
 
-    document.querySelector(
-        "#centroId"
-    ).value = id;
+    return `
 
-    document.querySelector(
-        "#nome"
-    ).value = nome;
+    <div class="card-centro">
+
+        <div class="centro-header">
+
+            <div>
+
+                <h5>
+                    ${centro.nome}
+                </h5>
+
+            </div>
+
+            <div>
+
+                <button
+                    class="btn btn-sm btn-outline-primary"
+                    onclick="abrirEdicao(${centro.id})">
+
+                    <i class="fas fa-edit"></i>
+
+                </button>
+
+                <button
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="abrirExclusao(${centro.id})">
+
+                    <i class="fas fa-trash"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <div
+            id="area-${centro.id}"
+            class="area-acoes">
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+function renderizarCentros(listaCentros) {
+
+    lista.innerHTML =
+        listaCentros
+            .map(
+                criarCard
+            )
+            .join("");
+
+}
+
+function abrirEdicao(id) {
+
+    const centro =
+        CENTROS.find(
+            c => c.id === id
+        );
+
+    if (!centro)
+        return;
+
+    document
+        .getElementById(
+            `area-${id}`
+        )
+        .innerHTML = `
+
+        <div class="card-edicao">
+
+            <div class="form-group">
+
+                <label>
+
+                    Nome
+
+                </label>
+
+                <input
+                    id="editNome${id}"
+                    class="form-control"
+                    value="${centro.nome}">
+
+            </div>
+
+            <div class="text-right">
+
+                <button
+                    class="btn btn-secondary mr-2"
+                    onclick="fecharAcao(${id})">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="salvarEdicao(${id})">
+
+                    Salvar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+async function salvarEdicao(id) {
+
+    try {
+
+        const nome =
+            document
+                .getElementById(
+                    `editNome${id}`
+                )
+                .value
+                .trim();
+
+        if (!nome) {
+
+            alert(
+                "Informe o nome."
+            );
+
+            return;
+
+        }
+
+        const resp =
+            await fetch(
+                `${API}/${id}`,
+                {
+                    method:
+                        "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            nome,
+                            empresaId
+                        })
+                }
+            );
+
+        if (!resp.ok)
+            throw new Error(
+                "Erro ao atualizar."
+            );
+
+        carregarCentros();
+
+    } catch (erro) {
+
+        alert(
+            erro.message
+        );
+
+    }
+
+}
+
+function abrirExclusao(id) {
+
+    document
+        .getElementById(
+            `area-${id}`
+        )
+        .innerHTML = `
+
+        <div class="card-exclusao">
+
+            <p class="mb-3">
+
+                Deseja realmente excluir este centro de custo?
+
+            </p>
+
+            <div class="text-right">
+
+                <button
+                    class="btn btn-secondary mr-2"
+                    onclick="fecharAcao(${id})">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="excluirCentro(${id})">
+
+                    Excluir
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
 
 }
 
 async function excluirCentro(id) {
 
-    if (!confirm("Excluir centro de custo?"))
-        return;
+    try {
 
-    await fetch(
-        `${API}/${id}`,
-        {
-            method: "DELETE"
-        }
-    );
+        const resp =
+            await fetch(
+                `${API}/${id}`,
+                {
+                    method:
+                        "DELETE"
+                }
+            );
 
-    carregarCentros();
+        if (!resp.ok)
+            throw new Error(
+                "Erro ao excluir."
+            );
+
+        carregarCentros();
+
+    } catch (erro) {
+
+        alert(
+            erro.message
+        );
+
+    }
+
+}
+
+function fecharAcao(id) {
+
+    const area =
+        document.getElementById(
+            `area-${id}`
+        );
+
+    if (area)
+        area.innerHTML = "";
 
 }

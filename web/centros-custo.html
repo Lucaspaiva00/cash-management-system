@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Centros de Custo</title>
+    <title>Centros de Custo - Paiva Tech</title>
 
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
 
@@ -15,83 +15,265 @@
 
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="css/movimentacoes.css">
+
     <link rel="stylesheet" href="css/centros-custo.css">
 
 </head>
 
 <body>
 
-    <div class="container-fluid mt-4">
+    <div class="mobile-overlay"></div>
 
-        <div class="card shadow">
+    <div id="wrapper">
 
-            <div class="card-body">
+        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
 
-                <h4>
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
 
-                    <i class="fas fa-sitemap text-danger"></i>
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
 
-                    Centros de Custo
+                <div class="sidebar-brand-text mx-3">
+                    Paiva Tech
+                </div>
 
-                </h4>
+            </a>
 
-                <form id="formCentro">
+            <hr class="sidebar-divider my-0">
 
-                    <input type="hidden" id="centroId">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
 
-                    <div class="form-row">
+            <hr class="sidebar-divider">
 
-                        <div class="col-md-9">
+            <div class="sidebar-heading">
+                Páginas
+            </div>
 
-                            <label>Nome</label>
+            <li class="nav-item">
+                <a class="nav-link" href="movimentacoes.html">
+                    <i class="fa fa-university"></i>
+                    <span>Caixa</span>
+                </a>
+            </li>
 
-                            <input type="text" id="nome" class="form-control" required>
+            <li class="nav-item">
+                <a class="nav-link" href="categorias-financeiras.html">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorias Financeiras</span>
+                </a>
+            </li>
+
+            <li class="nav-item active">
+                <a class="nav-link" href="centros-custo.html">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Centros de Custo</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="pdvvenda.html">
+                    <i class="fas fa-cash-register"></i>
+                    <span>PDV</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="agenda.html">
+                    <i class="fas fa-calendar"></i>
+                    <span>Agenda</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="vendas.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Relatório de Vendas</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="criarCliente.html">
+                    <i class="fas fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="produtos.html">
+                    <i class="fas fa-boxes"></i>
+                    <span>Produtos</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="propostas.html">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Propostas</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="login.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </li>
+
+        </ul>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <div id="content">
+
+                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+
+                    <button id="menuToggleMobile" class="btn d-md-none mr-3">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
+                    <h5 class="m-0 font-weight-bold text-dark">
+                        Centros de Custo
+                    </h5>
+
+                </nav>
+
+                <div class="container-fluid mb-4">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <div class="card border-left-primary shadow h-100 py-2">
+
+                                <div class="card-body">
+
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Total Centros
+                                    </div>
+
+                                    <div id="totalCentros" class="h5 mb-0 font-weight-bold text-gray-800">
+                                        0
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
-                        <div class="col-md-3 d-flex align-items-end">
+                        <div class="col-md-6 mb-3">
 
-                            <button class="btn btn-danger w-100">
+                            <div class="card border-left-success shadow h-100 py-2">
 
-                                Salvar
+                                <div class="card-body">
 
-                            </button>
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Ativos
+                                    </div>
+
+                                    <div id="totalAtivos" class="h5 mb-0 font-weight-bold text-gray-800">
+                                        0
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
                     </div>
 
-                </form>
+                </div>
 
-            </div>
+                <div class="container-fluid mb-4">
 
-        </div>
+                    <div class="card shadow-sm">
 
-        <div class="card shadow mt-4">
+                        <div class="card-body">
 
-            <div class="card-body">
+                            <h5 class="mb-4">
 
-                <table class="table">
+                                <i class="fas fa-plus-circle text-danger"></i>
 
-                    <thead>
+                                Novo Centro de Custo
 
-                        <tr>
+                            </h5>
 
-                            <th>Nome</th>
+                            <form id="formCentro" class="form-row">
 
-                            <th width="150">
-                                Ações
-                            </th>
+                                <input type="hidden" id="centroId">
 
-                        </tr>
+                                <div class="col-md-9 mb-3">
 
-                    </thead>
+                                    <label>Nome</label>
 
-                    <tbody id="listaCentros">
+                                    <input type="text" id="nome" class="form-control" required>
 
-                    </tbody>
+                                </div>
 
-                </table>
+                                <div class="col-md-3 mb-3 d-flex align-items-end">
+
+                                    <button type="submit" class="btn btn-danger w-100">
+
+                                        <i class="fas fa-save"></i>
+
+                                        Salvar
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="container-fluid mb-4">
+
+                    <div class="card shadow-sm">
+
+                        <div class="card-body">
+
+                            <h5 class="mb-3">
+
+                                <i class="fas fa-filter text-danger"></i>
+
+                                Pesquisa
+
+                            </h5>
+
+                            <input type="text" id="filtroBusca" class="form-control"
+                                placeholder="Digite o nome do centro de custo...">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="container-fluid mb-5">
+
+                    <h5 class="mb-3">
+
+                        <i class="fas fa-list"></i>
+
+                        Centros Cadastrados
+
+                    </h5>
+
+                    <div id="listaCentros"></div>
+
+                </div>
 
             </div>
 
@@ -99,7 +281,14 @@
 
     </div>
 
+    <script src="vendor2/jquery/jquery.min.js"></script>
+    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js2/sb-admin-2.min.js"></script>
+
     <script src="js/centros-custo.js"></script>
+
+    <script src="js/menumovimentacao.js"></script>
 
 </body>
 
