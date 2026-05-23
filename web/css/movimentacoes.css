@@ -217,3 +217,38 @@
          line-height: 1;
      }
  }
+
+ .card-op {
+
+     background: #fff;
+
+     border-radius: 16px;
+
+     padding: 20px;
+
+     border-left: 5px solid #e63946;
+
+     transition: .25s;
+
+     height: 100%;
+
+ }
+
+ .card-op:hover {
+
+     transform: translateY(-4px);
+
+     box-shadow:
+         0 10px 25px rgba(0, 0, 0, .12);
+
+ }
+
+ .badge {
+
+     padding: 6px 10px;
+
+     font-size: 11px;
+
+     font-weight: 600;
+
+ }

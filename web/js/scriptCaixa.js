@@ -1208,8 +1208,7 @@ function abrirModalEdicao(id) {
 
   const op =
     OPERACOES.find(
-      item =>
-        item.id === id
+      o => o.id === id
     );
 
   if (!op) {
@@ -1222,44 +1221,110 @@ function abrirModalEdicao(id) {
 
   }
 
-  document.querySelector("#edit_id").value =
+  document.getElementById(
+    "movimentacaoId"
+  ).value =
     op.id;
 
-  document.querySelector("#edit_tipoOperacao").value =
+  document.getElementById(
+    "tipoOperacao"
+  ).value =
     op.tipoOperacao || "";
 
-  document.querySelector("#edit_status").value =
+  document.getElementById(
+    "status"
+  ).value =
     op.status || "PENDENTE";
 
-  document.querySelector("#edit_meioPagamento").value =
+  document.getElementById(
+    "meioPagamento"
+  ).value =
     op.meioPagamento || "";
 
-  document.querySelector("#edit_valor").value =
-    op.valor || 0;
+  document.getElementById(
+    "valor"
+  ).value =
+    op.valor || "";
 
-  document.querySelector("#edit_valorPago").value =
+  document.getElementById(
+    "valorPago"
+  ).value =
     op.valorPago || "";
 
-  document.querySelector("#edit_dataOperacao").value =
-    op._data || "";
+  document.getElementById(
+    "clienteId"
+  ).value =
+    op.clienteId || "";
 
-  document.querySelector("#edit_dataVencimento").value =
-    op.dataVencimento
-      ? op.dataVencimento.split("T")[0]
-      : "";
+  document.getElementById(
+    "categoriaId"
+  ).value =
+    op.categoriaId || "";
 
-  document.querySelector("#edit_fornecedor").value =
+  document.getElementById(
+    "centroCustoId"
+  ).value =
+    op.centroCustoId || "";
+
+  document.getElementById(
+    "fornecedor"
+  ).value =
     op.fornecedor || "";
 
-  document.querySelector("#edit_descricao").value =
+  document.getElementById(
+    "parcelas"
+  ).value =
+    op.parcelas || 1;
+
+  document.getElementById(
+    "recorrente"
+  ).value =
+    String(
+      op.recorrente || false
+    );
+
+  document.getElementById(
+    "tipoRecorrencia"
+  ).value =
+    op.tipoRecorrencia || "NENHUMA";
+
+  document.getElementById(
+    "jurosMaquina"
+  ).value =
+    op.jurosMaquina || 0;
+
+  document.getElementById(
+    "descricao"
+  ).value =
     op.descricao || "";
 
-  document.querySelector("#edit_observacoes").value =
+  document.getElementById(
+    "observacoes"
+  ).value =
     op.observacoes || "";
 
-  $("#modalEdicaoCaixa").modal(
-    "show"
-  );
+  if (op.dataOperacao) {
+
+    document.getElementById(
+      "dataOperacao"
+    ).value =
+      op.dataOperacao
+        .split("T")[0];
+
+  }
+
+  if (op.dataVencimento) {
+
+    document.getElementById(
+      "dataVencimento"
+    ).value =
+      op.dataVencimento
+        .split("T")[0];
+
+  }
+
+  $("#modalMovimentacao")
+    .modal("show");
 
 }
 
@@ -1268,68 +1333,107 @@ async function salvarEdicaoOperacao(e) {
   e.preventDefault();
 
   const id =
-    document.querySelector(
-      "#edit_id"
+    document.getElementById(
+      "movimentacaoId"
     ).value;
 
   const payload = {
 
     tipoOperacao:
-      document.querySelector(
-        "#edit_tipoOperacao"
+      document.getElementById(
+        "tipoOperacao"
       ).value,
 
     status:
-      document.querySelector(
-        "#edit_status"
+      document.getElementById(
+        "status"
       ).value,
 
     meioPagamento:
-      document.querySelector(
-        "#edit_meioPagamento"
+      document.getElementById(
+        "meioPagamento"
       ).value,
 
     valor:
       parseFloat(
-        document.querySelector(
-          "#edit_valor"
+        document.getElementById(
+          "valor"
         ).value
       ),
 
     valorPago:
-      document.querySelector(
-        "#edit_valorPago"
+      document.getElementById(
+        "valorPago"
       ).value
         ? parseFloat(
-          document.querySelector(
-            "#edit_valorPago"
+          document.getElementById(
+            "valorPago"
           ).value
         )
         : null,
 
     dataOperacao:
-      document.querySelector(
-        "#edit_dataOperacao"
+      document.getElementById(
+        "dataOperacao"
       ).value,
 
     dataVencimento:
-      document.querySelector(
-        "#edit_dataVencimento"
+      document.getElementById(
+        "dataVencimento"
+      ).value || null,
+
+    clienteId:
+      document.getElementById(
+        "clienteId"
+      ).value || null,
+
+    categoriaId:
+      document.getElementById(
+        "categoriaId"
+      ).value || null,
+
+    centroCustoId:
+      document.getElementById(
+        "centroCustoId"
       ).value || null,
 
     fornecedor:
-      document.querySelector(
-        "#edit_fornecedor"
+      document.getElementById(
+        "fornecedor"
       ).value,
 
+    parcelas:
+      parseInt(
+        document.getElementById(
+          "parcelas"
+        ).value
+      ) || 1,
+
+    recorrente:
+      document.getElementById(
+        "recorrente"
+      ).value === "true",
+
+    tipoRecorrencia:
+      document.getElementById(
+        "tipoRecorrencia"
+      ).value,
+
+    jurosMaquina:
+      parseFloat(
+        document.getElementById(
+          "jurosMaquina"
+        ).value
+      ) || 0,
+
     descricao:
-      document.querySelector(
-        "#edit_descricao"
+      document.getElementById(
+        "descricao"
       ).value,
 
     observacoes:
-      document.querySelector(
-        "#edit_observacoes"
+      document.getElementById(
+        "observacoes"
       ).value
 
   };
@@ -1362,8 +1466,20 @@ async function salvarEdicaoOperacao(e) {
 
     }
 
-    $("#modalEdicaoCaixa")
+    $("#modalMovimentacao")
       .modal("hide");
+
+    document
+      .getElementById(
+        "caixaForm"
+      )
+      .reset();
+
+    document
+      .getElementById(
+        "movimentacaoId"
+      )
+      .value = "";
 
     carregarDashboard();
 
