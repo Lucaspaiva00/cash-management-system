@@ -8,26 +8,55 @@ datasource db {
 }
 
 model Empresa {
-  id       Int     @id @default(autoincrement())
-  nome     String  @db.VarChar(150)
-  cnpj     String? @unique
-  email    String? @unique
+  id   Int    @id @default(autoincrement())
+  nome String @db.VarChar(150)
+
+  cnpj String? @unique
+
+  email String? @unique
+
   telefone String? @db.VarChar(20)
+
   endereco String? @db.VarChar(255)
 
-  usuario   Usuario?
-  clientes  Cliente[]
-  produtos  Produto[]
-  propostas Proposta[]
-  operacoes Caixa[]
-  vendas    Venda[]
-  agendas   Agenda[]
+  cep String? @db.VarChar(20)
 
-  // NOVOS
-  categorias   CategoriaFinanceira[]
+  numero String? @db.VarChar(20)
+
+  complemento String? @db.VarChar(100)
+
+  bairro String? @db.VarChar(100)
+
+  cidade String? @db.VarChar(100)
+
+  estado String? @db.VarChar(2)
+
+  inscricaoEstadual String? @db.VarChar(30)
+
+  inscricaoMunicipal String? @db.VarChar(30)
+
+  regimeTributario RegimeTributario?
+
+  usuario Usuario?
+
+  clientes Cliente[]
+
+  produtos Produto[]
+
+  propostas Proposta[]
+
+  operacoes Caixa[]
+
+  vendas Venda[]
+
+  agendas Agenda[]
+
+  categorias CategoriaFinanceira[]
+
   centrosCusto CentroCusto[]
 
-  criadoEm     DateTime @default(now())
+  criadoEm DateTime @default(now())
+
   atualizadoEm DateTime @updatedAt
 }
 
@@ -45,48 +74,124 @@ model Usuario {
 }
 
 model Cliente {
-  id       Int     @id @default(autoincrement())
-  nome     String  @db.VarChar(150)
-  cpf      String? @unique
-  cnpj     String? @unique
-  email    String? @unique
+  id Int @id @default(autoincrement())
+
+  nome String @db.VarChar(150)
+
+  cpf String? @unique
+
+  cnpj String? @unique
+
+  inscricaoEstadual String? @db.VarChar(30)
+
+  email String? @unique
+
   telefone String? @db.VarChar(20)
+
   endereco String? @db.VarChar(255)
 
-  descricao       String? @db.VarChar(255)
-  servico         String? @db.VarChar(100)
+  cep String? @db.VarChar(20)
+
+  numero String? @db.VarChar(20)
+
+  complemento String? @db.VarChar(100)
+
+  bairro String? @db.VarChar(100)
+
+  cidade String? @db.VarChar(100)
+
+  estado String? @db.VarChar(2)
+
+  descricao String? @db.VarChar(255)
+
+  servico String? @db.VarChar(100)
+
   pacoteQuinzenal Boolean @default(false)
-  pacoteMensal    Boolean @default(false)
-  porteCachorro   String? @db.VarChar(50)
+
+  pacoteMensal Boolean @default(false)
+
+  porteCachorro String? @db.VarChar(50)
 
   empresaId Int
-  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   propostas Proposta[]
-  vendas    Venda[]
-  operacoes Caixa[]
-  agendas   Agenda[]
 
-  criadoEm     DateTime @default(now())
+  vendas Venda[]
+
+  operacoes Caixa[]
+
+  agendas Agenda[]
+
+  criadoEm DateTime @default(now())
+
   atualizadoEm DateTime @updatedAt
 }
 
 model Produto {
-  id          Int     @id @default(autoincrement())
-  nome        String  @db.VarChar(100)
-  marca       String? @db.VarChar(100)
-  categoria   String? @db.VarChar(100)
-  precoVenda  Float
+  id Int @id @default(autoincrement())
+
+  nome String @db.VarChar(150)
+
+  descricao String? @db.VarChar(500)
+
+  sku String? @db.VarChar(50)
+
+  codigoBarras String? @db.VarChar(50)
+
+  marca String? @db.VarChar(100)
+
+  categoria String? @db.VarChar(100)
+
+  unidade String @default("UN") @db.VarChar(10)
+
+  ncm String? @db.VarChar(20)
+
+  cest String? @db.VarChar(20)
+
+  cfop String? @db.VarChar(10)
+
+  origem OrigemMercadoria @default(NACIONAL)
+
+  aliquotaIcms Float?
+
+  aliquotaPis Float?
+
+  aliquotaCofins Float?
+
+  aliquotaIpi Float?
+
+  precoVenda Float
+
   precoCompra Float?
-  estoque     Int     @default(0)
-  imagem      String? @db.VarChar(255)
+
+  estoque Int @default(0)
+
+  estoqueMinimo Int @default(0)
+
+  pesoLiquido Float?
+
+  pesoBruto Float?
+
+  largura Float?
+
+  altura Float?
+
+  comprimento Float?
+
+  imagem String? @db.VarChar(255)
+
+  ativo Boolean @default(true)
 
   empresaId Int
-  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   vendaItens VendaItem[]
 
-  criadoEm     DateTime @default(now())
+  criadoEm DateTime @default(now())
+
   atualizadoEm DateTime @updatedAt
 }
 
@@ -193,7 +298,15 @@ model Venda {
   data          DateTime      @default(now())
   total         Float
   meioPagamento MeioPagamento
+  numeroNota    String?       @db.VarChar(50)
 
+  chaveNfe String? @db.VarChar(60)
+
+  protocoloNfe String? @db.VarChar(100)
+
+  xmlNfe String? @db.VarChar(255)
+
+  pdfDanfe  String? @db.VarChar(255)
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
@@ -210,18 +323,39 @@ model VendaItem {
   id Int @id @default(autoincrement())
 
   vendaId Int
-  venda   Venda @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  venda Venda @relation(fields: [vendaId], references: [id], onDelete: Cascade)
 
   produtoId Int
-  produto   Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+
+  produto Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
 
   quantidade Int
 
   precoUnitario Float
 
+  desconto Float @default(0)
+
+  acrescimo Float @default(0)
+
   subtotal Float
 
-  criadoEm     DateTime @default(now())
+  ncm String?
+
+  cest String?
+
+  cfop String?
+
+  aliquotaIcms Float?
+
+  aliquotaPis Float?
+
+  aliquotaCofins Float?
+
+  aliquotaIpi Float?
+
+  criadoEm DateTime @default(now())
+
   atualizadoEm DateTime @updatedAt
 }
 
@@ -279,4 +413,18 @@ enum StatusAgenda {
   AGENDADO
   CONCLUIDO
   CANCELADO
+}
+
+enum OrigemMercadoria {
+  NACIONAL
+
+  ESTRANGEIRA_IMPORTACAO_DIRETA
+
+  ESTRANGEIRA_MERCADO_INTERNO
+}
+
+enum RegimeTributario {
+  SIMPLES_NACIONAL
+  LUCRO_PRESUMIDO
+  LUCRO_REAL
 }

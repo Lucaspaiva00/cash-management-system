@@ -45,6 +45,7 @@ routes.route("/produtos")
   .post(produtos.create);
 
 routes.route("/produtos/:id")
+  .get(produtos.readOne)
   .put(produtos.update)
   .delete(produtos.remove);
 
