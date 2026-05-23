@@ -83,6 +83,20 @@
 
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="categorias-financeiras.html">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorias Financeiras</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="centros-custo.html">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Centros de Custo</span>
+                </a>
+            </li>
+
             <!-- PDV -->
             <li class="nav-item">
 
@@ -190,6 +204,70 @@
                     <h5 class="m-0 font-weight-bold text-dark">Movimentações</h5>
 
                 </nav>
+                <!-- RESUMO FINANCEIRO -->
+                <div class="container-fluid mb-4">
+
+                    <div class="row">
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Entradas
+                                    </div>
+
+                                    <div id="totalEntradas" class="h5 mb-0 font-weight-bold text-gray-800">
+                                        R$ 0,00
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                        Saídas
+                                    </div>
+
+                                    <div id="totalSaidas" class="h5 mb-0 font-weight-bold text-gray-800">
+                                        R$ 0,00
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Saldo
+                                    </div>
+
+                                    <div id="saldoGeral" class="h5 mb-0 font-weight-bold text-gray-800">
+                                        R$ 0,00
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Pendentes
+                                    </div>
+
+                                    <div id="totalPendentes" class="h5 mb-0 font-weight-bold text-gray-800">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
 
                 <!-- FORM -->
                 <div class="container-fluid mb-4">
@@ -198,7 +276,7 @@
 
                         <div class="card-body">
 
-                            <h5 class="mb-3">
+                            <h5 class="mb-4">
 
                                 <i class="fas fa-plus-circle text-danger"></i>
 
@@ -208,100 +286,228 @@
 
                             <form id="caixaForm" class="form-row" autocomplete="off">
 
-                                <!-- TIPO -->
-                                <div class="col-md-4 mb-2">
-
+                                <div class="col-md-3 mb-3">
                                     <label>Tipo de Operação</label>
 
                                     <select name="tipoOperacao" id="tipoOperacao" class="form-control" required>
 
-                                        <option value="">Selecione...</option>
+                                        <option value="">
+                                            Selecione...
+                                        </option>
 
-                                        <option value="ENTRADA">Entrada</option>
+                                        <option value="ENTRADA">
+                                            Entrada
+                                        </option>
 
-                                        <option value="SAIDA">Saída</option>
+                                        <option value="SAIDA">
+                                            Saída
+                                        </option>
 
                                     </select>
-
                                 </div>
 
-                                <!-- PAGAMENTO -->
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-3">
+                                    <label>Status</label>
 
+                                    <select name="status" id="status" class="form-control">
+
+                                        <option value="PENDENTE">
+                                            Pendente
+                                        </option>
+
+                                        <option value="PAGO">
+                                            Pago
+                                        </option>
+
+                                        <option value="ATRASADO">
+                                            Atrasado
+                                        </option>
+
+                                        <option value="CANCELADO">
+                                            Cancelado
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
                                     <label>Meio de Pagamento</label>
 
-                                    <select name="meioPagamento" id="meioPagamento" class="form-control" required>
+                                    <select name="meioPagamento" id="meioPagamento" class="form-control">
 
-                                        <option value="">Selecione...</option>
+                                        <option value="">
+                                            Selecione...
+                                        </option>
 
-                                        <option value="PIX">Pix</option>
+                                        <option value="PIX">
+                                            Pix
+                                        </option>
 
-                                        <option value="CARTAO">Cartão</option>
+                                        <option value="CARTAO">
+                                            Cartão
+                                        </option>
 
-                                        <option value="DINHEIRO">Dinheiro</option>
+                                        <option value="DINHEIRO">
+                                            Dinheiro
+                                        </option>
 
-                                        <option value="BOLETO">Boleto</option>
+                                        <option value="BOLETO">
+                                            Boleto
+                                        </option>
 
-                                        <option value="TRANSFERENCIA">Transferência</option>
+                                        <option value="TRANSFERENCIA">
+                                            Transferência
+                                        </option>
 
                                     </select>
-
                                 </div>
 
-                                <!-- VALOR -->
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-3">
+                                    <label>Valor</label>
 
-                                    <label>Valor (R$)</label>
-
-                                    <input type="number" step="0.01" name="valor" id="valor" class="form-control"
+                                    <input type="number" step="0.01" id="valor" name="valor" class="form-control"
                                         required>
-
                                 </div>
 
-                                <!-- DATA -->
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-3">
+                                    <label>Valor Pago</label>
 
-                                    <label>Data</label>
-
-                                    <input type="date" name="dataOperacao" id="dataOperacao" class="form-control"
-                                        required>
-
+                                    <input type="number" step="0.01" id="valorPago" name="valorPago"
+                                        class="form-control">
                                 </div>
 
-                                <!-- CLIENTE -->
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-3">
+                                    <label>Data Operação</label>
 
+                                    <input type="date" id="dataOperacao" name="dataOperacao" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Data Vencimento</label>
+
+                                    <input type="date" id="dataVencimento" name="dataVencimento" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
                                     <label>Cliente</label>
 
-                                    <select name="clienteId" id="clienteId" class="form-control">
+                                    <select id="clienteId" name="clienteId" class="form-control">
 
-                                        <option value="">Sem cliente</option>
+                                        <option value="">
+                                            Sem cliente
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Categoria Financeira</label>
+
+                                    <select id="categoriaId" name="categoriaId" class="form-control">
+
+                                        <option value="">
+                                            Selecione...
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Centro de Custo</label>
+
+                                    <select id="centroCustoId" name="centroCustoId" class="form-control">
+
+                                        <option value="">
+                                            Selecione...
+                                        </option>
+
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Fornecedor</label>
+
+                                    <input type="text" id="fornecedor" name="fornecedor" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Parcelas</label>
+
+                                    <input type="number" min="1" value="1" id="parcelas" name="parcelas"
+                                        class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+
+                                    <label>Recorrente</label>
+
+                                    <select id="recorrente" name="recorrente" class="form-control">
+
+                                        <option value="false">
+                                            Não
+                                        </option>
+
+                                        <option value="true">
+                                            Sim
+                                        </option>
 
                                     </select>
 
                                 </div>
 
-                                <!-- JUROS -->
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-3">
+
+                                    <label>Tipo Recorrência</label>
+
+                                    <select id="tipoRecorrencia" name="tipoRecorrencia" class="form-control">
+
+                                        <option value="NENHUMA">
+                                            Nenhuma
+                                        </option>
+
+                                        <option value="SEMANAL">
+                                            Semanal
+                                        </option>
+
+                                        <option value="MENSAL">
+                                            Mensal
+                                        </option>
+
+                                        <option value="ANUAL">
+                                            Anual
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-3 mb-3">
 
                                     <label>Juros Máquina</label>
 
-                                    <input type="number" step="0.01" name="jurosMaquina" id="jurosMaquina"
+                                    <input type="number" step="0.01" id="jurosMaquina" name="jurosMaquina"
                                         class="form-control">
 
                                 </div>
 
-                                <!-- DESCRIÇÃO -->
-                                <div class="col-md-12 mb-2">
+                                <div class="col-md-12 mb-3">
 
                                     <label>Descrição</label>
 
-                                    <input type="text" name="descricao" id="descricao" class="form-control" required>
+                                    <input type="text" id="descricao" name="descricao" class="form-control" required>
 
                                 </div>
 
-                                <!-- BOTAO -->
-                                <div class="col-md-12 text-right mt-3">
+                                <div class="col-md-12 mb-3">
+
+                                    <label>Observações</label>
+
+                                    <textarea id="observacoes" name="observacoes" rows="3"
+                                        class="form-control"></textarea>
+
+                                </div>
+
+                                <div class="col-md-12 text-right">
 
                                     <button type="submit" class="btn btn-danger px-4">
 

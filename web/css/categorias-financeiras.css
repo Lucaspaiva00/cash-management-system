@@ -1,0 +1,13 @@
+body {
+    background: #f8f9fc;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}

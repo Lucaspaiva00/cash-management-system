@@ -1,4 +1,3 @@
-// api/routes.js
 const express = require("express");
 const routes = express.Router();
 
@@ -8,54 +7,99 @@ const produtos = require("./controller/ctprodutos");
 const proposta = require("./controller/ctpropostas");
 const usuario = require("./controller/ctusuario");
 const vendas = require("./controller/ctvenda");
-
-// 🔥 NOVO CONTROLLER (AGENDA)
 const agenda = require("./controller/agenda.controller");
+
+const categorias = require("./controller/categoriaFinanceira.controller");
+const centrosCusto = require("./controller/centroCusto.controller");
 
 routes.get("/", (req, res) => {
   res.status(200).json({
-    status: "✅ API do Sistema de Gerenciamento de Caixa está online!",
-    versao: "v1.0.0",
-    autor: "Paiva Tech",
+    status: "✅ API Financeira Online",
+    versao: "2.0.0",
+    autor: "Paiva Tech"
   });
 });
 
 routes.post("/auth/signup", usuario.signup);
 
-// Usuários
 routes.post("/usuarios/login", usuario.login);
-routes.route("/usuarios").get(usuario.read).post(usuario.create);
-routes.route("/usuarios/:id").put(usuario.update).delete(usuario.remove);
 
-// Caixa
-routes.route("/caixa").get(caixa.read).post(caixa.create);
-routes.route("/caixa/:id").put(caixa.update).delete(caixa.remove);
+routes.route("/usuarios")
+  .get(usuario.read)
+  .post(usuario.create);
 
-// Clientes
-routes.route("/clientes").get(clientes.read).post(clientes.create);
-routes.route("/clientes/:id").put(clientes.update).delete(clientes.remove);
+routes.route("/usuarios/:id")
+  .put(usuario.update)
+  .delete(usuario.remove);
 
-// Produtos
-routes.route("/produtos").get(produtos.read).post(produtos.create);
-routes.route("/produtos/:id").put(produtos.update).delete(produtos.remove);
+routes.route("/clientes")
+  .get(clientes.read)
+  .post(clientes.create);
 
-// Propostas
-routes.route("/propostas").get(proposta.read).post(proposta.create);
-routes.route("/propostas/:id").put(proposta.update).delete(proposta.remove);
+routes.route("/clientes/:id")
+  .put(clientes.update)
+  .delete(clientes.remove);
 
-// Vendas
+routes.route("/produtos")
+  .get(produtos.read)
+  .post(produtos.create);
+
+routes.route("/produtos/:id")
+  .put(produtos.update)
+  .delete(produtos.remove);
+
+routes.route("/propostas")
+  .get(proposta.read)
+  .post(proposta.create);
+
+routes.route("/propostas/:id")
+  .put(proposta.update)
+  .delete(proposta.remove);
+
 routes.get("/vendas", vendas.read);
 routes.post("/vendas", vendas.create);
 routes.delete("/vendas/:id", vendas.remove);
 routes.get("/vendas/resumo", vendas.resumo);
 
-// =============================
-// 🔥 AGENDA (NOVO)
-// =============================
-routes.route("/agenda").get(agenda.read).post(agenda.create);
-routes.route("/agenda/:id").get(agenda.readOne).put(agenda.update).delete(agenda.remove);
+routes.route("/categorias")
+  .get(categorias.read)
+  .post(categorias.create);
 
-// Atualizar apenas status
+routes.route("/categorias/:id")
+  .put(categorias.update)
+  .delete(categorias.remove);
+
+routes.route("/centros-custo")
+  .get(centrosCusto.read)
+  .post(centrosCusto.create);
+
+routes.route("/centros-custo/:id")
+  .put(centrosCusto.update)
+  .delete(centrosCusto.remove);
+
+routes.get("/financeiro/dashboard", caixa.dashboard);
+routes.get("/financeiro/resumo", caixa.resumoFinanceiro);
+
+routes.route("/caixa")
+  .get(caixa.read)
+  .post(caixa.create);
+
+routes.route("/caixa/:id")
+  .put(caixa.update)
+  .delete(caixa.remove);
+
+routes.put("/caixa/:id/pagar", caixa.marcarComoPaga);
+routes.put("/caixa/:id/cancelar", caixa.cancelar);
+
+routes.route("/agenda")
+  .get(agenda.read)
+  .post(agenda.create);
+
+routes.route("/agenda/:id")
+  .get(agenda.readOne)
+  .put(agenda.update)
+  .delete(agenda.remove);
+
 routes.put("/agenda/:id/status", agenda.updateStatus);
 
 module.exports = routes;
