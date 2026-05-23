@@ -7,7 +7,7 @@ const empresaId =
             "usuarioLogado"
         )
     )?.empresaId || 1;
-
+let categorias = [];
 const form =
     document.querySelector(
         "#formCategoria"
@@ -32,6 +32,78 @@ document.addEventListener(
     }
 );
 
+
+function atualizarResumo(lista) {
+
+    document.getElementById("totalCategorias").textContent =
+        lista.length;
+
+    document.getElementById("totalEntradasCategoria").textContent =
+        lista.filter(
+            c => c.tipo === "ENTRADA"
+        ).length;
+
+    document.getElementById("totalSaidasCategoria").textContent =
+        lista.filter(
+            c => c.tipo === "SAIDA"
+        ).length;
+
+}
+function criarCard(cat) {
+
+    return `
+    
+    <div class="card-categoria ${cat.tipo.toLowerCase()}">
+
+        <div class="categoria-header">
+
+            <div>
+
+                <h5>${cat.nome}</h5>
+
+                <span class="badge badge-${cat.tipo === "ENTRADA"
+            ? "success"
+            : "danger"
+        }">
+
+                    ${cat.tipo}
+
+                </span>
+
+            </div>
+
+            <div>
+
+                <button
+                    class="btn btn-sm btn-outline-primary"
+                    onclick="abrirEdicao(${cat.id})">
+
+                    <i class="fas fa-edit"></i>
+
+                </button>
+
+                <button
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="abrirExclusao(${cat.id})">
+
+                    <i class="fas fa-trash"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <div
+            id="area-${cat.id}"
+            class="area-acoes">
+
+        </div>
+
+    </div>
+
+    `;
+}
 async function carregarCategorias() {
 
     const resp =
@@ -39,44 +111,18 @@ async function carregarCategorias() {
             `${API}?empresaId=${empresaId}`
         );
 
-    const dados =
+    categorias =
         await resp.json();
 
-    lista.innerHTML =
-        dados.map(cat => `
+    atualizarResumo(
+        categorias
+    );
 
-        <tr>
-
-            <td>${cat.nome}</td>
-
-            <td>${cat.tipo}</td>
-
-            <td>
-
-                <button
-                    class="btn btn-sm btn-primary"
-                    onclick="editarCategoria(${cat.id},'${cat.nome}','${cat.tipo}')">
-
-                    <i class="fas fa-edit"></i>
-
-                </button>
-
-                <button
-                    class="btn btn-sm btn-danger"
-                    onclick="excluirCategoria(${cat.id})">
-
-                    <i class="fas fa-trash"></i>
-
-                </button>
-
-            </td>
-
-        </tr>
-
-    `).join("");
+    renderizarCategorias(
+        categorias
+    );
 
 }
-
 async function salvarCategoria(e) {
 
     e.preventDefault();
@@ -167,5 +213,212 @@ async function excluirCategoria(id) {
     );
 
     carregarCategorias();
+
+}
+
+async function salvarEdicao(id) {
+
+    const payload = {
+
+        nome:
+            document.getElementById(
+                `editNome${id}`
+            ).value,
+
+        tipo:
+            document.getElementById(
+                `editTipo${id}`
+            ).value,
+
+        empresaId
+
+    };
+
+    try {
+
+        const resp =
+            await fetch(
+                `${API}/${id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify(
+                            payload
+                        )
+                }
+            );
+
+        if (!resp.ok)
+            throw new Error(
+                "Erro ao atualizar"
+            );
+
+        carregarCategorias();
+
+    } catch (err) {
+
+        alert(
+            err.message
+        );
+
+    }
+
+}
+
+function abrirEdicao(id) {
+
+    const categoria =
+        categorias.find(
+            c => c.id === id
+        );
+
+    document
+        .getElementById(
+            `area-${id}`
+        )
+        .innerHTML = `
+
+        <div class="card-edicao">
+
+            <div class="form-group">
+
+                <label>
+
+                    Nome
+
+                </label>
+
+                <input
+                    id="editNome${id}"
+                    class="form-control"
+                    value="${categoria.nome}">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+
+                    Tipo
+
+                </label>
+
+                <select
+                    id="editTipo${id}"
+                    class="form-control">
+
+                    <option value="ENTRADA"
+                    ${categoria.tipo === "ENTRADA"
+            ? "selected"
+            : ""
+        }>
+                        Entrada
+                    </option>
+
+                    <option value="SAIDA"
+                    ${categoria.tipo === "SAIDA"
+            ? "selected"
+            : ""
+        }>
+                        Saída
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="text-right">
+
+                <button
+                    class="btn btn-secondary"
+
+                    onclick="fecharAcao(${id})">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    class="btn btn-danger"
+
+                    onclick="salvarEdicao(${id})">
+
+                    Salvar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+function abrirExclusao(id) {
+
+    document
+        .getElementById(
+            `area-${id}`
+        )
+        .innerHTML = `
+
+        <div class="card-exclusao">
+
+            <p>
+
+                Deseja realmente excluir esta categoria?
+
+            </p>
+
+            <div class="text-right">
+
+                <button
+                    class="btn btn-secondary"
+
+                    onclick="fecharAcao(${id})">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    class="btn btn-danger"
+
+                    onclick="excluirCategoria(${id})">
+
+                    Excluir
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+}
+function fecharAcao(id) {
+
+    document
+        .getElementById(
+            `area-${id}`
+        )
+        .innerHTML = "";
+
+}
+function renderizarCategorias(categorias) {
+
+    const lista =
+        document.getElementById(
+            "listaCategorias"
+        );
+
+    lista.innerHTML =
+        categorias.map(
+            criarCard
+        ).join("");
 
 }
