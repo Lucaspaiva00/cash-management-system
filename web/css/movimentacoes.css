@@ -252,3 +252,33 @@
      font-weight: 600;
 
  }
+
+ /* ==========================================
+   CORREÇÃO MODAL BOOTSTRAP
+========================================== */
+
+ .modal {
+     z-index: 20000 !important;
+ }
+
+ .modal-dialog {
+     z-index: 20001 !important;
+ }
+
+ .modal-content {
+     z-index: 20002 !important;
+     pointer-events: auto !important;
+ }
+
+ .modal-backdrop {
+     z-index: 19999 !important;
+ }
+
+ /* garante clique nos campos */
+
+ .modal input,
+ .modal select,
+ .modal textarea,
+ .modal button {
+     pointer-events: auto !important;
+ }

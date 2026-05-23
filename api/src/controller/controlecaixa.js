@@ -364,7 +364,7 @@ const update = async (req, res) => {
                         dados.meioPagamento,
 
                     descricao:
-                        dados.descricao,
+                        dados.descricao ?? undefined,
 
                     valor:
                         parseFloat(
@@ -403,28 +403,34 @@ const update = async (req, res) => {
                         dados.status,
 
                     clienteId:
-                        dados.clienteId
-                            ? parseInt(
+                        dados.clienteId !== undefined
+                            ? (
                                 dados.clienteId
+                                    ? parseInt(dados.clienteId)
+                                    : null
                             )
-                            : null,
+                            : undefined,
 
                     categoriaId:
-                        dados.categoriaId
-                            ? parseInt(
+                        dados.categoriaId !== undefined
+                            ? (
                                 dados.categoriaId
+                                    ? parseInt(dados.categoriaId)
+                                    : null
                             )
-                            : null,
+                            : undefined,
 
                     centroCustoId:
-                        dados.centroCustoId
-                            ? parseInt(
+                        dados.centroCustoId !== undefined
+                            ? (
                                 dados.centroCustoId
+                                    ? parseInt(dados.centroCustoId)
+                                    : null
                             )
-                            : null,
+                            : undefined,
 
                     fornecedor:
-                        dados.fornecedor,
+                        dados.fornecedor ?? undefined,
 
                     recorrente:
                         dados.recorrente,
@@ -433,7 +439,7 @@ const update = async (req, res) => {
                         dados.tipoRecorrencia,
 
                     observacoes:
-                        dados.observacoes,
+                        dados.observacoes ?? undefined,
 
                     jurosMaquina:
                         dados.jurosMaquina

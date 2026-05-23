@@ -4,79 +4,66 @@ const API_CATEGORIAS = "https://cash-management-system.onrender.com/categorias";
 const API_CENTROS = "https://cash-management-system.onrender.com/centros-custo";
 const API_DASHBOARD = "https://cash-management-system.onrender.com/financeiro/dashboard";
 
-const empresaId =
+const usuarioLogado =
   JSON.parse(
-    localStorage.getItem(
-      "usuarioLogado"
-    )
-  )?.empresaId || 1;
+    localStorage.getItem("usuarioLogado")
+  );
+
+const empresaId =
+  usuarioLogado?.empresaId || 1;
 
 const form =
-  document.querySelector(
-    "#caixaForm"
-  );
+  document.querySelector("#caixaForm");
 
 const lista =
-  document.querySelector(
-    "#listaOperacoes"
-  );
+  document.querySelector("#listaOperacoes");
 
 const filtroTipo =
-  document.querySelector(
-    "#filtroTipo"
-  );
+  document.querySelector("#filtroTipo");
+
+const filtroStatus =
+  document.querySelector("#filtroStatus");
+
+const filtroCliente =
+  document.querySelector("#filtroCliente");
 
 const inputInicio =
-  document.querySelector(
-    "#filtroInicio"
-  );
+  document.querySelector("#filtroInicio");
 
 const inputFim =
-  document.querySelector(
-    "#filtroFim"
-  );
+  document.querySelector("#filtroFim");
 
 const btnLimparFiltros =
-  document.querySelector(
-    "#btnLimparFiltros"
-  );
+  document.querySelector("#btnLimparFiltros");
 
 const selectCliente =
-  document.querySelector(
-    "#clienteId"
-  );
+  document.querySelector("#clienteId");
 
 const selectCategoria =
-  document.querySelector(
-    "#categoriaId"
-  );
+  document.querySelector("#categoriaId");
 
 const selectCentroCusto =
-  document.querySelector(
-    "#centroCustoId"
-  );
+  document.querySelector("#centroCustoId");
 
 const elTotalEntradas =
-  document.querySelector(
-    "#totalEntradas"
-  );
+  document.querySelector("#totalEntradas");
 
 const elTotalSaidas =
-  document.querySelector(
-    "#totalSaidas"
-  );
+  document.querySelector("#totalSaidas");
 
 const elSaldoGeral =
-  document.querySelector(
-    "#saldoGeral"
-  );
+  document.querySelector("#saldoGeral");
 
 const elTotalPendentes =
-  document.querySelector(
-    "#totalPendentes"
-  );
+  document.querySelector("#totalPendentes");
+
+const elTotalRegistros =
+  document.querySelector("#totalRegistros");
 
 let OPERACOES = [];
+let CLIENTES = [];
+let CATEGORIAS = [];
+let CENTROS = [];
 
 const fmtBRL = valor =>
   new Intl.NumberFormat(
@@ -89,9 +76,42 @@ const fmtBRL = valor =>
     Number(valor || 0)
   );
 
+const somenteData = data => {
+  if (!data) return "";
+  return String(data).split("T")[0];
+};
+
+const formatarDataBR = data => {
+  const d = somenteData(data);
+
+  if (!d) return "—";
+
+  return d
+    .split("-")
+    .reverse()
+    .join("/");
+};
+
+const obterId = item =>
+  item?.id ||
+  item?.clienteid ||
+  item?.categoriaid ||
+  item?.centroCustoId ||
+  item?.centrocustoid ||
+  "";
+
+const obterNome = item =>
+  item?.nome ||
+  item?.nomeCliente ||
+  item?.razaoSocial ||
+  item?.descricao ||
+  "Sem nome";
+
 document.addEventListener(
   "DOMContentLoaded",
-  () => {
+  async () => {
+
+    garantirModalEdicao();
 
     if (form) {
 
@@ -104,11 +124,13 @@ document.addEventListener(
 
     [
       filtroTipo,
+      filtroStatus,
+      filtroCliente,
       inputInicio,
       inputFim
-    ].forEach(el => {
+    ].forEach(campo => {
 
-      el?.addEventListener(
+      campo?.addEventListener(
         "change",
         carregarOperacoes
       );
@@ -120,53 +142,76 @@ document.addEventListener(
       limparFiltros
     );
 
-    garantirModalEdicao();
+    await carregarDadosAuxiliares();
 
-    carregarClientes();
+    await carregarDashboard();
 
-    carregarCategorias();
-
-    carregarCentrosCusto();
-
-    carregarDashboard();
-
-    carregarOperacoes();
+    await carregarOperacoes();
 
   }
 );
+
+async function requestJson(url, options = {}) {
+
+  const resp =
+    await fetch(
+      url,
+      options
+    );
+
+  const data =
+    await resp.json()
+      .catch(() => null);
+
+  if (!resp.ok) {
+
+    throw new Error(
+      data?.error ||
+      data?.message ||
+      "Erro na requisição."
+    );
+
+  }
+
+  return data;
+
+}
+
+async function carregarDadosAuxiliares() {
+
+  await Promise.all([
+    carregarClientes(),
+    carregarCategorias(),
+    carregarCentrosCusto()
+  ]);
+
+}
 
 async function carregarClientes() {
 
   try {
 
-    const resp =
-      await fetch(
+    CLIENTES =
+      await requestJson(
         `${API_CLIENTES}?empresaId=${empresaId}`
       );
 
-    const clientes =
-      await resp.json();
+    preencherSelect(
+      selectCliente,
+      CLIENTES,
+      "Sem cliente"
+    );
 
-    if (!selectCliente)
-      return;
-
-    selectCliente.innerHTML =
-      `<option value="">Sem cliente</option>`;
-
-    clientes.forEach(cliente => {
-
-      selectCliente.innerHTML += `
-                <option value="${clienteId.id}">
-                    ${clienteId.nome}
-                </option>
-            `;
-
-    });
+    preencherSelect(
+      filtroCliente,
+      CLIENTES,
+      "Todos"
+    );
 
   } catch (error) {
 
     console.error(
-      "Erro clientes:",
+      "Erro ao carregar clientes:",
       error
     );
 
@@ -178,34 +223,21 @@ async function carregarCategorias() {
 
   try {
 
-    if (!selectCategoria)
-      return;
-
-    const resp =
-      await fetch(
+    CATEGORIAS =
+      await requestJson(
         `${API_CATEGORIAS}?empresaId=${empresaId}`
       );
 
-    const categorias =
-      await resp.json();
-
-    selectCategoria.innerHTML =
-      `<option value="">Selecione...</option>`;
-
-    categorias.forEach(cat => {
-
-      selectCategoria.innerHTML += `
-                <option value="${cat.id}">
-                    ${cat.nome}
-                </option>
-            `;
-
-    });
+    preencherSelect(
+      selectCategoria,
+      CATEGORIAS,
+      "Selecione..."
+    );
 
   } catch (error) {
 
     console.error(
-      "Erro categorias:",
+      "Erro ao carregar categorias:",
       error
     );
 
@@ -217,34 +249,21 @@ async function carregarCentrosCusto() {
 
   try {
 
-    if (!selectCentroCusto)
-      return;
-
-    const resp =
-      await fetch(
+    CENTROS =
+      await requestJson(
         `${API_CENTROS}?empresaId=${empresaId}`
       );
 
-    const centros =
-      await resp.json();
-
-    selectCentroCusto.innerHTML =
-      `<option value="">Selecione...</option>`;
-
-    centros.forEach(centro => {
-
-      selectCentroCusto.innerHTML += `
-                <option value="${centro.id}">
-                    ${centro.nome}
-                </option>
-            `;
-
-    });
+    preencherSelect(
+      selectCentroCusto,
+      CENTROS,
+      "Selecione..."
+    );
 
   } catch (error) {
 
     console.error(
-      "Erro centros:",
+      "Erro ao carregar centros de custo:",
       error
     );
 
@@ -252,23 +271,60 @@ async function carregarCentrosCusto() {
 
 }
 
+function preencherSelect(select, itens, textoInicial) {
+
+  if (!select) return;
+
+  select.innerHTML =
+    `<option value="">${textoInicial}</option>`;
+
+  itens.forEach(item => {
+
+    const id =
+      obterId(item);
+
+    const nome =
+      obterNome(item);
+
+    if (!id) return;
+
+    select.innerHTML += `
+            <option value="${id}">
+                ${nome}
+            </option>
+        `;
+
+  });
+
+}
+
+function preencherSelectEdicao(selectId, itens, textoInicial) {
+
+  const select =
+    document.getElementById(selectId);
+
+  preencherSelect(
+    select,
+    itens,
+    textoInicial
+  );
+
+}
+
 async function carregarDashboard() {
 
   try {
 
-    const resp =
-      await fetch(
+    const dados =
+      await requestJson(
         `${API_DASHBOARD}?empresaId=${empresaId}`
       );
-
-    const dados =
-      await resp.json();
 
     if (elTotalEntradas) {
 
       elTotalEntradas.textContent =
         fmtBRL(
-          dados.totalEntradas
+          dados.totalEntradas || 0
         );
 
     }
@@ -277,7 +333,7 @@ async function carregarDashboard() {
 
       elTotalSaidas.textContent =
         fmtBRL(
-          dados.totalSaidas
+          dados.totalSaidas || 0
         );
 
     }
@@ -286,7 +342,7 @@ async function carregarDashboard() {
 
       elSaldoGeral.textContent =
         fmtBRL(
-          dados.saldo
+          dados.saldo || 0
         );
 
     }
@@ -309,126 +365,140 @@ async function carregarDashboard() {
 
 }
 
-async function salvarOperacao(e) {
+function montarPayloadFormulario(prefixo = "") {
 
-  e.preventDefault();
+  const get =
+    id =>
+      document.getElementById(
+        `${prefixo}${id}`
+      );
 
-  const payload = {
+  return {
 
     empresaId,
 
     tipoOperacao:
-      form.tipoOperacao.value,
+      get("tipoOperacao")?.value || "",
 
     status:
-      form.status?.value ||
-      "PENDENTE",
+      get("status")?.value || "PENDENTE",
 
     meioPagamento:
-      form.meioPagamento.value,
-
-    descricao:
-      form.descricao.value,
-
-    observacoes:
-      form.observacoes?.value ||
-      null,
+      get("meioPagamento")?.value || null,
 
     valor:
       parseFloat(
-        form.valor.value
+        get("valor")?.value || 0
       ),
 
     valorPago:
-      form.valorPago?.value
+      get("valorPago")?.value
         ? parseFloat(
-          form.valorPago.value
+          get("valorPago").value
         )
         : null,
 
     dataOperacao:
-      form.dataOperacao.value,
+      get("dataOperacao")?.value || null,
 
     dataVencimento:
-      form.dataVencimento?.value ||
-      null,
+      get("dataVencimento")?.value || null,
 
     clienteId:
-      form.clienteId.value
+      get("clienteId")?.value
         ? parseInt(
-          form.clienteId.value
+          get("clienteId").value
         )
         : null,
 
     categoriaId:
-      form.categoriaId?.value
+      get("categoriaId")?.value
         ? parseInt(
-          form.categoriaId.value
+          get("categoriaId").value
         )
         : null,
 
     centroCustoId:
-      form.centroCustoId?.value
+      get("centroCustoId")?.value
         ? parseInt(
-          form.centroCustoId.value
+          get("centroCustoId").value
         )
         : null,
 
     fornecedor:
-      form.fornecedor?.value ||
-      null,
+      get("fornecedor")?.value || null,
 
     parcelas:
       parseInt(
-        form.parcelas?.value || 1
+        get("parcelas")?.value || 1
       ),
 
     recorrente:
-      form.recorrente?.value === "true",
+      get("recorrente")?.value === "true",
 
     tipoRecorrencia:
-      form.tipoRecorrencia?.value ||
-      "NENHUMA",
+      get("tipoRecorrencia")?.value || "NENHUMA",
 
     jurosMaquina:
       parseFloat(
-        form.jurosMaquina?.value || 0
-      )
+        get("jurosMaquina")?.value || 0
+      ),
+
+    descricao:
+      get("descricao")?.value || "",
+
+    observacoes:
+      get("observacoes")?.value || null
+
   };
+
+}
+
+async function salvarOperacao(e) {
+
+  e.preventDefault();
+
+  const payload =
+    montarPayloadFormulario("");
+
+  if (
+    !payload.tipoOperacao ||
+    !payload.valor ||
+    payload.valor <= 0
+  ) {
+
+    alert(
+      "Informe o tipo da operação e um valor maior que zero."
+    );
+
+    return;
+
+  }
 
   try {
 
-    const resp =
-      await fetch(
-        API,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify(
-              payload
-            )
-        }
-      );
-
-    if (!resp.ok) {
-
-      throw new Error(
-        "Erro ao salvar movimentação."
-      );
-
-    }
+    await requestJson(
+      API,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body:
+          JSON.stringify(
+            payload
+          )
+      }
+    );
 
     form.reset();
 
-    carregarDashboard();
+    $("#modalMovimentacao")
+      .modal("hide");
 
-    carregarOperacoes();
+    await carregarDashboard();
+
+    await carregarOperacoes();
 
   } catch (error) {
 
@@ -442,18 +512,17 @@ async function salvarOperacao(e) {
 
 async function carregarOperacoes() {
 
+  if (!lista) return;
+
   lista.innerHTML =
     `<p class="text-muted">Carregando...</p>`;
 
   try {
 
-    const resp =
-      await fetch(
+    const dados =
+      await requestJson(
         `${API}?empresaId=${empresaId}`
       );
-
-    const dados =
-      await resp.json();
 
     if (!Array.isArray(dados)) {
 
@@ -469,10 +538,25 @@ async function carregarOperacoes() {
 
           ...op,
 
+          clienteId:
+            op.clienteId ||
+            op.cliente?.id ||
+            null,
+
+          categoriaId:
+            op.categoriaId ||
+            op.categoria?.id ||
+            null,
+
+          centroCustoId:
+            op.centroCustoId ||
+            op.centroCusto?.id ||
+            null,
+
           _data:
-            op.dataOperacao
-              ? op.dataOperacao.split("T")[0]
-              : "",
+            somenteData(
+              op.dataOperacao
+            ),
 
           _ts:
             op.dataOperacao
@@ -482,12 +566,29 @@ async function carregarOperacoes() {
               : 0
 
         }))
-
         .filter(op => {
 
           if (
             filtroTipo?.value &&
             op.tipoOperacao !== filtroTipo.value
+          ) {
+
+            return false;
+
+          }
+
+          if (
+            filtroStatus?.value &&
+            op.status !== filtroStatus.value
+          ) {
+
+            return false;
+
+          }
+
+          if (
+            filtroCliente?.value &&
+            String(op.clienteId || "") !== String(filtroCliente.value)
           ) {
 
             return false;
@@ -524,7 +625,6 @@ async function carregarOperacoes() {
           return true;
 
         })
-
         .sort(
           (a, b) =>
             b._ts - a._ts
@@ -536,6 +636,8 @@ async function carregarOperacoes() {
         `<p class="text-muted">Nenhuma movimentação encontrada.</p>`;
 
       atualizarTotais([]);
+
+      atualizarTotalRegistros(0);
 
       return;
 
@@ -550,6 +652,10 @@ async function carregarOperacoes() {
       OPERACOES
     );
 
+    atualizarTotalRegistros(
+      OPERACOES.length
+    );
+
   } catch (error) {
 
     lista.innerHTML = `
@@ -562,11 +668,21 @@ async function carregarOperacoes() {
 
 }
 
+function atualizarTotalRegistros(total) {
+
+  if (elTotalRegistros) {
+
+    elTotalRegistros.textContent =
+      `${total} registro${total === 1 ? "" : "s"}`;
+
+  }
+
+}
+
 function criarCard(op) {
 
   const entrada =
-    op.tipoOperacao ===
-    "ENTRADA";
+    op.tipoOperacao === "ENTRADA";
 
   const classe =
     entrada
@@ -579,12 +695,9 @@ function criarCard(op) {
       : "text-danger";
 
   const dataFmt =
-    op._data
-      ? op._data
-        .split("-")
-        .reverse()
-        .join("/")
-      : "—";
+    formatarDataBR(
+      op.dataOperacao
+    );
 
   const statusBadge =
     obterBadgeStatus(
@@ -595,90 +708,56 @@ function criarCard(op) {
 
         <div class="card-op ${classe}">
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-start">
 
                 <div>
 
                     <h6 class="mb-1">
-
-                        ${op.tipoOperacao}
-
+                        ${op.tipoOperacao || "-"}
                     </h6>
 
                     <p class="small text-muted mb-1">
-
-                        ${op.meioPagamento || "-"}
-
-                        •
-
-                        ${dataFmt}
-
+                        ${op.meioPagamento || "-"} • ${dataFmt}
                     </p>
 
                     ${statusBadge}
 
                     <p class="mt-2 mb-1">
-
                         ${op.descricao || "-"}
-
                     </p>
 
                     <p class="small text-muted mb-1">
-
                         <strong>Cliente:</strong>
-
                         ${op.cliente?.nome || "-"}
-
                     </p>
 
                     <p class="small text-muted mb-1">
-
                         <strong>Categoria:</strong>
-
                         ${op.categoria?.nome || "-"}
-
                     </p>
 
                     <p class="small text-muted mb-1">
-
                         <strong>Centro:</strong>
-
                         ${op.centroCusto?.nome || "-"}
-
                     </p>
 
                     <p class="small text-muted mb-1">
-
                         <strong>Fornecedor:</strong>
-
                         ${op.fornecedor || "-"}
-
                     </p>
 
                     <p class="small text-muted mb-1">
-
                         <strong>Parcela:</strong>
-
                         ${op.parcelaAtual || 1}/${op.parcelas || 1}
-
                     </p>
 
                     <p class="small text-muted mb-1">
-
                         <strong>Juros:</strong>
-
-                        ${fmtBRL(
-    op.jurosMaquina
-  )}
-
+                        ${fmtBRL(op.jurosMaquina)}
                     </p>
 
                     <strong class="${corValor}">
-
-                        ${fmtBRL(
-    op.valor
-  )}
-
+                        ${fmtBRL(op.valor)}
                     </strong>
 
                 </div>
@@ -687,7 +766,8 @@ function criarCard(op) {
 
                     <button
                         class="btn btn-sm btn-outline-secondary mb-2"
-                        onclick="abrirModalEdicao(${op.id})">
+                        onclick="abrirModalEdicao(${op.id})"
+                        title="Editar">
 
                         <i class="fas fa-edit"></i>
 
@@ -697,7 +777,8 @@ function criarCard(op) {
 
                     <button
                         class="btn btn-sm btn-outline-success mb-2"
-                        onclick="marcarComoPaga(${op.id})">
+                        onclick="marcarComoPaga(${op.id})"
+                        title="Marcar como pago">
 
                         <i class="fas fa-check"></i>
 
@@ -707,7 +788,8 @@ function criarCard(op) {
 
                     <button
                         class="btn btn-sm btn-outline-warning mb-2"
-                        onclick="cancelarOperacao(${op.id})">
+                        onclick="cancelarOperacao(${op.id})"
+                        title="Cancelar">
 
                         <i class="fas fa-ban"></i>
 
@@ -717,7 +799,8 @@ function criarCard(op) {
 
                     <button
                         class="btn btn-sm btn-outline-danger"
-                        onclick="excluirOperacao(${op.id})">
+                        onclick="excluirOperacao(${op.id})"
+                        title="Excluir">
 
                         <i class="fas fa-trash"></i>
 
@@ -768,6 +851,479 @@ function obterBadgeStatus(status) {
                     Pendente
                 </span>
             `;
+
+  }
+
+}
+
+function limparFiltros() {
+
+  if (filtroTipo) filtroTipo.value = "";
+  if (filtroStatus) filtroStatus.value = "";
+  if (filtroCliente) filtroCliente.value = "";
+  if (inputInicio) inputInicio.value = "";
+  if (inputFim) inputFim.value = "";
+
+  carregarOperacoes();
+
+}
+
+function atualizarTotais(items) {
+
+  const entradas =
+    items
+      .filter(
+        i =>
+          i.tipoOperacao === "ENTRADA"
+      )
+      .reduce(
+        (acc, item) =>
+          acc + Number(item.valor || 0),
+        0
+      );
+
+  const saidas =
+    items
+      .filter(
+        i =>
+          i.tipoOperacao === "SAIDA"
+      )
+      .reduce(
+        (acc, item) =>
+          acc + Number(item.valor || 0),
+        0
+      );
+
+  const pendentes =
+    items
+      .filter(
+        i =>
+          i.status === "PENDENTE"
+      ).length;
+
+  if (elTotalEntradas) {
+
+    elTotalEntradas.textContent =
+      fmtBRL(entradas);
+
+  }
+
+  if (elTotalSaidas) {
+
+    elTotalSaidas.textContent =
+      fmtBRL(saidas);
+
+  }
+
+  if (elSaldoGeral) {
+
+    elSaldoGeral.textContent =
+      fmtBRL(
+        entradas - saidas
+      );
+
+  }
+
+  if (elTotalPendentes) {
+
+    elTotalPendentes.textContent =
+      pendentes;
+
+  }
+
+}
+
+function garantirModalEdicao() {
+
+  if (
+    document.querySelector(
+      "#modalEdicaoCaixa"
+    )
+  ) {
+
+    return;
+
+  }
+
+  const modal =
+    document.createElement("div");
+
+  modal.innerHTML = `
+
+        <div
+            class="modal fade"
+            id="modalEdicaoCaixa"
+            tabindex="-1"
+            role="dialog">
+
+            <div
+                class="modal-dialog modal-xl modal-dialog-centered"
+                role="document">
+
+                <div class="modal-content">
+
+                    <form id="formEditarOp" autocomplete="off">
+
+                        <div class="modal-header">
+
+                            <h5 class="modal-title">
+                                Editar Movimentação
+                            </h5>
+
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal">
+
+                                <span>&times;</span>
+
+                            </button>
+
+                        </div>
+
+                        <div class="modal-body">
+
+                            <input
+                                type="hidden"
+                                id="edit_id">
+
+                            <div class="form-row">
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Tipo Operação</label>
+                                    <select id="edit_tipoOperacao" class="form-control">
+                                        <option value="ENTRADA">Entrada</option>
+                                        <option value="SAIDA">Saída</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Status</label>
+                                    <select id="edit_status" class="form-control">
+                                        <option value="PENDENTE">Pendente</option>
+                                        <option value="PAGO">Pago</option>
+                                        <option value="ATRASADO">Atrasado</option>
+                                        <option value="CANCELADO">Cancelado</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Meio Pagamento</label>
+                                    <select id="edit_meioPagamento" class="form-control">
+                                        <option value="">Selecione...</option>
+                                        <option value="PIX">Pix</option>
+                                        <option value="CARTAO">Cartão</option>
+                                        <option value="DINHEIRO">Dinheiro</option>
+                                        <option value="BOLETO">Boleto</option>
+                                        <option value="TRANSFERENCIA">Transferência</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Valor</label>
+                                    <input type="number" step="0.01" id="edit_valor" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Valor Pago</label>
+                                    <input type="number" step="0.01" id="edit_valorPago" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Data Operação</label>
+                                    <input type="date" id="edit_dataOperacao" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Data Vencimento</label>
+                                    <input type="date" id="edit_dataVencimento" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Cliente</label>
+                                    <select id="edit_clienteId" class="form-control"></select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Categoria Financeira</label>
+                                    <select id="edit_categoriaId" class="form-control"></select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Centro de Custo</label>
+                                    <select id="edit_centroCustoId" class="form-control"></select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Fornecedor</label>
+                                    <input type="text" id="edit_fornecedor" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Parcelas</label>
+                                    <input type="number" min="1" id="edit_parcelas" class="form-control">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Recorrente</label>
+                                    <select id="edit_recorrente" class="form-control">
+                                        <option value="false">Não</option>
+                                        <option value="true">Sim</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Tipo Recorrência</label>
+                                    <select id="edit_tipoRecorrencia" class="form-control">
+                                        <option value="NENHUMA">Nenhuma</option>
+                                        <option value="SEMANAL">Semanal</option>
+                                        <option value="MENSAL">Mensal</option>
+                                        <option value="ANUAL">Anual</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label>Juros Máquina</label>
+                                    <input type="number" step="0.01" id="edit_jurosMaquina" class="form-control">
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label>Descrição</label>
+                                    <input type="text" id="edit_descricao" class="form-control">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label>Observações</label>
+                                    <textarea id="edit_observacoes" rows="3" class="form-control"></textarea>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <button
+                                type="button"
+                                class="btn btn-light"
+                                data-dismiss="modal">
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger">
+                                Salvar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+  document.body.appendChild(
+    modal
+  );
+
+  document
+    .querySelector("#formEditarOp")
+    .addEventListener(
+      "submit",
+      salvarEdicaoOperacao
+    );
+
+}
+
+async function abrirModalEdicao(id) {
+
+  const op =
+    OPERACOES.find(
+      item =>
+        Number(item.id) === Number(id)
+    );
+
+  if (!op) {
+
+    alert(
+      "Movimentação não encontrada."
+    );
+
+    return;
+
+  }
+
+  preencherSelectEdicao(
+    "edit_clienteId",
+    CLIENTES,
+    "Sem cliente"
+  );
+
+  preencherSelectEdicao(
+    "edit_categoriaId",
+    CATEGORIAS,
+    "Selecione..."
+  );
+
+  preencherSelectEdicao(
+    "edit_centroCustoId",
+    CENTROS,
+    "Selecione..."
+  );
+
+  const clienteId =
+    op.clienteId ||
+    op.cliente?.id ||
+    "";
+
+  const categoriaId =
+    op.categoriaId ||
+    op.categoria?.id ||
+    "";
+
+  const centroCustoId =
+    op.centroCustoId ||
+    op.centroCusto?.id ||
+    "";
+
+  document.getElementById("edit_id").value =
+    op.id || "";
+
+  document.getElementById("edit_tipoOperacao").value =
+    op.tipoOperacao || "ENTRADA";
+
+  document.getElementById("edit_status").value =
+    op.status || "PENDENTE";
+
+  document.getElementById("edit_meioPagamento").value =
+    op.meioPagamento || "";
+
+  document.getElementById("edit_valor").value =
+    op.valor ?? "";
+
+  document.getElementById("edit_valorPago").value =
+    op.valorPago ?? "";
+
+  document.getElementById("edit_dataOperacao").value =
+    somenteData(
+      op.dataOperacao
+    );
+
+  document.getElementById("edit_dataVencimento").value =
+    somenteData(
+      op.dataVencimento
+    );
+
+  document.getElementById("edit_clienteId").value =
+    clienteId ? String(clienteId) : "";
+
+  document.getElementById("edit_categoriaId").value =
+    categoriaId ? String(categoriaId) : "";
+
+  document.getElementById("edit_centroCustoId").value =
+    centroCustoId ? String(centroCustoId) : "";
+
+  document.getElementById("edit_fornecedor").value =
+    op.fornecedor || "";
+
+  document.getElementById("edit_parcelas").value =
+    op.parcelas || 1;
+
+  document.getElementById("edit_recorrente").value =
+    String(
+      Boolean(op.recorrente)
+    );
+
+  document.getElementById("edit_tipoRecorrencia").value =
+    op.tipoRecorrencia || "NENHUMA";
+
+  document.getElementById("edit_jurosMaquina").value =
+    op.jurosMaquina ?? 0;
+
+  document.getElementById("edit_descricao").value =
+    op.descricao || "";
+
+  document.getElementById("edit_observacoes").value =
+    op.observacoes || "";
+
+  $("#modalEdicaoCaixa")
+    .modal("show");
+
+}
+
+async function salvarEdicaoOperacao(e) {
+
+  e.preventDefault();
+
+  const id =
+    document.getElementById(
+      "edit_id"
+    ).value;
+
+  if (!id) {
+
+    alert(
+      "ID da movimentação não encontrado."
+    );
+
+    return;
+
+  }
+
+  const payload =
+    montarPayloadFormulario(
+      "edit_"
+    );
+
+  if (
+    !payload.tipoOperacao ||
+    !payload.valor ||
+    payload.valor <= 0
+  ) {
+
+    alert(
+      "Informe o tipo da operação e um valor maior que zero."
+    );
+
+    return;
+
+  }
+
+  try {
+
+    await requestJson(
+      `${API}/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body:
+          JSON.stringify(
+            payload
+          )
+      }
+    );
+
+    $("#modalEdicaoCaixa")
+      .modal("hide");
+
+    await carregarDashboard();
+
+    await carregarOperacoes();
+
+  } catch (error) {
+
+    alert(
+      error.message
+    );
+
   }
 
 }
@@ -786,25 +1342,16 @@ async function marcarComoPaga(id) {
 
   try {
 
-    const resp =
-      await fetch(
-        `${API}/${id}/pagar`,
-        {
-          method: "PUT"
-        }
-      );
+    await requestJson(
+      `${API}/${id}/pagar`,
+      {
+        method: "PUT"
+      }
+    );
 
-    if (!resp.ok) {
+    await carregarDashboard();
 
-      throw new Error(
-        "Erro ao marcar como paga."
-      );
-
-    }
-
-    carregarDashboard();
-
-    carregarOperacoes();
+    await carregarOperacoes();
 
   } catch (error) {
 
@@ -830,660 +1377,16 @@ async function cancelarOperacao(id) {
 
   try {
 
-    const resp =
-      await fetch(
-        `${API}/${id}/cancelar`,
-        {
-          method: "PUT"
-        }
-      );
-
-    if (!resp.ok) {
-
-      throw new Error(
-        "Erro ao cancelar lançamento."
-      );
-
-    }
-
-    carregarDashboard();
-
-    carregarOperacoes();
-
-  } catch (error) {
-
-    alert(
-      error.message
+    await requestJson(
+      `${API}/${id}/cancelar`,
+      {
+        method: "PUT"
+      }
     );
 
-  }
+    await carregarDashboard();
 
-}
-
-function limparFiltros() {
-
-  if (filtroTipo)
-    filtroTipo.value = "";
-
-  if (inputInicio)
-    inputInicio.value = "";
-
-  if (inputFim)
-    inputFim.value = "";
-
-  carregarOperacoes();
-
-}
-
-function atualizarTotais(items) {
-
-  const entradas =
-    items
-      .filter(
-        i =>
-          i.tipoOperacao ===
-          "ENTRADA"
-      )
-      .reduce(
-        (a, b) =>
-          a +
-          Number(
-            b.valor
-          ),
-        0
-      );
-
-  const saidas =
-    items
-      .filter(
-        i =>
-          i.tipoOperacao ===
-          "SAIDA"
-      )
-      .reduce(
-        (a, b) =>
-          a +
-          Number(
-            b.valor
-          ),
-        0
-      );
-
-  if (elTotalEntradas) {
-
-    elTotalEntradas.textContent =
-      fmtBRL(
-        entradas
-      );
-
-  }
-
-  if (elTotalSaidas) {
-
-    elTotalSaidas.textContent =
-      fmtBRL(
-        saidas
-      );
-
-  }
-
-  if (elSaldoGeral) {
-
-    elSaldoGeral.textContent =
-      fmtBRL(
-        entradas -
-        saidas
-      );
-
-  }
-
-}
-function garantirModalEdicao() {
-
-  if (
-    document.querySelector(
-      "#modalEdicaoCaixa"
-    )
-  ) {
-
-    return;
-
-  }
-
-  const modal =
-    document.createElement(
-      "div"
-    );
-
-  modal.innerHTML = `
-
-        <div class="modal fade"
-            id="modalEdicaoCaixa"
-            tabindex="-1"
-            role="dialog">
-
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-
-                <div class="modal-content">
-
-                    <form id="formEditarOp">
-
-                        <div class="modal-header">
-
-                            <h5 class="modal-title">
-
-                                Editar Movimentação
-
-                            </h5>
-
-                            <button
-                                type="button"
-                                class="close"
-                                data-dismiss="modal">
-
-                                <span>&times;</span>
-
-                            </button>
-
-                        </div>
-
-                        <div class="modal-body">
-
-                            <input
-                                type="hidden"
-                                id="edit_id">
-
-                            <div class="form-row">
-
-                                <div class="col-md-4 mb-2">
-
-                                    <label>Tipo</label>
-
-                                    <select
-                                        id="edit_tipoOperacao"
-                                        class="form-control">
-
-                                        <option value="ENTRADA">
-                                            Entrada
-                                        </option>
-
-                                        <option value="SAIDA">
-                                            Saída
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-                                <div class="col-md-4 mb-2">
-
-                                    <label>Status</label>
-
-                                    <select
-                                        id="edit_status"
-                                        class="form-control">
-
-                                        <option value="PENDENTE">
-                                            Pendente
-                                        </option>
-
-                                        <option value="PAGO">
-                                            Pago
-                                        </option>
-
-                                        <option value="ATRASADO">
-                                            Atrasado
-                                        </option>
-
-                                        <option value="CANCELADO">
-                                            Cancelado
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-                                <div class="col-md-4 mb-2">
-
-                                    <label>Pagamento</label>
-
-                                    <select
-                                        id="edit_meioPagamento"
-                                        class="form-control">
-
-                                        <option value="PIX">
-                                            Pix
-                                        </option>
-
-                                        <option value="CARTAO">
-                                            Cartão
-                                        </option>
-
-                                        <option value="DINHEIRO">
-                                            Dinheiro
-                                        </option>
-
-                                        <option value="BOLETO">
-                                            Boleto
-                                        </option>
-
-                                        <option value="TRANSFERENCIA">
-                                            Transferência
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-                                <div class="col-md-4 mb-2">
-
-                                    <label>Valor</label>
-
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        id="edit_valor"
-                                        class="form-control">
-
-                                </div>
-
-                                <div class="col-md-4 mb-2">
-
-                                    <label>Valor Pago</label>
-
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        id="edit_valorPago"
-                                        class="form-control">
-
-                                </div>
-
-                                <div class="col-md-4 mb-2">
-
-                                    <label>Data Operação</label>
-
-                                    <input
-                                        type="date"
-                                        id="edit_dataOperacao"
-                                        class="form-control">
-
-                                </div>
-
-                                <div class="col-md-4 mb-2">
-
-                                    <label>Data Vencimento</label>
-
-                                    <input
-                                        type="date"
-                                        id="edit_dataVencimento"
-                                        class="form-control">
-
-                                </div>
-
-                                <div class="col-md-8 mb-2">
-
-                                    <label>Fornecedor</label>
-
-                                    <input
-                                        type="text"
-                                        id="edit_fornecedor"
-                                        class="form-control">
-
-                                </div>
-
-                                <div class="col-md-12">
-
-                                    <label>Descrição</label>
-
-                                    <input
-                                        type="text"
-                                        id="edit_descricao"
-                                        class="form-control">
-
-                                </div>
-
-                                <div class="col-md-12 mt-2">
-
-                                    <label>Observações</label>
-
-                                    <textarea
-                                        id="edit_observacoes"
-                                        rows="3"
-                                        class="form-control"></textarea>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="modal-footer">
-
-                            <button
-                                type="button"
-                                class="btn btn-light"
-                                data-dismiss="modal">
-
-                                Cancelar
-
-                            </button>
-
-                            <button
-                                type="submit"
-                                class="btn btn-danger">
-
-                                Salvar
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-  document.body.appendChild(
-    modal
-  );
-
-  document
-    .querySelector(
-      "#formEditarOp"
-    )
-    .addEventListener(
-      "submit",
-      salvarEdicaoOperacao
-    );
-
-}
-
-function abrirModalEdicao(id) {
-
-  const op =
-    OPERACOES.find(
-      o => o.id === id
-    );
-
-  if (!op) {
-
-    alert(
-      "Movimentação não encontrada."
-    );
-
-    return;
-
-  }
-
-  document.getElementById(
-    "movimentacaoId"
-  ).value =
-    op.id;
-
-  document.getElementById(
-    "tipoOperacao"
-  ).value =
-    op.tipoOperacao || "";
-
-  document.getElementById(
-    "status"
-  ).value =
-    op.status || "PENDENTE";
-
-  document.getElementById(
-    "meioPagamento"
-  ).value =
-    op.meioPagamento || "";
-
-  document.getElementById(
-    "valor"
-  ).value =
-    op.valor || "";
-
-  document.getElementById(
-    "valorPago"
-  ).value =
-    op.valorPago || "";
-
-  document.getElementById(
-    "clienteId"
-  ).value =
-    op.clienteId || "";
-
-  document.getElementById(
-    "categoriaId"
-  ).value =
-    op.categoriaId || "";
-
-  document.getElementById(
-    "centroCustoId"
-  ).value =
-    op.centroCustoId || "";
-
-  document.getElementById(
-    "fornecedor"
-  ).value =
-    op.fornecedor || "";
-
-  document.getElementById(
-    "parcelas"
-  ).value =
-    op.parcelas || 1;
-
-  document.getElementById(
-    "recorrente"
-  ).value =
-    String(
-      op.recorrente || false
-    );
-
-  document.getElementById(
-    "tipoRecorrencia"
-  ).value =
-    op.tipoRecorrencia || "NENHUMA";
-
-  document.getElementById(
-    "jurosMaquina"
-  ).value =
-    op.jurosMaquina || 0;
-
-  document.getElementById(
-    "descricao"
-  ).value =
-    op.descricao || "";
-
-  document.getElementById(
-    "observacoes"
-  ).value =
-    op.observacoes || "";
-
-  if (op.dataOperacao) {
-
-    document.getElementById(
-      "dataOperacao"
-    ).value =
-      op.dataOperacao
-        .split("T")[0];
-
-  }
-
-  if (op.dataVencimento) {
-
-    document.getElementById(
-      "dataVencimento"
-    ).value =
-      op.dataVencimento
-        .split("T")[0];
-
-  }
-
-  $("#modalMovimentacao")
-    .modal("show");
-
-}
-
-async function salvarEdicaoOperacao(e) {
-
-  e.preventDefault();
-
-  const id =
-    document.getElementById(
-      "movimentacaoId"
-    ).value;
-
-  const payload = {
-
-    tipoOperacao:
-      document.getElementById(
-        "tipoOperacao"
-      ).value,
-
-    status:
-      document.getElementById(
-        "status"
-      ).value,
-
-    meioPagamento:
-      document.getElementById(
-        "meioPagamento"
-      ).value,
-
-    valor:
-      parseFloat(
-        document.getElementById(
-          "valor"
-        ).value
-      ),
-
-    valorPago:
-      document.getElementById(
-        "valorPago"
-      ).value
-        ? parseFloat(
-          document.getElementById(
-            "valorPago"
-          ).value
-        )
-        : null,
-
-    dataOperacao:
-      document.getElementById(
-        "dataOperacao"
-      ).value,
-
-    dataVencimento:
-      document.getElementById(
-        "dataVencimento"
-      ).value || null,
-
-    clienteId:
-      document.getElementById(
-        "clienteId"
-      ).value || null,
-
-    categoriaId:
-      document.getElementById(
-        "categoriaId"
-      ).value || null,
-
-    centroCustoId:
-      document.getElementById(
-        "centroCustoId"
-      ).value || null,
-
-    fornecedor:
-      document.getElementById(
-        "fornecedor"
-      ).value,
-
-    parcelas:
-      parseInt(
-        document.getElementById(
-          "parcelas"
-        ).value
-      ) || 1,
-
-    recorrente:
-      document.getElementById(
-        "recorrente"
-      ).value === "true",
-
-    tipoRecorrencia:
-      document.getElementById(
-        "tipoRecorrencia"
-      ).value,
-
-    jurosMaquina:
-      parseFloat(
-        document.getElementById(
-          "jurosMaquina"
-        ).value
-      ) || 0,
-
-    descricao:
-      document.getElementById(
-        "descricao"
-      ).value,
-
-    observacoes:
-      document.getElementById(
-        "observacoes"
-      ).value
-
-  };
-
-  try {
-
-    const resp =
-      await fetch(
-        `${API}/${id}`,
-        {
-          method: "PUT",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify(
-              payload
-            )
-        }
-      );
-
-    if (!resp.ok) {
-
-      throw new Error(
-        "Erro ao atualizar movimentação."
-      );
-
-    }
-
-    $("#modalMovimentacao")
-      .modal("hide");
-
-    document
-      .getElementById(
-        "caixaForm"
-      )
-      .reset();
-
-    document
-      .getElementById(
-        "movimentacaoId"
-      )
-      .value = "";
-
-    carregarDashboard();
-
-    carregarOperacoes();
+    await carregarOperacoes();
 
   } catch (error) {
 
@@ -1509,26 +1412,16 @@ async function excluirOperacao(id) {
 
   try {
 
-    const resp =
-      await fetch(
-        `${API}/${id}`,
-        {
-          method:
-            "DELETE"
-        }
-      );
+    await requestJson(
+      `${API}/${id}`,
+      {
+        method: "DELETE"
+      }
+    );
 
-    if (!resp.ok) {
+    await carregarDashboard();
 
-      throw new Error(
-        "Erro ao excluir movimentação."
-      );
-
-    }
-
-    carregarDashboard();
-
-    carregarOperacoes();
+    await carregarOperacoes();
 
   } catch (error) {
 
