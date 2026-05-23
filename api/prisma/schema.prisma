@@ -20,8 +20,12 @@ model Empresa {
   produtos  Produto[]
   propostas Proposta[]
   operacoes Caixa[]
-  Venda     Venda[]
+  vendas    Venda[]
   agendas   Agenda[]
+
+  // NOVOS
+  categorias   CategoriaFinanceira[]
+  centrosCusto CentroCusto[]
 
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
@@ -49,7 +53,6 @@ model Cliente {
   telefone String? @db.VarChar(20)
   endereco String? @db.VarChar(255)
 
-  // NOVOS CAMPOS SOLICITADOS PELO CLIENTE
   descricao       String? @db.VarChar(255)
   servico         String? @db.VarChar(100)
   pacoteQuinzenal Boolean @default(false)
@@ -59,13 +62,13 @@ model Cliente {
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
-
   propostas Proposta[]
-  Venda     Venda[]
+  vendas    Venda[]
   operacoes Caixa[]
   agendas   Agenda[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 }
 
 model Produto {
@@ -81,9 +84,10 @@ model Produto {
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
-  criadoEm     DateTime    @default(now())
-  atualizadoEm DateTime    @updatedAt
-  VendaItem    VendaItem[]
+  vendaItens VendaItem[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 }
 
 model Proposta {
@@ -105,19 +109,137 @@ model Proposta {
 }
 
 model Caixa {
-  id            Int           @id @default(autoincrement())
-  dataOperacao  DateTime      @default(now())
-  tipoOperacao  TipoOperacao
-  meioPagamento MeioPagamento
-  descricao     String?       @db.VarChar(255)
-  valor         Float
+  id Int @id @default(autoincrement())
 
-  // NOVO CAMPO PARA JUROS DA MÁQUINA
-  jurosMaquina Float? @default(0)
+  descricao String? @db.VarChar(255)
 
-  // NOVO RELACIONAMENTO PARA TRAZER O NOME DO CLIENTE NO CAIXA
+  valor     Float
+  valorPago Float?
+
+  dataOperacao   DateTime  @default(now())
+  dataVencimento DateTime?
+  dataPagamento  DateTime?
+
+  status StatusFinanceiro @default(PENDENTE)
+
+  tipoOperacao TipoOperacao
+
+  meioPagamento MeioPagamento?
+
+  categoriaId Int?
+  categoria   CategoriaFinanceira? @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+
+  centroCustoId Int?
+  centroCusto   CentroCusto? @relation(fields: [centroCustoId], references: [id], onDelete: SetNull)
+
   clienteId Int?
   cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+
+  fornecedor String? @db.VarChar(150)
+
+  recorrente Boolean @default(false)
+
+  tipoRecorrencia TipoRecorrencia @default(NENHUMA)
+
+  parcelas Int @default(1)
+
+  parcelaAtual Int @default(1)
+
+  observacoes String? @db.VarChar(500)
+
+  jurosMaquina Float @default(0)
+
+  comprovanteUrl String? @db.VarChar(255)
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model CategoriaFinanceira {
+  id Int @id @default(autoincrement())
+
+  nome String @db.VarChar(100)
+
+  tipo TipoOperacao
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  operacoes Caixa[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model CentroCusto {
+  id Int @id @default(autoincrement())
+
+  nome String @db.VarChar(100)
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  operacoes Caixa[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Venda {
+  id            Int           @id @default(autoincrement())
+  data          DateTime      @default(now())
+  total         Float
+  meioPagamento MeioPagamento
+
+  empresaId Int
+  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  clienteId Int?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+
+  itens VendaItem[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model VendaItem {
+  id Int @id @default(autoincrement())
+
+  vendaId Int
+  venda   Venda @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
+  produtoId Int
+  produto   Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+
+  quantidade Int
+
+  precoUnitario Float
+
+  subtotal Float
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Agenda {
+  id Int @id @default(autoincrement())
+
+  data DateTime
+
+  horario String @db.VarChar(20)
+
+  servico String? @db.VarChar(100)
+
+  observacao String? @db.VarChar(255)
+
+  status StatusAgenda @default(AGENDADO)
+
+  clienteId Int
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
 
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
@@ -139,57 +261,18 @@ enum MeioPagamento {
   TRANSFERENCIA
 }
 
-model Venda {
-  id            Int           @id @default(autoincrement())
-  data          DateTime      @default(now())
-  total         Float
-  meioPagamento MeioPagamento
-
-  empresaId Int
-  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
-
-  clienteId Int?
-  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-
-  itens        VendaItem[]
-  criadoEm     DateTime    @default(now())
-  atualizadoEm DateTime    @updatedAt
+enum StatusFinanceiro {
+  PENDENTE
+  PAGO
+  ATRASADO
+  CANCELADO
 }
 
-model VendaItem {
-  id Int @id @default(autoincrement())
-
-  vendaId Int
-  venda   Venda @relation(fields: [vendaId], references: [id], onDelete: Cascade)
-
-  produtoId Int
-  produto   Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
-
-  quantidade    Int
-  precoUnitario Float
-  subtotal      Float
-
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
-}
-
-model Agenda {
-  id Int @id @default(autoincrement())
-
-  data       DateTime
-  horario    String       @db.VarChar(20)
-  servico    String?      @db.VarChar(100)
-  observacao String?      @db.VarChar(255)
-  status     StatusAgenda @default(AGENDADO)
-
-  clienteId Int
-  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
-
-  empresaId Int
-  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
-
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+enum TipoRecorrencia {
+  NENHUMA
+  SEMANAL
+  MENSAL
+  ANUAL
 }
 
 enum StatusAgenda {
