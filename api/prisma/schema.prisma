@@ -57,7 +57,8 @@ model Empresa {
 
   criadoEm DateTime @default(now())
 
-  atualizadoEm DateTime @updatedAt
+  atualizadoEm       DateTime            @updatedAt
+  configuracaoFiscal ConfiguracaoFiscal?
 }
 
 model Usuario {
@@ -294,11 +295,29 @@ model CentroCusto {
 }
 
 model Venda {
-  id            Int           @id @default(autoincrement())
-  data          DateTime      @default(now())
-  total         Float
+  id Int @id @default(autoincrement())
+
+  data DateTime @default(now())
+
+  total Float
+
+  desconto Float @default(0)
+
+  frete Float @default(0)
+
+  seguro Float @default(0)
+
+  outrasDespesas Float @default(0)
+
+  observacoes String? @db.VarChar(500)
+
   meioPagamento MeioPagamento
-  numeroNota    String?       @db.VarChar(50)
+
+  statusNfe StatusNfe @default(PENDENTE)
+
+  numeroNota String? @db.VarChar(50)
+
+  serieNota String? @db.VarChar(10)
 
   chaveNfe String? @db.VarChar(60)
 
@@ -306,16 +325,22 @@ model Venda {
 
   xmlNfe String? @db.VarChar(255)
 
-  pdfDanfe  String? @db.VarChar(255)
+  pdfDanfe String? @db.VarChar(255)
+
+  dataEmissaoNfe DateTime?
+
   empresaId Int
-  empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   clienteId Int?
-  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+
+  cliente Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
 
   itens VendaItem[]
 
-  criadoEm     DateTime @default(now())
+  criadoEm DateTime @default(now())
+
   atualizadoEm DateTime @updatedAt
 }
 
@@ -427,4 +452,48 @@ enum RegimeTributario {
   SIMPLES_NACIONAL
   LUCRO_PRESUMIDO
   LUCRO_REAL
+}
+
+enum StatusNfe {
+  PENDENTE
+
+  AUTORIZADA
+
+  CANCELADA
+
+  REJEITADA
+}
+
+model ConfiguracaoFiscal {
+  id Int @id @default(autoincrement())
+
+  empresaId Int @unique
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  ambiente AmbienteFiscal @default(HOMOLOGACAO)
+
+  serieNfe Int @default(1)
+
+  serieNfce Int @default(1)
+
+  proximoNumeroNfe Int @default(1)
+
+  proximoNumeroNfce Int @default(1)
+
+  certificadoPfx String? @db.VarChar(255)
+
+  senhaCertificado String? @db.VarChar(255)
+
+  tokenApi String? @db.VarChar(255)
+
+  criadoEm DateTime @default(now())
+
+  atualizadoEm DateTime @updatedAt
+}
+
+enum AmbienteFiscal {
+  HOMOLOGACAO
+
+  PRODUCAO
 }

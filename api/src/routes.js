@@ -8,7 +8,8 @@ const proposta = require("./controller/ctpropostas");
 const usuario = require("./controller/ctusuario");
 const vendas = require("./controller/ctvenda");
 const agenda = require("./controller/agenda.controller");
-
+const empresa = require("./controller/empresa.controller");
+const configuracaoFiscal = require("./controller/configuracaoFiscal.controller");
 const categorias = require("./controller/categoriaFinanceira.controller");
 const centrosCusto = require("./controller/centroCusto.controller");
 
@@ -101,6 +102,25 @@ routes.route("/agenda/:id")
   .put(agenda.update)
   .delete(agenda.remove);
 
+routes.get(
+  "/empresa/:id",
+  empresa.readOne
+);
+
+routes.put(
+  "/empresa/:id",
+  empresa.update
+);
+
+routes.get(
+  "/configuracao-fiscal/:empresaId",
+  configuracaoFiscal.readOne
+);
+
+routes.put(
+  "/configuracao-fiscal/:empresaId",
+  configuracaoFiscal.update
+);
 routes.put("/agenda/:id/status", agenda.updateStatus);
 
 module.exports = routes;
