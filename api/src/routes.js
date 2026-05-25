@@ -12,6 +12,7 @@ const empresa = require("./controller/empresa.controller");
 const configuracaoFiscal = require("./controller/configuracaoFiscal.controller");
 const categorias = require("./controller/categoriaFinanceira.controller");
 const centrosCusto = require("./controller/centroCusto.controller");
+const nfe = require("./controller/nfe.controller");
 
 routes.get("/", (req, res) => {
   res.status(200).json({
@@ -122,5 +123,10 @@ routes.put(
   configuracaoFiscal.update
 );
 routes.put("/agenda/:id/status", agenda.updateStatus);
+
+routes.get(
+  "/vendas/:id/xml",
+  nfe.gerarXml
+);
 
 module.exports = routes;

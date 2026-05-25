@@ -7,7 +7,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "morgan": "^1.10.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "xmlbuilder2": "^4.0.3"
   },
   "name": "api",
   "version": "1.0.0",
