@@ -124,9 +124,11 @@ routes.put(
 );
 routes.put("/agenda/:id/status", agenda.updateStatus);
 
-routes.get(
-  "/vendas/:id/xml",
-  nfe.gerarXml
+routes.get("/vendas/:id/xml", nfe.gerarXml);
+
+routes.post(
+  "/vendas/:id/emitir",
+  nfe.emitirNfe
 );
 
 module.exports = routes;
