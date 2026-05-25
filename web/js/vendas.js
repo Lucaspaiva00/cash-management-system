@@ -1,5 +1,6 @@
 const BASE = "https://cash-management-system.onrender.com";
 const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
 if (!usuario || !usuario.empresaId) {
     alert("Sessão expirada. Faça login novamente.");
     window.location.href = "login.html";
@@ -123,19 +124,107 @@ async function carregarTabela() {
             const dataVenda = new Date(v.data).toLocaleDateString("pt-BR");
             const valor = v.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+            const badgeNfe =
+                v.statusNfe === "AUTORIZADA"
+                    ? `<span class="badge badge-success">AUTORIZADA</span>`
+                    : v.statusNfe === "REJEITADA"
+                        ? `<span class="badge badge-danger">REJEITADA</span>`
+                        : v.statusNfe === "CANCELADA"
+                            ? `<span class="badge badge-dark">CANCELADA</span>`
+                            : `<span class="badge badge-warning">PENDENTE</span>`;
+
             corpo.innerHTML += `
-        <tr>
-          <td>${v.id}</td>
-          <td>${nomeCliente}</td>
-          <td>${dataVenda}</td>
-          <td>${v.meioPagamento}</td>
-          <td>${valor}</td>
-        </tr>`;
+<tr>
+
+    <td>${v.id}</td>
+
+    <td>${nomeCliente}</td>
+
+    <td>${dataVenda}</td>
+
+    <td>${v.meioPagamento}</td>
+
+    <td>${valor}</td>
+
+    <td>${badgeNfe}</td>
+
+    <td>
+
+        <button
+            class="btn btn-info btn-sm"
+            onclick="visualizarXml(${v.id})">
+
+            <i class="fas fa-code"></i>
+
+            XML
+
+        </button>
+
+        <button
+            class="btn btn-success btn-sm ml-1"
+            onclick="emitirNfe(${v.id})">
+
+            <i class="fas fa-file-invoice"></i>
+
+            Emitir NF-e
+
+        </button>
+
+    </td>
+
+</tr>`;
         });
     } catch (e) {
         console.error("Erro ao carregar tabela de vendas:", e);
     }
 }
+
+async function emitirNfe(id) {
+
+    if (!confirm(`Emitir NF-e da venda #${id}?`))
+        return;
+
+    try {
+
+        const resp = await fetch(
+            `${BASE}/vendas/${id}/emitir`,
+            {
+                method: "POST"
+            }
+        );
+
+        const dados = await resp.json();
+
+        if (!resp.ok)
+            throw new Error(
+                dados.error || "Erro ao emitir NF-e"
+            );
+
+        alert("NF-e emitida com sucesso!");
+
+        carregarTabela();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert(err.message);
+
+    }
+
+}
+
+function visualizarXml(id) {
+
+    window.open(
+        `${BASE}/vendas/${id}/xml`,
+        "_blank"
+    );
+
+}
+
+window.emitirNfe = emitirNfe;
+window.visualizarXml = visualizarXml;
 
 // 📤 Exportar CSV
 document.getElementById("btnExportar").addEventListener("click", () => {
