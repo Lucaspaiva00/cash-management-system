@@ -40,7 +40,11 @@ const read = async (req, res) => {
             select: {
                 id: true,
                 total: true,
-                statusNfe: true
+                statusNfe: true,
+                numeroNota: true,
+                serieNota: true,
+                chaveNfe: true,
+                protocoloNfe: true
             }
         });
 
