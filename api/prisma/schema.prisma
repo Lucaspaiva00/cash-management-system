@@ -323,7 +323,7 @@ model Venda {
 
   protocoloNfe String? @db.VarChar(100)
 
-  xmlNfe String? @db.VarChar(255)
+  xmlNfe String? @db.Text
 
   pdfDanfe String? @db.VarChar(255)
 

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Venda" ALTER COLUMN "xmlNfe" SET DATA TYPE TEXT;
