@@ -44,7 +44,8 @@ const read = async (req, res) => {
                 numeroNota: true,
                 serieNota: true,
                 chaveNfe: true,
-                protocoloNfe: true
+                protocoloNfe: true,
+                xmlNfe: true
             }
         });
 
