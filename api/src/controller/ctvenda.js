@@ -37,13 +37,10 @@ const read = async (req, res) => {
             orderBy: {
                 id: "desc"
             },
-            include: {
-                cliente: true,
-                itens: {
-                    include: {
-                        produto: true
-                    }
-                }
+            select: {
+                id: true,
+                total: true,
+                statusNfe: true
             }
         });
 
