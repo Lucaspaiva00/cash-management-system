@@ -113,6 +113,11 @@ routes.put(
   empresa.update
 );
 
+routes.delete(
+  "/empresa/:id",
+  empresa.remove
+);
+
 routes.get(
   "/configuracao-fiscal/:empresaId",
   configuracaoFiscal.readOne
