@@ -1,3 +1,6 @@
+//Usar somente quando necessario fazer um delete geral, caso contrario, usar os deletes especificos de cada controller, 
+//pois o delete geral pode causar perda de dados importantes, como por exemplo, a empresa cadastrada, que é necessaria para o funcionamento do sistema.
+
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
