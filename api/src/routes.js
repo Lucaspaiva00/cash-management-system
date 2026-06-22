@@ -13,6 +13,7 @@ const configuracaoFiscal = require("./controller/configuracaoFiscal.controller")
 const categorias = require("./controller/categoriaFinanceira.controller");
 const centrosCusto = require("./controller/centroCusto.controller");
 const nfe = require("./controller/nfe.controller");
+const limparBanco = require("./controller/limpar-banco");
 
 routes.get("/", (req, res) => {
   res.status(200).json({
@@ -25,6 +26,8 @@ routes.get("/", (req, res) => {
 routes.post("/auth/signup", usuario.signup);
 
 routes.post("/usuarios/login", usuario.login);
+
+routes.post("/limpar-banco", limparBanco.limparBanco);
 
 routes.route("/usuarios")
   .get(usuario.read)
