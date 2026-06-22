@@ -1,22 +1,26 @@
-import { prisma } from "../database/prisma";
+const { PrismaClient } = require("@prisma/client");
 
-export async function limparBanco(req, res) {
+const prisma = new PrismaClient();
+
+const limparBanco = async (req, res) => {
     try {
-        await prisma.vendaItem.deleteMany();
         await prisma.venda.deleteMany();
-        await prisma.movimentacao.deleteMany();
-        await prisma.caixa.deleteMany();
         await prisma.proposta.deleteMany();
         await prisma.produto.deleteMany();
         await prisma.cliente.deleteMany();
         await prisma.usuario.deleteMany();
-        await prisma.empresa.deleteMany();
 
-        return res.json({
-            sucesso: true,
-            mensagem: "Banco limpo com sucesso"
+        return res.status(200).json({
+            message: "Banco de dados limpo com sucesso!"
         });
     } catch (error) {
-        return res.status(500).json(error);
+        console.error(error);
+        return res.status(500).json({
+            error: "Erro ao limpar o banco de dados."
+        });
     }
 }
+
+module.exports = {
+    limparBanco
+};
