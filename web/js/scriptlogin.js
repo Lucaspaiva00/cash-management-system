@@ -36,7 +36,7 @@ document.querySelector("#formLogin").addEventListener("submit", async (e) => {
       })
     );
 
-    alert(`✅ Bem-vindo, ${data.usuario.nome}!`);
+    
     window.location.href = "index.html";
   } catch (err) {
     console.error("Erro:", err);

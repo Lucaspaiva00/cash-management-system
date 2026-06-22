@@ -43,7 +43,6 @@ document.getElementById("formUsuario").addEventListener("submit", async (e) => {
 
     // Guarda usuário e empresa
     localStorage.setItem("usuarioLogado", JSON.stringify(data.usuario));
-    alert("✅ Conta criada com sucesso! Faça login.");
     window.location.href = "login.html";
   } catch (err) {
     console.error("Erro:", err);
