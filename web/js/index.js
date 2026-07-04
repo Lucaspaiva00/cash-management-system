@@ -9,6 +9,18 @@ let graficoFluxoMensal = null;
 let graficoDistribuicao = null;
 let graficoUltimosMeses = null;
 
+const tituloFluxo = document.getElementById("tituloFluxo");
+const tituloDistribuicao = document.getElementById("tituloDistribuicao");
+const tituloLucro = document.getElementById("tituloLucro");
+
+const dataInicio = document.getElementById("dataInicio");
+const dataFim = document.getElementById("dataFim");
+const datasPersonalizadas = document.getElementById("datasPersonalizadas");
+
+const botoesPeriodo = document.querySelectorAll(".periodo-btn");
+
+let periodoSelecionado = "mes";
+
 const indicadores = [
   {
     id: "creditos",
@@ -114,32 +126,199 @@ function atualizarValor(id, valor, moeda = true) {
   el.innerText = moeda ? formatarMoeda(valor) : Number(valor || 0);
 }
 
-function getMesAtualInput() {
-  const hoje = new Date();
-  const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-  return `${ano}-${mes}`;
-}
-
-function getNomeMesAno(ano, mes) {
-  const data = new Date(ano, mes - 1, 1);
-  return data.toLocaleDateString("pt-BR", {
-    month: "long",
-    year: "numeric",
-  });
-}
-
 function getDiasNoMes(ano, mes) {
   return new Date(ano, mes, 0).getDate();
 }
 
-function dataEstaNoMes(dataString, ano, mes) {
-  if (!dataString) return false;
+function inicioDoDia(data) {
+  const d = new Date(data);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
 
-  const data = new Date(dataString);
-  if (isNaN(data.getTime())) return false;
+function fimDoDia(data) {
+  const d = new Date(data);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
 
-  return data.getFullYear() === ano && data.getMonth() + 1 === mes;
+function obterPeriodo(periodo) {
+
+  const hoje = new Date();
+
+  let inicio;
+  let fim;
+
+  switch (periodo) {
+
+    case "hoje":
+
+      inicio = inicioDoDia(hoje);
+      fim = fimDoDia(hoje);
+
+      break;
+
+    case "semana":
+
+      inicio = inicioDoDia(new Date(
+        hoje.getFullYear(),
+        hoje.getMonth(),
+        hoje.getDate() - 6
+      ));
+
+      fim = fimDoDia(hoje);
+
+      break;
+
+    case "mes":
+
+      inicio = new Date(
+        hoje.getFullYear(),
+        hoje.getMonth(),
+        1
+      );
+
+      fim = new Date(
+        hoje.getFullYear(),
+        hoje.getMonth() + 1,
+        0,
+        23,
+        59,
+        59
+      );
+
+      break;
+
+    case "trimestre":
+
+      inicio = new Date(
+        hoje.getFullYear(),
+        hoje.getMonth() - 2,
+        1
+      );
+
+      fim = fimDoDia(hoje);
+
+      break;
+
+    case "semestre":
+
+      inicio = new Date(
+        hoje.getFullYear(),
+        hoje.getMonth() - 5,
+        1
+      );
+
+      fim = fimDoDia(hoje);
+
+      break;
+
+    case "ano":
+
+      inicio = new Date(
+        hoje.getFullYear(),
+        0,
+        1
+      );
+
+      fim = fimDoDia(hoje);
+
+      break;
+
+    case "personalizado":
+
+      inicio = inicioDoDia(dataInicio.value);
+
+      fim = fimDoDia(dataFim.value);
+
+      break;
+
+  }
+
+  return {
+    inicio,
+    fim
+  };
+
+}
+
+function filtrarPeriodo(lista, campoData) {
+
+  const periodo = obterPeriodo(periodoSelecionado);
+
+  return lista.filter(item => {
+
+    const data = new Date(item[campoData]);
+
+    return data >= periodo.inicio
+      && data <= periodo.fim;
+
+  });
+
+}
+
+function atualizarTitulos() {
+
+  switch (periodoSelecionado) {
+
+    case "hoje":
+
+      tituloFluxo.innerText = "Fluxo de Hoje";
+      tituloDistribuicao.innerText = "Distribuição de Hoje";
+      tituloLucro.innerText = "Lucro de Hoje";
+
+      break;
+
+    case "semana":
+
+      tituloFluxo.innerText = "Fluxo dos Últimos 7 Dias";
+      tituloDistribuicao.innerText = "Distribuição dos Últimos 7 Dias";
+      tituloLucro.innerText = "Lucro dos Últimos 7 Dias";
+
+      break;
+
+    case "mes":
+
+      tituloFluxo.innerText = "Fluxo do Mês";
+      tituloDistribuicao.innerText = "Distribuição do Mês";
+      tituloLucro.innerText = "Lucro do Mês";
+
+      break;
+
+    case "trimestre":
+
+      tituloFluxo.innerText = "Fluxo Trimestral";
+      tituloDistribuicao.innerText = "Distribuição Trimestral";
+      tituloLucro.innerText = "Lucro Trimestral";
+
+      break;
+
+    case "semestre":
+
+      tituloFluxo.innerText = "Fluxo Semestral";
+      tituloDistribuicao.innerText = "Distribuição Semestral";
+      tituloLucro.innerText = "Lucro Semestral";
+
+      break;
+
+    case "ano":
+
+      tituloFluxo.innerText = "Fluxo Anual";
+      tituloDistribuicao.innerText = "Distribuição Anual";
+      tituloLucro.innerText = "Lucro Anual";
+
+      break;
+
+    case "personalizado":
+
+      tituloFluxo.innerText = "Fluxo Personalizado";
+      tituloDistribuicao.innerText = "Distribuição Personalizada";
+      tituloLucro.innerText = "Lucro Personalizado";
+
+      break;
+
+  }
+
 }
 
 function destruirGraficos() {
@@ -356,15 +535,12 @@ async function carregarDashboard() {
       return;
     }
 
-    if (!filtroMes.value) {
-      filtroMes.value = getMesAtualInput();
-    }
+    atualizarTitulos();
 
-    const [anoStr, mesStr] = filtroMes.value.split("-");
-    const ano = Number(anoStr);
-    const mes = Number(mesStr);
+    const periodo = obterPeriodo(periodoSelecionado);
 
-    labelPeriodoSelecionado.innerText = `Exibindo dados de ${getNomeMesAno(ano, mes)}`;
+    labelPeriodoSelecionado.innerText =
+      `Período: ${periodo.inicio.toLocaleDateString("pt-BR")} até ${periodo.fim.toLocaleDateString("pt-BR")}`;
 
     const [caixa, propostas, clientes] = await Promise.all([
       fetchJson(`${API}/caixa?empresaId=${usuario.empresaId}`),
@@ -372,13 +548,9 @@ async function carregarDashboard() {
       fetchJson(`${API}/clientes?empresaId=${usuario.empresaId}`),
     ]);
 
-    const caixaFiltrado = caixa.filter((item) =>
-      dataEstaNoMes(item.dataOperacao, ano, mes)
-    );
+    const caixaFiltrado = filtrarPeriodo(caixa, "dataOperacao");
 
-    const propostasFiltradas = propostas.filter((item) =>
-      dataEstaNoMes(item.data, ano, mes)
-    );
+    const propostasFiltradas = filtrarPeriodo(propostas, "data");
 
     let entrada = 0;
     let saida = 0;
@@ -386,8 +558,13 @@ async function carregarDashboard() {
     caixaFiltrado.forEach((item) => {
       const valor = Number(item.valor || 0);
 
-      if (item.tipoOperacao === "ENTRADA") entrada += valor;
-      if (item.tipoOperacao === "SAIDA") saida += valor;
+      if (item.tipoOperacao === "ENTRADA") {
+        entrada += valor;
+      }
+
+      if (item.tipoOperacao === "SAIDA") {
+        saida += valor;
+      }
     });
 
     const lucro = entrada - saida;
@@ -414,15 +591,24 @@ async function carregarDashboard() {
     atualizarValor("empresas", 1, false);
 
     destruirGraficos();
+
+    // Continua utilizando seus gráficos atuais
+    // (vamos refatorá-los no próximo passo)
+
+    const ano = periodo.inicio.getFullYear();
+    const mes = periodo.inicio.getMonth() + 1;
+
     montarGraficoFluxoMensal(caixaFiltrado, ano, mes);
+
     montarGraficoDistribuicao(entrada, saida);
+
     montarGraficoUltimosMeses(caixa, ano, mes);
+
   } catch (error) {
     console.error("Erro ao carregar dashboard:", error);
-    alert("Erro ao carregar dashboard. Verifique o console para mais detalhes.");
+    alert("Erro ao carregar dashboard.");
   }
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   criarCards();
 
