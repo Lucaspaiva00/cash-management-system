@@ -10,101 +10,22 @@
     <link href="css2/sb-admin-2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/menu.css" />
+    <link rel="stylesheet" href="css/dashboard-premium.css" />
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        .sidebar-dark {
-            background: linear-gradient(180deg, #111 0%, #222 100%);
-        }
-
-        .topbar {
-            background-color: #f1f3f8 !important;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .card {
-            border-radius: 12px;
-            transition: all 0.25s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-        }
-
-        .text-title {
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.78rem;
-            letter-spacing: 0.4px;
-        }
-
-        body {
-            background-color: #f8f9fc !important;
-        }
-
-        .filtro-box,
-        .grafico-box {
-            background: #fff;
-            border-radius: 12px;
-            padding: 18px;
-            box-shadow: 0 0.15rem 1rem rgba(58, 59, 69, 0.08);
-            margin-bottom: 24px;
-        }
-
-        .grafico-titulo {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #4e73df;
-            margin-bottom: 16px;
-        }
-
-        .resumo-periodo {
-            font-size: 0.95rem;
-            color: #5a5c69;
-            font-weight: 600;
-        }
-
-        .chart-area-custom {
-            position: relative;
-            height: 340px;
-        }
-
-        .chart-area-small {
-            position: relative;
-            height: 320px;
-        }
-
-        .form-control {
-            border-radius: 8px;
-        }
-
-        .btn-primary {
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .periodo-btn {
-            border-radius: 8px;
-            font-weight: 600;
-            margin-right: 6px;
-            margin-bottom: 6px;
-        }
-
-        #datasPersonalizadas {
-            display: none;
-        }
-    </style>
 </head>
 
 <body>
     <div class="mobile-overlay"></div>
+
     <div id="wrapper">
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
                 <div class="sidebar-brand-text mx-3">Paiva Tech</div>
             </a>
 
@@ -112,13 +33,13 @@
 
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-chart-pie"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <hr class="sidebar-divider" />
-            <div class="sidebar-heading">Páginas</div>
+            <div class="sidebar-heading">Gestão</div>
 
             <li class="nav-item">
                 <a class="nav-link" href="movimentacoes.html">
@@ -126,6 +47,7 @@
                     <span>Caixa</span>
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="categorias-financeiras.html">
                     <i class="fas fa-tags"></i>
@@ -139,15 +61,17 @@
                     <span>Centros de Custo</span>
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="pdvvenda.html">
                     <i class="fas fa-cash-register"></i>
                     <span>PDV</span>
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="agenda.html">
-                    <i class="fas fa-cash-register"></i>
+                    <i class="fas fa-calendar-alt"></i>
                     <span>Agenda</span>
                 </a>
             </li>
@@ -175,130 +99,155 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="propostas.html">
-                    <i class="fas fa-file-invoice"></i>
+                    <i class="fas fa-file-invoice-dollar"></i>
                     <span>Propostas</span>
                 </a>
             </li>
-            <li class="nav-item active">
+
+            <li class="nav-item">
                 <a class="nav-link" href="empresa.html">
                     <i class="fas fa-building"></i>
                     <span>Minha Empresa</span>
                 </a>
             </li>
+
+            <hr class="sidebar-divider" />
+
             <li class="nav-item">
                 <a class="nav-link" href="login.html">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Sair</span>
                 </a>
             </li>
-
-            <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline"></div>
         </ul>
 
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
-                    <!-- Botão Mobile -->
+
+                <nav class="navbar navbar-expand navbar-light topbar topbar-premium mb-4 static-top">
                     <button id="menuToggleMobile" class="btn d-md-none mr-3">
                         <i class="fas fa-bars"></i>
                     </button>
 
-                    <h5 class="m-0 font-weight-bold text-dark">Painel Central</h5>
+                    <div>
+                        <h1 class="page-title">Painel Financeiro</h1>
+                        <p class="page-subtitle">Visão geral da operação, caixa, propostas e clientes.</p>
+                    </div>
 
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item d-none d-sm-flex align-items-center mr-3">
+                            <span class="badge badge-light px-3 py-2">
+                                <i class="far fa-clock mr-1"></i>
+                                <span id="ultimaAtualizacao">Atualizando...</span>
+                            </span>
+                        </li>
+                    </ul>
                 </nav>
 
                 <div class="container-fluid">
-                    <!-- FILTRO -->
-                    <div class="filtro-box">
 
-                        <div class="row">
+                    <section class="hero-dashboard">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <div class="hero-kicker">Resumo executivo</div>
+                                <h2 class="hero-title">Bom dia, seja bem-vindo 👋</h2>
+                                <p class="mb-0" style="opacity:.82;">
+                                    Acompanhe a saúde financeira da sua empresa em tempo real.
+                                </p>
 
-                            <div class="col-lg-12 mb-3">
+                                <div class="hero-value" id="heroReceita">R$ 0,00</div>
 
-                                <label class="font-weight-bold mb-2">
-                                    Período
-                                </label>
-
-                                <br>
-
-                                <button class="btn btn-outline-primary periodo-btn active" data-periodo="hoje">
-                                    Hoje
-                                </button>
-
-                                <button class="btn btn-outline-primary periodo-btn" data-periodo="semana">
-                                    7 dias
-                                </button>
-
-                                <button class="btn btn-outline-primary periodo-btn" data-periodo="mes">
-                                    Mês
-                                </button>
-
-                                <button class="btn btn-outline-primary periodo-btn" data-periodo="trimestre">
-                                    Trimestre
-                                </button>
-
-                                <button class="btn btn-outline-primary periodo-btn" data-periodo="semestre">
-                                    Semestre
-                                </button>
-
-                                <button class="btn btn-outline-primary periodo-btn" data-periodo="ano">
-                                    Ano
-                                </button>
-
-                                <button class="btn btn-outline-dark periodo-btn" data-periodo="personalizado">
-                                    Personalizado
-                                </button>
-
+                                <div class="hero-pill">
+                                    <i class="fas fa-arrow-trend-up"></i>
+                                    <span id="heroLucro">Lucro líquido: R$ 0,00</span>
+                                </div>
                             </div>
 
+                            <div class="col-lg-4">
+                                <div class="hero-actions">
+                                    <button class="btn-hero" onclick="window.location.href='pdvvenda.html'">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Nova Venda
+                                    </button>
+
+                                    <button class="btn-hero-outline"
+                                        onclick="window.location.href='movimentacoes.html'">
+                                        <i class="fas fa-wallet mr-1"></i>
+                                        Caixa
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                    </section>
+
+                    <div class="quick-actions">
+                        <a href="pdvvenda.html" class="quick-action">
+                            <i class="fas fa-cash-register"></i>
+                            Nova Venda
+                        </a>
+
+                        <a href="criarCliente.html" class="quick-action">
+                            <i class="fas fa-user-plus"></i>
+                            Novo Cliente
+                        </a>
+
+                        <a href="movimentacoes.html" class="quick-action">
+                            <i class="fas fa-plus-circle"></i>
+                            Nova Entrada
+                        </a>
+
+                        <a href="propostas.html" class="quick-action">
+                            <i class="fas fa-file-signature"></i>
+                            Nova Proposta
+                        </a>
+                    </div>
+
+                    <div class="filter-card">
+                        <div class="filter-title">Filtrar período</div>
+
+                        <button class="periodo-btn" data-periodo="hoje">Hoje</button>
+                        <button class="periodo-btn" data-periodo="semana">7 dias</button>
+                        <button class="periodo-btn active btn-primary" data-periodo="mes">Mês</button>
+                        <button class="periodo-btn" data-periodo="trimestre">Trimestre</button>
+                        <button class="periodo-btn" data-periodo="semestre">Semestre</button>
+                        <button class="periodo-btn" data-periodo="ano">Ano</button>
+                        <button class="periodo-btn" data-periodo="personalizado">Personalizado</button>
 
                         <div class="row" id="datasPersonalizadas">
-
                             <div class="col-md-3">
-
                                 <label>Data inicial</label>
-
                                 <input type="date" class="form-control" id="dataInicio">
-
                             </div>
 
                             <div class="col-md-3">
-
                                 <label>Data final</label>
-
                                 <input type="date" class="form-control" id="dataFim">
-
                             </div>
 
                             <div class="col-md-2 d-flex align-items-end">
-
                                 <button class="btn btn-primary btn-block" id="btnAplicarFiltro">
-
                                     Aplicar
-
                                 </button>
-
                             </div>
-
                         </div>
 
                         <hr>
 
-                        <div class="resumo-periodo" id="labelPeriodoSelecionado">
-                        </div>
-
+                        <div class="resumo-periodo" id="labelPeriodoSelecionado"></div>
                     </div>
 
-                    <!-- CARDS -->
-                    <div class="row mt-4" id="cardsResumo"></div>
+                    <div class="row" id="cardsResumo"></div>
 
-                    <!-- GRÁFICOS -->
                     <div class="row">
                         <div class="col-xl-8 col-lg-7">
-                            <div class="grafico-box">
-                                <div class="grafico-titulo" id="tituloFluxo">Fluxo diário do mês selecionado</div>
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3 class="chart-title" id="tituloFluxo">Fluxo Financeiro</h3>
+                                        <div class="chart-subtitle">Entradas e saídas no período selecionado</div>
+                                    </div>
+                                </div>
+
                                 <div class="chart-area-custom">
                                     <canvas id="graficoFluxoMensal"></canvas>
                                 </div>
@@ -306,8 +255,14 @@
                         </div>
 
                         <div class="col-xl-4 col-lg-5">
-                            <div class="grafico-box">
-                                <div class="grafico-titulo" id="tituloDistribuicao">Distribuição do mês</div>
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3 class="chart-title" id="tituloDistribuicao">Distribuição Financeira</h3>
+                                        <div class="chart-subtitle">Participação entre entradas e saídas</div>
+                                    </div>
+                                </div>
+
                                 <div class="chart-area-small">
                                     <canvas id="graficoDistribuicao"></canvas>
                                 </div>
@@ -317,14 +272,21 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <div class="grafico-box">
-                                <div class="grafico-titulo" id="tituloLucro">Lucro líquido dos últimos 6 meses</div>
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3 class="chart-title" id="tituloLucro">Lucro Líquido</h3>
+                                        <div class="chart-subtitle">Resultado consolidado do período</div>
+                                    </div>
+                                </div>
+
                                 <div class="chart-area-custom">
-                                    <canvas id="graficoUltimosMeses"></canvas>
+                                    <canvas id="graficoLucro"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -337,7 +299,6 @@
 
     <script src="js/index.js"></script>
     <script src="js/menu.js"></script>
-
 </body>
 
 </html>

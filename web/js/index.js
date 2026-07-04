@@ -117,7 +117,6 @@ const indicadores = [
 /* ============================
    CARDS
 ============================ */
-
 function criarCards() {
 
   cardsContainer.innerHTML = "";
@@ -126,41 +125,41 @@ function criarCards() {
 
     cardsContainer.innerHTML += `
 
-        <div class="col-xl-3 col-md-6 mb-4">
+      <div class="col-xl-3 col-md-6 mb-4">
 
-            <div class="card border-left-${ind.cor} shadow h-100 py-2">
+        <div class="metric-card metric-${ind.cor}">
 
-                <div class="card-body">
+          <div class="metric-top">
 
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <div class="text-title text-${ind.cor}">
-                                ${ind.nome}
-                            </div>
-
-                            <div
-                                id="${ind.id}"
-                                class="h5 mb-0 font-weight-bold text-gray-800">
-
-                                ${ind.moeda ? "R$ 0,00" : "0"}
-
-                            </div>
-
-                        </div>
-
-                        <i class="fas ${ind.icone} fa-2x text-gray-300"></i>
-
-                    </div>
-
-                </div>
-
+            <div>
+              <div class="metric-label">
+                ${ind.nome}
+              </div>
             </div>
+
+            <div class="metric-icon">
+              <i class="fas ${ind.icone}"></i>
+            </div>
+
+          </div>
+
+          <div
+            id="${ind.id}"
+            class="metric-value">
+
+            ${ind.moeda ? "R$ 0,00" : "0"}
+
+          </div>
+
+          <div class="metric-footer">
+            Período selecionado
+          </div>
 
         </div>
 
-        `;
+      </div>
+
+    `;
 
   });
 
