@@ -7,7 +7,7 @@ const labelPeriodoSelecionado = document.getElementById("labelPeriodoSelecionado
 
 let graficoFluxoMensal = null;
 let graficoDistribuicao = null;
-let graficoUltimosMeses = null;
+let graficoLucro = null;
 
 const tituloFluxo = document.getElementById("tituloFluxo");
 const tituloDistribuicao = document.getElementById("tituloDistribuicao");
@@ -324,90 +324,9 @@ function atualizarTitulos() {
 function destruirGraficos() {
   if (graficoFluxoMensal) graficoFluxoMensal.destroy();
   if (graficoDistribuicao) graficoDistribuicao.destroy();
-  if (graficoUltimosMeses) graficoUltimosMeses.destroy();
+  if (graficoLucro) graficoLucro.destroy();
 }
 
-function montarGraficoFluxoMensal(caixaFiltrado, ano, mes) {
-  const diasNoMes = getDiasNoMes(ano, mes);
-  const labels = [];
-  const entradas = [];
-  const saidas = [];
-
-  for (let dia = 1; dia <= diasNoMes; dia++) {
-    labels.push(String(dia).padStart(2, "0"));
-    entradas.push(0);
-    saidas.push(0);
-  }
-
-  caixaFiltrado.forEach((item) => {
-    const data = new Date(item.dataOperacao);
-    if (isNaN(data.getTime())) return;
-
-    const indiceDia = data.getDate() - 1;
-    const valor = Number(item.valor || 0);
-
-    if (item.tipoOperacao === "ENTRADA") {
-      entradas[indiceDia] += valor;
-    }
-
-    if (item.tipoOperacao === "SAIDA") {
-      saidas[indiceDia] += valor;
-    }
-  });
-
-  const ctx = document.getElementById("graficoFluxoMensal").getContext("2d");
-
-  graficoFluxoMensal = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Entradas",
-          data: entradas,
-          backgroundColor: "rgba(28, 200, 138, 0.75)",
-          borderColor: "rgba(28, 200, 138, 1)",
-          borderWidth: 1,
-          borderRadius: 6,
-        },
-        {
-          label: "Saídas",
-          data: saidas,
-          backgroundColor: "rgba(231, 74, 59, 0.75)",
-          borderColor: "rgba(231, 74, 59, 1)",
-          borderWidth: 1,
-          borderRadius: 6,
-        },
-      ],
-    },
-    options: {
-      maintainAspectRatio: false,
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "top",
-        },
-        tooltip: {
-          callbacks: {
-            label: function (context) {
-              return `${context.dataset.label}: ${formatarMoeda(context.raw)}`;
-            },
-          },
-        },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value) {
-              return formatarMoeda(value);
-            },
-          },
-        },
-      },
-    },
-  });
-}
 
 function montarGraficoDistribuicao(entrada, saida) {
   const ctx = document.getElementById("graficoDistribuicao").getContext("2d");
@@ -656,9 +575,9 @@ function montarGraficoLucroPorPeriodo(caixaFiltrado, inicio, fim) {
     });
   }
 
-  const ctx = document.getElementById("graficoUltimosMeses").getContext("2d");
+  const ctx = document.getElementById("graficoLucro").getContext("2d");
 
-  graficoUltimosMeses = new Chart(ctx, {
+  graficoLucro = new Chart(ctx, {
     type: "line",
     data: {
       labels,
