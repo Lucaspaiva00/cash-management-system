@@ -1220,6 +1220,24 @@ async function carregarDashboard() {
     });
 
     const lucro = entrada - saida;
+    const heroReceita = document.getElementById("heroReceita");
+    const heroLucro = document.getElementById("heroLucro");
+    const ultimaAtualizacao = document.getElementById("ultimaAtualizacao");
+
+    if (heroReceita) {
+      heroReceita.innerText = formatarMoeda(entrada);
+    }
+
+    if (heroLucro) {
+      heroLucro.innerText = `Lucro líquido: ${formatarMoeda(lucro)}`;
+    }
+
+    if (ultimaAtualizacao) {
+      ultimaAtualizacao.innerText = new Date().toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
 
     const totalPropostas = propostasFiltradas.reduce(
 
