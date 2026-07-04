@@ -447,35 +447,213 @@ function montarGraficoDistribuicao(entrada, saida) {
   });
 }
 
-function montarGraficoUltimosMeses(caixa, anoSelecionado, mesSelecionado) {
+function montarGraficoFluxoPorPeriodo(caixaFiltrado, inicio, fim) {
   const labels = [];
-  const lucros = [];
+  const entradas = [];
+  const saidas = [];
 
-  for (let i = 5; i >= 0; i--) {
-    const base = new Date(anoSelecionado, mesSelecionado - 1 - i, 1);
-    const ano = base.getFullYear();
-    const mes = base.getMonth() + 1;
+  const diffDias = Math.ceil((fim - inicio) / (1000 * 60 * 60 * 24));
 
-    let entradas = 0;
-    let saidas = 0;
+  if (periodoSelecionado === "hoje") {
+    for (let hora = 0; hora <= 23; hora++) {
+      labels.push(`${String(hora).padStart(2, "0")}h`);
+      entradas.push(0);
+      saidas.push(0);
+    }
 
-    caixa.forEach((item) => {
-      if (!dataEstaNoMes(item.dataOperacao, ano, mes)) return;
+    caixaFiltrado.forEach((item) => {
+      const data = new Date(item.dataOperacao);
+      const hora = data.getHours();
+      const valor = Number(item.valor || 0);
+
+      if (item.tipoOperacao === "ENTRADA") entradas[hora] += valor;
+      if (item.tipoOperacao === "SAIDA") saidas[hora] += valor;
+    });
+  } else if (diffDias <= 31) {
+    const dataAtual = new Date(inicio);
+
+    while (dataAtual <= fim) {
+      labels.push(dataAtual.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+      }));
+
+      entradas.push(0);
+      saidas.push(0);
+
+      dataAtual.setDate(dataAtual.getDate() + 1);
+    }
+
+    caixaFiltrado.forEach((item) => {
+      const data = new Date(item.dataOperacao);
+      data.setHours(0, 0, 0, 0);
+
+      const indice = Math.floor((data - inicioDoDia(inicio)) / (1000 * 60 * 60 * 24));
+      const valor = Number(item.valor || 0);
+
+      if (indice < 0 || indice >= labels.length) return;
+
+      if (item.tipoOperacao === "ENTRADA") entradas[indice] += valor;
+      if (item.tipoOperacao === "SAIDA") saidas[indice] += valor;
+    });
+  } else {
+    const meses = {};
+
+    caixaFiltrado.forEach((item) => {
+      const data = new Date(item.dataOperacao);
+
+      const chave = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}`;
+
+      if (!meses[chave]) {
+        meses[chave] = {
+          label: data.toLocaleDateString("pt-BR", {
+            month: "short",
+            year: "2-digit",
+          }),
+          entrada: 0,
+          saida: 0,
+        };
+      }
 
       const valor = Number(item.valor || 0);
 
-      if (item.tipoOperacao === "ENTRADA") entradas += valor;
-      if (item.tipoOperacao === "SAIDA") saidas += valor;
+      if (item.tipoOperacao === "ENTRADA") meses[chave].entrada += valor;
+      if (item.tipoOperacao === "SAIDA") meses[chave].saida += valor;
     });
 
-    labels.push(
-      base.toLocaleDateString("pt-BR", {
-        month: "short",
-        year: "2-digit",
-      })
-    );
+    Object.keys(meses).sort().forEach((chave) => {
+      labels.push(meses[chave].label);
+      entradas.push(meses[chave].entrada);
+      saidas.push(meses[chave].saida);
+    });
+  }
 
-    lucros.push(entradas - saidas);
+  const ctx = document.getElementById("graficoFluxoMensal").getContext("2d");
+
+  graficoFluxoMensal = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Entradas",
+          data: entradas,
+          backgroundColor: "rgba(28, 200, 138, 0.75)",
+          borderColor: "rgba(28, 200, 138, 1)",
+          borderWidth: 1,
+          borderRadius: 6,
+        },
+        {
+          label: "Saídas",
+          data: saidas,
+          backgroundColor: "rgba(231, 74, 59, 0.75)",
+          borderColor: "rgba(231, 74, 59, 1)",
+          borderWidth: 1,
+          borderRadius: 6,
+        },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      responsive: true,
+      plugins: {
+        legend: { position: "top" },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              return `${context.dataset.label}: ${formatarMoeda(context.raw)}`;
+            },
+          },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function (value) {
+              return formatarMoeda(value);
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+function montarGraficoLucroPorPeriodo(caixaFiltrado, inicio, fim) {
+  const labels = [];
+  const lucros = [];
+
+  const diffDias = Math.ceil((fim - inicio) / (1000 * 60 * 60 * 24));
+
+  if (periodoSelecionado === "hoje") {
+    for (let hora = 0; hora <= 23; hora++) {
+      labels.push(`${String(hora).padStart(2, "0")}h`);
+      lucros.push(0);
+    }
+
+    caixaFiltrado.forEach((item) => {
+      const data = new Date(item.dataOperacao);
+      const hora = data.getHours();
+      const valor = Number(item.valor || 0);
+
+      if (item.tipoOperacao === "ENTRADA") lucros[hora] += valor;
+      if (item.tipoOperacao === "SAIDA") lucros[hora] -= valor;
+    });
+  } else if (diffDias <= 31) {
+    const dataAtual = new Date(inicio);
+
+    while (dataAtual <= fim) {
+      labels.push(dataAtual.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+      }));
+
+      lucros.push(0);
+
+      dataAtual.setDate(dataAtual.getDate() + 1);
+    }
+
+    caixaFiltrado.forEach((item) => {
+      const data = new Date(item.dataOperacao);
+      data.setHours(0, 0, 0, 0);
+
+      const indice = Math.floor((data - inicioDoDia(inicio)) / (1000 * 60 * 60 * 24));
+      const valor = Number(item.valor || 0);
+
+      if (indice < 0 || indice >= labels.length) return;
+
+      if (item.tipoOperacao === "ENTRADA") lucros[indice] += valor;
+      if (item.tipoOperacao === "SAIDA") lucros[indice] -= valor;
+    });
+  } else {
+    const meses = {};
+
+    caixaFiltrado.forEach((item) => {
+      const data = new Date(item.dataOperacao);
+
+      const chave = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}`;
+
+      if (!meses[chave]) {
+        meses[chave] = {
+          label: data.toLocaleDateString("pt-BR", {
+            month: "short",
+            year: "2-digit",
+          }),
+          lucro: 0,
+        };
+      }
+
+      const valor = Number(item.valor || 0);
+
+      if (item.tipoOperacao === "ENTRADA") meses[chave].lucro += valor;
+      if (item.tipoOperacao === "SAIDA") meses[chave].lucro -= valor;
+    });
+
+    Object.keys(meses).sort().forEach((chave) => {
+      labels.push(meses[chave].label);
+      lucros.push(meses[chave].lucro);
+    });
   }
 
   const ctx = document.getElementById("graficoUltimosMeses").getContext("2d");
@@ -501,9 +679,7 @@ function montarGraficoUltimosMeses(caixa, anoSelecionado, mesSelecionado) {
       maintainAspectRatio: false,
       responsive: true,
       plugins: {
-        legend: {
-          display: true,
-        },
+        legend: { display: true },
         tooltip: {
           callbacks: {
             label: function (context) {
@@ -539,6 +715,11 @@ async function carregarDashboard() {
 
     const periodo = obterPeriodo(periodoSelecionado);
 
+    if (!periodo || !periodo.inicio || !periodo.fim || isNaN(periodo.inicio) || isNaN(periodo.fim)) {
+      alert("Selecione um período válido.");
+      return;
+    }
+
     labelPeriodoSelecionado.innerText =
       `Período: ${periodo.inicio.toLocaleDateString("pt-BR")} até ${periodo.fim.toLocaleDateString("pt-BR")}`;
 
@@ -549,7 +730,6 @@ async function carregarDashboard() {
     ]);
 
     const caixaFiltrado = filtrarPeriodo(caixa, "dataOperacao");
-
     const propostasFiltradas = filtrarPeriodo(propostas, "data");
 
     let entrada = 0;
@@ -558,13 +738,8 @@ async function carregarDashboard() {
     caixaFiltrado.forEach((item) => {
       const valor = Number(item.valor || 0);
 
-      if (item.tipoOperacao === "ENTRADA") {
-        entrada += valor;
-      }
-
-      if (item.tipoOperacao === "SAIDA") {
-        saida += valor;
-      }
+      if (item.tipoOperacao === "ENTRADA") entrada += valor;
+      if (item.tipoOperacao === "SAIDA") saida += valor;
     });
 
     const lucro = entrada - saida;
@@ -592,59 +767,44 @@ async function carregarDashboard() {
 
     destruirGraficos();
 
-    // Continua utilizando seus gráficos atuais
-    // (vamos refatorá-los no próximo passo)
-
-    const ano = periodo.inicio.getFullYear();
-    const mes = periodo.inicio.getMonth() + 1;
-
-    montarGraficoFluxoMensal(caixaFiltrado, ano, mes);
-
+    montarGraficoFluxoPorPeriodo(caixaFiltrado, periodo.inicio, periodo.fim);
     montarGraficoDistribuicao(entrada, saida);
-
-    montarGraficoUltimosMeses(caixa, ano, mes);
+    montarGraficoLucroPorPeriodo(caixaFiltrado, periodo.inicio, periodo.fim);
 
   } catch (error) {
     console.error("Erro ao carregar dashboard:", error);
-    alert("Erro ao carregar dashboard.");
+    alert("Erro ao carregar dashboard. Verifique o console para mais detalhes.");
   }
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   criarCards();
 
-  if (filtroMes) {
-    filtroMes.value = getMesAtualInput();
-  }
-
   carregarDashboard();
+
+  botoesPeriodo.forEach((botao) => {
+    botao.addEventListener("click", () => {
+      botoesPeriodo.forEach((b) => b.classList.remove("active"));
+
+      botao.classList.add("active");
+
+      periodoSelecionado = botao.dataset.periodo;
+
+      if (periodoSelecionado === "personalizado") {
+        datasPersonalizadas.style.display = "flex";
+        return;
+      }
+
+      datasPersonalizadas.style.display = "none";
+
+      carregarDashboard();
+    });
+  });
 
   if (btnAplicarFiltro) {
     btnAplicarFiltro.addEventListener("click", carregarDashboard);
   }
 
-  if (filtroMes) {
-    filtroMes.addEventListener("change", carregarDashboard);
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  criarCards();
-
-  if (filtroMes) {
-    filtroMes.value = getMesAtualInput();
-  }
-
-  carregarDashboard();
-
-  if (btnAplicarFiltro) {
-    btnAplicarFiltro.addEventListener("click", carregarDashboard);
-  }
-
-  if (filtroMes) {
-    filtroMes.addEventListener("change", carregarDashboard);
-  }
-
-  // ===== MENU MOBILE =====
   const menuToggleMobile = document.getElementById("menuToggleMobile");
   const sidebar = document.querySelector(".sidebar");
 
