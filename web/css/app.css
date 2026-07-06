@@ -446,101 +446,211 @@ label {
     height: 320px;
 }
 
-/* MOBILE */
+/* =========================================================
+   MOBILE
+========================================================= */
 
 .mobile-overlay {
+
     position: fixed;
+
     inset: 0;
-    background: rgba(15, 23, 42, .52);
+
+    background: rgba(15, 23, 42, .55);
+
     opacity: 0;
+
     visibility: hidden;
-    transition: .25s ease;
-    z-index: 9998;
+
+    transition: .25s;
+
+    z-index: 1040;
+
 }
 
 .mobile-overlay.active {
+
     opacity: 1;
+
     visibility: visible;
+
 }
 
 #menuToggleMobile {
+
     width: 44px;
+
     height: 44px;
-    border: 0;
+
+    border: none;
+
     border-radius: 14px;
+
     background: #fff;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, .10);
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .08);
+
 }
 
-@media (max-width: 991px) {
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width:991px) {
+
     .container-fluid {
+
         padding-left: 20px;
+
         padding-right: 20px;
+
     }
 
     .hero-actions {
+
         justify-content: flex-start;
+
         margin-top: 22px;
+
     }
 
     .quick-actions {
+
         grid-template-columns: repeat(2, 1fr);
+
     }
+
 }
 
-@media (max-width: 768px) {
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width:768px) {
+
+    html,
+    body {
+
+        overflow-x: hidden;
+
+    }
+
+    #wrapper {
+
+        display: block !important;
+
+    }
+
     #accordionSidebar {
+
         position: fixed !important;
+
         top: 0;
-        left: -300px;
-        width: 300px !important;
-        height: 100vh !important;
+
+        left: -280px;
+
+        width: 280px !important;
+
+        min-width: 280px !important;
+
+        max-width: 280px !important;
+
+        height: 100vh;
+
+        margin: 0 !important;
+
+        z-index: 1050;
+
         overflow-y: auto;
-        z-index: 9999 !important;
-        transition: left .3s ease;
-        display: flex !important;
-        flex-direction: column;
+
+        transition: left .30s ease;
+
     }
 
-    #accordionSidebar.active,
-    #accordionSidebar.open {
+    #accordionSidebar.sidebar-open {
+
         left: 0;
+
     }
 
-    .sidebar-brand {
-        min-height: 82px;
+    #content-wrapper {
+
+        width: 100% !important;
+
+        margin-left: 0 !important;
+
+        min-height: 100vh;
+
+    }
+
+    #content {
+
+        width: 100%;
+
     }
 
     .topbar {
-        padding-left: 18px;
-        padding-right: 18px;
+
+        width: 100%;
+
     }
+
+    .container-fluid {
+
+        width: 100%;
+
+    }
+
 }
 
-@media (max-width: 575px) {
+
+
+/* =========================================================
+   CELULARES PEQUENOS
+========================================================= */
+
+@media (max-width:575px) {
+
     .hero-dashboard {
+
         padding: 24px;
+
     }
 
     .hero-value {
+
         font-size: 2.15rem;
+
     }
 
     .quick-actions {
+
         grid-template-columns: 1fr;
+
     }
 
     .chart-area-custom {
+
         height: 300px;
+
     }
 
     .page-title {
+
         font-size: 1.2rem;
+
     }
 
     .page-subtitle {
+
         display: none;
+
     }
+
 }
 
 /* ===========================

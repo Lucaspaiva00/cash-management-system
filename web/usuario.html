@@ -1,98 +1,490 @@
-<!-- web/usuario.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Criar Conta (Empresa + Admin)</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
-    <link href="css2/sb-admin-2.min.css" rel="stylesheet" />
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Criar Conta | Paiva Tech</title>
+
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/app.css">
+
 </head>
 
 <body>
+
+    <div class="mobile-overlay"></div>
+
     <div id="wrapper">
-        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="usuario.html">
-                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
-                <div class="sidebar-brand-text mx-3">Paiva Tech</div>
+
+        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
+
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="login.html">
+
+                <div class="sidebar-brand-icon">
+
+                    <i class="fas fa-layer-group"></i>
+
+                </div>
+
+                <div class="sidebar-brand-text mx-3">
+
+                    Paiva Tech
+
+                </div>
+
             </a>
-            <li class="nav-item"><a class="nav-link" href="login.html"><i
-                        class="fas fa-sign-out-alt"></i><span>Voltar</span></a></li>
-            <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline"><button class="rounded-circle border-0"
-                    id="sidebarToggle"></button></div>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="login.html">
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    <span>
+
+                        Voltar para Login
+
+                    </span>
+
+                </a>
+
+            </li>
+
         </ul>
 
         <div id="content-wrapper" class="d-flex flex-column">
+
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <h5 class="m-0 font-weight-bold text-dark">Criar conta da empresa</h5>
+
+                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+
+                    <h5 class="m-0 font-weight-bold text-dark">
+
+                        <i class="fas fa-user-plus text-primary mr-2"></i>
+
+                        Criar Conta
+
+                    </h5>
+
                 </nav>
 
                 <div class="container-fluid">
-                    <div class="card mb-4">
-                        <div class="card-header"><strong>Dados do Admin</strong></div>
-                        <div class="card-body">
-                            <form id="formUsuario">
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label>Seu nome</label>
-                                        <input type="text" id="nome" class="form-control" required>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label>Seu e-mail</label>
-                                        <input type="email" id="email" class="form-control" required>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label>Senha</label>
-                                        <input type="password" id="senha" class="form-control" required>
-                                    </div>
-                                </div>
 
-                                <hr class="my-3">
+                    <div class="page-hero mb-4">
 
-                                <div class="form-row">
-                                    <div class="col-md-6 mb-3">
-                                        <label>Nome da Empresa</label>
-                                        <input type="text" id="empresaNome" class="form-control" required>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <label>CNPJ (opcional)</label>
-                                        <input type="text" id="empresaCnpj" class="form-control">
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <label>E-mail da Empresa (opcional)</label>
-                                        <input type="email" id="empresaEmail" class="form-control">
-                                    </div>
-                                </div>
+                        <div>
 
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label>Telefone (opcional)</label>
-                                        <input type="text" id="empresaTelefone" class="form-control">
-                                    </div>
-                                    <div class="col-md-8 mb-3">
-                                        <label>Endereço (opcional)</label>
-                                        <input type="text" id="empresaEndereco" class="form-control">
-                                    </div>
-                                </div>
+                            <span class="hero-label">
 
-                                <button type="submit" class="btn btn-primary">Criar Conta</button>
-                            </form>
+                                NOVA EMPRESA
+
+                            </span>
+
+                            <h1>
+
+                                Criar Conta
+
+                            </h1>
+
+                            <p>
+
+                                Cadastre sua empresa e o usuário administrador para começar a utilizar o sistema.
+
+                            </p>
+
                         </div>
-                    </div>
-                </div><!-- container -->
-            </div><!-- content -->
-        </div><!-- wrapper -->
-    </div>
 
-    <script src="vendor2/jquery/jquery.min.js"></script>
-    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
-    <script src="js2/sb-admin-2.min.js"></script>
-    <script src="js/scriptusuario.js"></script>
+                        <button type="submit" form="formUsuario" class="btn btn-hero">
+
+                            <i class="fas fa-save mr-2"></i>
+
+                            Criar Conta
+
+                        </button>
+
+                    </div>
+
+                    <div class="row mb-4">
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        ADMINISTRADOR
+
+                                    </div>
+
+                                    <div class="dashboard-card-value">
+
+                                        1
+
+                                    </div>
+
+                                    <div class="dashboard-card-subtitle">
+
+                                        Usuário principal
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-primary-soft">
+
+                                    <i class="fas fa-user-shield text-primary"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        EMPRESA
+
+                                    </div>
+
+                                    <div class="dashboard-card-value">
+
+                                        Nova
+
+                                    </div>
+
+                                    <div class="dashboard-card-subtitle">
+
+                                        Cadastro inicial
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-success-soft">
+
+                                    <i class="fas fa-building text-success"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        ACESSO
+
+                                    </div>
+
+                                    <div class="dashboard-card-value">
+
+                                        ERP
+
+                                    </div>
+
+                                    <div class="dashboard-card-subtitle">
+
+                                        Sistema Completo
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-warning-soft">
+
+                                    <i class="fas fa-lock text-warning"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <form id="formUsuario">
+                        <!-- DADOS DO ADMINISTRADOR -->
+
+                        <div class="card-default mb-4">
+
+                            <div class="card-default-header">
+
+                                <div>
+
+                                    <h4>
+
+                                        Administrador
+
+                                    </h4>
+
+                                    <span>
+
+                                        Este usuário terá acesso total ao sistema.
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card-default-body">
+
+                                <div class="form-row">
+
+                                    <div class="form-group col-lg-4">
+
+                                        <label>
+
+                                            Nome Completo
+
+                                        </label>
+
+                                        <input id="nome" type="text" class="form-control" placeholder="Digite seu nome"
+                                            required>
+
+                                    </div>
+
+                                    <div class="form-group col-lg-4">
+
+                                        <label>
+
+                                            E-mail
+
+                                        </label>
+
+                                        <input id="email" type="email" class="form-control"
+                                            placeholder="email@empresa.com" required>
+
+                                    </div>
+
+                                    <div class="form-group col-lg-4">
+
+                                        <label>
+
+                                            Senha
+
+                                        </label>
+
+                                        <input id="senha" type="password" class="form-control" placeholder="********"
+                                            required>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- DADOS DA EMPRESA -->
+
+                        <div class="card-default mb-4">
+
+                            <div class="card-default-header">
+
+                                <div>
+
+                                    <h4>
+
+                                        Empresa
+
+                                    </h4>
+
+                                    <span>
+
+                                        Informações básicas da empresa que utilizará o ERP.
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card-default-body">
+
+                                <div class="form-row">
+
+                                    <div class="form-group col-lg-6">
+
+                                        <label>
+
+                                            Nome da Empresa
+
+                                        </label>
+
+                                        <input id="empresaNome" type="text" class="form-control"
+                                            placeholder="Nome da empresa" required>
+
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+
+                                        <label>
+
+                                            CNPJ
+
+                                        </label>
+
+                                        <input id="empresaCnpj" type="text" class="form-control" placeholder="Opcional">
+
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+
+                                        <label>
+
+                                            E-mail Empresarial
+
+                                        </label>
+
+                                        <input id="empresaEmail" type="email" class="form-control"
+                                            placeholder="contato@empresa.com">
+
+                                    </div>
+
+                                    <div class="form-group col-lg-4">
+
+                                        <label>
+
+                                            Telefone
+
+                                        </label>
+
+                                        <input id="empresaTelefone" type="text" class="form-control"
+                                            placeholder="(19) 99999-9999">
+
+                                    </div>
+
+                                    <div class="form-group col-lg-8">
+
+                                        <label>
+
+                                            Endereço
+
+                                        </label>
+
+                                        <input id="empresaEndereco" type="text" class="form-control"
+                                            placeholder="Rua, número, bairro...">
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <!-- INFORMAÇÕES -->
+
+                        <div class="card-default mb-5">
+
+                            <div class="card-default-header">
+
+                                <div>
+
+                                    <h4>
+
+                                        Informações
+
+                                    </h4>
+
+                                    <span>
+
+                                        O usuário criado será automaticamente o administrador da empresa.
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card-default-body">
+
+                                <div class="alert alert-primary mb-0">
+
+                                    <div class="d-flex">
+
+                                        <div class="mr-3">
+
+                                            <i class="fas fa-info-circle fa-2x"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+
+                                                Primeiro acesso
+
+                                            </strong>
+
+                                            <br>
+
+                                            Após criar a conta você será redirecionado para o login e poderá acessar
+                                            imediatamente o ERP utilizando o e-mail e senha cadastrados.
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="text-right mb-5">
+
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+
+                                <i class="fas fa-save mr-2"></i>
+
+                                Criar Conta
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <script src="vendor2/jquery/jquery.min.js"></script>
+
+        <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+
+        <script src="js2/sb-admin-2.min.js"></script>
+
+        <script src="js/scriptusuario.js"></script>
+
 </body>
 
 </html>
