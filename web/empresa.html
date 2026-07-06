@@ -7,17 +7,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Minha Empresa - Paiva Tech</title>
+    <title>Minha Empresa | Paiva Tech</title>
 
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/menu-empresa.css">
-
-    <link rel="stylesheet" href="css/empresa.css">
+    <link rel="stylesheet" href="css/app.css">
 
 </head>
 
@@ -27,18 +23,20 @@
 
     <div id="wrapper">
 
-        <!-- SIDEBAR -->
-
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
 
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                <div class="sidebar-brand-icon">
+
+                    <i class="fas fa-layer-group"></i>
+
                 </div>
 
                 <div class="sidebar-brand-text mx-3">
+
                     Paiva Tech
+
                 </div>
 
             </a>
@@ -49,7 +47,7 @@
 
                 <a class="nav-link" href="index.html">
 
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-chart-pie"></i>
 
                     <span>Dashboard</span>
 
@@ -60,93 +58,150 @@
             <hr class="sidebar-divider">
 
             <div class="sidebar-heading">
-                Páginas
+
+                Gestão
+
             </div>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="movimentacoes.html">
-                    <i class="fa fa-university"></i>
+
+                    <i class="fas fa-wallet"></i>
+
                     <span>Caixa</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="categorias-financeiras.html">
+
                     <i class="fas fa-tags"></i>
+
                     <span>Categorias Financeiras</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="centros-custo.html">
+
                     <i class="fas fa-sitemap"></i>
+
                     <span>Centros de Custo</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="pdvvenda.html">
+
                     <i class="fas fa-cash-register"></i>
+
                     <span>PDV</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="agenda.html">
+
                     <i class="fas fa-calendar-alt"></i>
+
                     <span>Agenda</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="vendas.html">
+
                     <i class="fas fa-chart-line"></i>
+
                     <span>Relatório de Vendas</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="criarCliente.html">
+
                     <i class="fas fa-users"></i>
+
                     <span>Clientes</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="produtos.html">
+
                     <i class="fas fa-boxes"></i>
+
                     <span>Produtos</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="propostas.html">
-                    <i class="fas fa-file-invoice"></i>
+
+                    <i class="fas fa-file-invoice-dollar"></i>
+
                     <span>Propostas</span>
+
                 </a>
+
             </li>
+
             <li class="nav-item active">
+
                 <a class="nav-link" href="empresa.html">
+
                     <i class="fas fa-building"></i>
+
                     <span>Minha Empresa</span>
+
                 </a>
+
             </li>
+
+            <hr class="sidebar-divider">
+
             <li class="nav-item">
+
                 <a class="nav-link" href="login.html">
+
                     <i class="fas fa-sign-out-alt"></i>
+
                     <span>Sair</span>
+
                 </a>
+
             </li>
 
         </ul>
 
-        <!-- CONTENT -->
-
         <div id="content-wrapper" class="d-flex flex-column">
 
             <div id="content">
-
-                <!-- TOPBAR -->
 
                 <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
 
@@ -168,159 +223,288 @@
 
                 <div class="container-fluid">
 
-                    <!-- DADOS EMPRESA -->
+                    <div class="page-hero mb-4">
 
-                    <div class="card shadow-sm mb-4">
+                        <button type="button" id="btnSalvarEmpresaTopo" class="btn btn-hero">
 
-                        <div class="card-header">
+                            <i class="fas fa-save mr-2"></i>
 
-                            <strong>
+                            Salvar Configurações
 
-                                <i class="fas fa-building mr-2"></i>
+                        </button>
 
-                                Dados da Empresa
+                    </div>
 
-                            </strong>
+                    <div class="row mb-4">
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        RAZÃO SOCIAL
+
+                                    </div>
+
+                                    <div id="kpiRazaoSocial" class="dashboard-card-value">
+
+                                        —
+
+                                    </div>
+
+                                    <div class="dashboard-card-subtitle">
+
+                                        Empresa cadastrada
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-primary-soft">
+
+                                    <i class="fas fa-building text-primary"></i>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
-                        <div class="card-body">
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        CNPJ
+
+                                    </div>
+
+                                    <div id="kpiCnpj" class="dashboard-card-value">
+
+                                        —
+
+                                    </div>
+
+                                    <div class="dashboard-card-subtitle">
+
+                                        Documento fiscal
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-success-soft">
+
+                                    <i class="fas fa-id-card text-success"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        AMBIENTE
+
+                                    </div>
+
+                                    <div id="kpiAmbiente" class="dashboard-card-value text-warning">
+
+                                        —
+
+                                    </div>
+
+                                    <div class="dashboard-card-subtitle">
+
+                                        Configuração fiscal
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-warning-soft">
+
+                                    <i class="fas fa-server text-warning"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        CRT
+
+                                    </div>
+
+                                    <div id="kpiCrt" class="dashboard-card-value text-info">
+
+                                        —
+
+                                    </div>
+
+                                    <div class="dashboard-card-subtitle">
+
+                                        Regime tributário
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-info-soft">
+
+                                    <i class="fas fa-file-invoice text-info"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- DADOS DA EMPRESA -->
+
+                    <div class="card-default mb-4">
+
+                        <div class="card-default-header">
+
+                            <div>
+
+                                <h4>
+
+                                    Dados da Empresa
+
+                                </h4>
+
+                                <span>
+
+                                    Informações utilizadas em documentos fiscais e comerciais.
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-default-body">
 
                             <form id="formEmpresa">
 
                                 <div class="form-row">
 
-                                    <div class="col-md-6 mb-3">
+                                    <div class="form-group col-lg-6">
 
-                                        <label>Razão Social</label>
+                                        <label>
 
-                                        <input type="text" id="nome" class="form-control">
+                                            Razão Social
 
-                                    </div>
+                                        </label>
 
-                                    <div class="col-md-6 mb-3">
-
-                                        <label>Nome Fantasia</label>
-
-                                        <input type="text" id="nomeFantasia" class="form-control">
+                                        <input id="nome" type="text" class="form-control">
 
                                     </div>
 
-                                    <div class="col-md-4 mb-3">
+                                    <div class="form-group col-lg-6">
 
-                                        <label>CNPJ</label>
+                                        <label>
 
-                                        <input type="text" id="cnpj" class="form-control">
+                                            Nome Fantasia
 
-                                    </div>
+                                        </label>
 
-                                    <div class="col-md-4 mb-3">
-
-                                        <label>Inscrição Estadual</label>
-
-                                        <input type="text" id="inscricaoEstadual" class="form-control">
+                                        <input id="nomeFantasia" type="text" class="form-control">
 
                                     </div>
 
-                                    <div class="col-md-4 mb-3">
+                                    <div class="form-group col-lg-4">
 
-                                        <label>Inscrição Municipal</label>
+                                        <label>
 
-                                        <input type="text" id="inscricaoMunicipal" class="form-control">
+                                            CNPJ
 
-                                    </div>
+                                        </label>
 
-                                    <div class="col-md-4 mb-3">
-
-                                        <label>Telefone</label>
-
-                                        <input type="text" id="telefone" class="form-control">
+                                        <input id="cnpj" type="text" class="form-control">
 
                                     </div>
 
-                                    <div class="col-md-4 mb-3">
+                                    <div class="form-group col-lg-4">
 
-                                        <label>Email</label>
+                                        <label>
 
-                                        <input type="email" id="email" class="form-control">
+                                            Inscrição Estadual
 
-                                    </div>
+                                        </label>
 
-                                    <div class="col-md-4 mb-3">
-
-                                        <label>CEP</label>
-
-                                        <input type="text" id="cep" class="form-control">
+                                        <input id="inscricaoEstadual" type="text" class="form-control">
 
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    <div class="form-group col-lg-4">
 
-                                        <label>Endereço</label>
+                                        <label>
 
-                                        <input type="text" id="endereco" class="form-control">
+                                            Inscrição Municipal
 
-                                    </div>
+                                        </label>
 
-                                    <div class="col-md-2 mb-3">
-
-                                        <label>Número</label>
-
-                                        <input type="text" id="numero" class="form-control">
+                                        <input id="inscricaoMunicipal" type="text" class="form-control">
 
                                     </div>
 
-                                    <div class="col-md-4 mb-3">
+                                    <div class="form-group col-lg-4">
 
-                                        <label>Complemento</label>
+                                        <label>
 
-                                        <input type="text" id="complemento" class="form-control">
+                                            Telefone
 
-                                    </div>
+                                        </label>
 
-                                    <div class="col-md-4 mb-3">
-
-                                        <label>Bairro</label>
-
-                                        <input type="text" id="bairro" class="form-control">
+                                        <input id="telefone" type="text" class="form-control">
 
                                     </div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="form-group col-lg-4">
 
-                                        <label>Cidade</label>
+                                        <label>
 
-                                        <input type="text" id="cidade" class="form-control">
+                                            E-mail
 
-                                    </div>
+                                        </label>
 
-                                    <div class="col-md-2 mb-3">
-
-                                        <label>UF</label>
-
-                                        <input type="text" maxlength="2" id="estado" class="form-control">
+                                        <input id="email" type="email" class="form-control">
 
                                     </div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="form-group col-lg-4">
 
-                                        <label>CRT</label>
+                                        <label>
 
-                                        <select id="crt" class="form-control">
+                                            CEP
 
-                                            <option value="1">
-                                                Simples Nacional
-                                            </option>
+                                        </label>
 
-                                            <option value="2">
-                                                Simples Excesso Sublimite
-                                            </option>
-
-                                            <option value="3">
-                                                Regime Normal
-                                            </option>
-
-                                        </select>
+                                        <input id="cep" type="text" class="form-control">
 
                                     </div>
 
@@ -332,89 +516,328 @@
 
                     </div>
 
-                    <!-- CONFIGURAÇÃO FISCAL -->
+                    <!-- ENDEREÇO -->
 
-                    <div class="card shadow-sm mb-4">
+                    <div class="card-default mb-4">
 
-                        <div class="card-header">
+                        <div class="card-default-header">
 
-                            <strong>
+                            <div>
 
-                                <i class="fas fa-file-invoice-dollar mr-2"></i>
+                                <h4>
 
-                                Configuração Fiscal
+                                    Endereço
 
-                            </strong>
+                                </h4>
+
+                                <span>
+
+                                    Endereço completo da empresa.
+
+                                </span>
+
+                            </div>
 
                         </div>
 
-                        <div class="card-body">
+                        <div class="card-default-body">
 
-                            <form id="formFiscal">
+                            <div class="form-row">
 
-                                <div class="form-row">
+                                <div class="form-group col-lg-6">
 
-                                    <div class="col-md-3 mb-3">
+                                    <label>
 
-                                        <label>Ambiente</label>
+                                        Endereço
 
-                                        <select id="ambiente" class="form-control">
+                                    </label>
 
-                                            <option value="HOMOLOGACAO">
-                                                Homologação
-                                            </option>
-
-                                            <option value="PRODUCAO">
-                                                Produção
-                                            </option>
-
-                                        </select>
-
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-
-                                        <label>Série NF-e</label>
-
-                                        <input type="number" id="serieNfe" class="form-control">
-
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-
-                                        <label>Série NFC-e</label>
-
-                                        <input type="number" id="serieNfce" class="form-control">
-
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-
-                                        <label>Próxima NF-e</label>
-
-                                        <input type="number" id="proximoNumeroNfe" class="form-control">
-
-                                    </div>
-
-                                    <div class="col-md-3 mb-3">
-
-                                        <label>Próxima NFC-e</label>
-
-                                        <input type="number" id="proximoNumeroNfce" class="form-control">
-
-                                    </div>
-
-                                    <div class="col-md-9 mb-3">
-
-                                        <label>Token API Fiscal</label>
-
-                                        <input type="text" id="tokenApi" class="form-control">
-
-                                    </div>
+                                    <input id="endereco" class="form-control">
 
                                 </div>
 
-                            </form>
+                                <div class="form-group col-lg-2">
+
+                                    <label>
+
+                                        Número
+
+                                    </label>
+
+                                    <input id="numero" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-4">
+
+                                    <label>
+
+                                        Complemento
+
+                                    </label>
+
+                                    <input id="complemento" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-4">
+
+                                    <label>
+
+                                        Bairro
+
+                                    </label>
+
+                                    <input id="bairro" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-4">
+
+                                    <label>
+
+                                        Cidade
+
+                                    </label>
+
+                                    <input id="cidade" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-2">
+
+                                    <label>
+
+                                        UF
+
+                                    </label>
+
+                                    <input id="estado" maxlength="2" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-2">
+
+                                    <label>
+
+                                        CRT
+
+                                    </label>
+
+                                    <select id="crt" class="form-control">
+
+                                        <option value="1">
+
+                                            Simples Nacional
+
+                                        </option>
+
+                                        <option value="2">
+
+                                            Simples Excesso Sublimite
+
+                                        </option>
+
+                                        <option value="3">
+
+                                            Regime Normal
+
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- CONFIGURAÇÕES FISCAIS -->
+
+                    <div class="card-default mb-4">
+
+                        <div class="card-default-header">
+
+                            <div>
+
+                                <h4>
+
+                                    Configuração Fiscal
+
+                                </h4>
+
+                                <span>
+
+                                    Configurações utilizadas para emissão de documentos fiscais.
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-default-body">
+
+                            <div class="form-row">
+
+                                <div class="form-group col-lg-3">
+
+                                    <label>
+
+                                        Ambiente
+
+                                    </label>
+
+                                    <select id="ambiente" class="form-control">
+
+                                        <option value="HOMOLOGACAO">
+
+                                            Homologação
+
+                                        </option>
+
+                                        <option value="PRODUCAO">
+
+                                            Produção
+
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                                <div class="form-group col-lg-3">
+
+                                    <label>
+
+                                        Série NF-e
+
+                                    </label>
+
+                                    <input id="serieNfe" type="number" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-3">
+
+                                    <label>
+
+                                        Série NFC-e
+
+                                    </label>
+
+                                    <input id="serieNfce" type="number" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-3">
+
+                                    <label>
+
+                                        Próxima NF-e
+
+                                    </label>
+
+                                    <input id="proximoNumeroNfe" type="number" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-3">
+
+                                    <label>
+
+                                        Próxima NFC-e
+
+                                    </label>
+
+                                    <input id="proximoNumeroNfce" type="number" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-9">
+
+                                    <label>
+
+                                        Token API Fiscal
+
+                                    </label>
+
+                                    <input id="tokenApi" type="text" class="form-control">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CERTIFICADO DIGITAL -->
+
+                    <div class="card-default mb-5">
+
+                        <div class="card-default-header">
+
+                            <div>
+
+                                <h4>
+
+                                    Certificado Digital
+
+                                </h4>
+
+                                <span>
+
+                                    Utilize o certificado para emissão automática de NF-e e NFC-e.
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-default-body">
+
+                            <div class="form-row">
+
+                                <div class="form-group col-lg-6">
+
+                                    <label>
+
+                                        Arquivo (.PFX)
+
+                                    </label>
+
+                                    <input type="file" class="form-control-file" id="certificado">
+
+                                </div>
+
+                                <div class="form-group col-lg-3">
+
+                                    <label>
+
+                                        Senha
+
+                                    </label>
+
+                                    <input type="password" id="senhaCertificado" class="form-control">
+
+                                </div>
+
+                                <div class="form-group col-lg-3 d-flex align-items-end">
+
+                                    <button class="btn btn-outline-primary btn-block">
+
+                                        <i class="fas fa-upload mr-2"></i>
+
+                                        Enviar Certificado
+
+                                    </button>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -422,7 +845,7 @@
 
                     <div class="text-right mb-5">
 
-                        <button class="btn btn-success btn-lg" id="btnSalvarEmpresa">
+                        <button id="btnSalvarEmpresa" class="btn btn-primary btn-lg px-5">
 
                             <i class="fas fa-save mr-2"></i>
 
@@ -440,9 +863,13 @@
 
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="vendor2/jquery/jquery.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+
+    <script src="js2/sb-admin-2.min.js"></script>
 
     <script src="js/empresa.js"></script>
 
