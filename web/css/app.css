@@ -529,7 +529,6 @@ label {
 /* =========================================================
    MOBILE
 ========================================================= */
-
 @media (max-width:768px) {
 
     html,
@@ -541,7 +540,9 @@ label {
 
     #wrapper {
 
-        display: block !important;
+        display: flex;
+
+        overflow-x: hidden;
 
     }
 
@@ -563,9 +564,11 @@ label {
 
         margin: 0 !important;
 
-        z-index: 1050;
+        padding-bottom: 40px;
 
         overflow-y: auto;
+
+        z-index: 2000;
 
         transition: left .30s ease;
 
@@ -579,11 +582,13 @@ label {
 
     #content-wrapper {
 
+        flex: 1 1 auto !important;
+
         width: 100% !important;
 
-        margin-left: 0 !important;
+        min-width: 0 !important;
 
-        min-height: 100vh;
+        margin-left: 0 !important;
 
     }
 
@@ -593,20 +598,15 @@ label {
 
     }
 
-    .topbar {
-
-        width: 100%;
-
-    }
-
     .container-fluid {
 
-        width: 100%;
+        padding-left: 18px;
+
+        padding-right: 18px;
 
     }
 
 }
-
 
 
 /* =========================================================
@@ -1126,5 +1126,107 @@ label {
 .text-warning {
 
     color: #f5b400 !important;
+
+}
+
+/* ===========================================================
+   CORREÇÃO SIDEBAR MOBILE
+=========================================================== */
+
+@media (max-width:768px) {
+
+    #accordionSidebar {
+
+        position: fixed !important;
+
+        top: 0;
+
+        left: -280px;
+
+        width: 280px !important;
+
+        min-width: 280px !important;
+
+        max-width: 280px !important;
+
+        height: 100vh !important;
+
+        overflow-y: auto;
+
+        transition: left .30s ease;
+
+        z-index: 2000;
+
+    }
+
+    #accordionSidebar.sidebar-open {
+
+        left: 0;
+
+    }
+
+    /* SOBRESCREVE O SB ADMIN */
+
+    #accordionSidebar .nav-item {
+
+        width: 100% !important;
+
+    }
+
+    #accordionSidebar .nav-link {
+
+        width: 100% !important;
+
+        display: flex !important;
+
+        align-items: center;
+
+        padding: .95rem 1.2rem !important;
+
+    }
+
+    #accordionSidebar .nav-link i {
+
+        width: 22px;
+
+        text-align: center;
+
+        margin-right: 14px;
+
+        font-size: 15px;
+
+    }
+
+    #accordionSidebar .nav-link span {
+
+        display: inline-block !important;
+
+    }
+
+    #accordionSidebar .sidebar-heading {
+
+        display: block !important;
+
+    }
+
+    #accordionSidebar .sidebar-brand {
+
+        display: flex !important;
+
+    }
+
+    #accordionSidebar hr {
+
+        display: block !important;
+
+    }
+
+    #content-wrapper {
+
+        width: 100% !important;
+
+        margin-left: 0 !important;
+
+    }
 
 }
