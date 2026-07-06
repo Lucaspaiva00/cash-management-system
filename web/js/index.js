@@ -24,8 +24,6 @@ let graficoDistribuicao = null;
 let graficoLucro = null;
 
 let periodoSelecionado = "mes";
-let vendasCache = [];
-vendasCache = vendas || [];
 
 const indicadores = [
   {
@@ -130,11 +128,10 @@ async function fetchJson(url) {
 async function carregarDados(usuario) {
   if (dadosCarregados) return;
 
-  const [caixa, propostas, clientes, vendas] = await Promise.all([
+  const [caixa, propostas, clientes] = await Promise.all([
     fetchJson(`${API}/caixa?empresaId=${usuario.empresaId}`),
     fetchJson(`${API}/propostas?empresaId=${usuario.empresaId}`),
-    fetchJson(`${API}/clientes?empresaId=${usuario.empresaId}`),
-    fetchJson(`${API}/vendas?empresaId=${usuario.empresaId}`)
+    fetchJson(`${API}/clientes?empresaId=${usuario.empresaId}`)
   ]);
 
   caixaCache = caixa || [];
@@ -766,15 +763,7 @@ async function carregarDashboard() {
       if (item.tipoOperacao === "SAIDA") saida += valor;
     });
 
-    let lucroVendas = 0;
-
-    vendasCache.forEach(venda => {
-
-      lucroVendas += Number(venda.lucro || 0);
-
-    });
-
-    const lucro = lucroVendas - saida;
+    const lucro = entrada - saida;
 
     const totalPropostas = propostasFiltradas.reduce((total, item) => {
       return total + Number(item.valorTotal || 0);

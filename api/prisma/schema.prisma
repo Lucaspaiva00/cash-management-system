@@ -305,9 +305,7 @@ model Venda {
 
   frete Float @default(0)
 
-  seguro     Float   @default(0)
-  custoTotal Decimal @default(0)
-  lucro      Decimal @default(0)
+  seguro Float @default(0)
 
   outrasDespesas Float @default(0)
 
