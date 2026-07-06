@@ -1,200 +1,398 @@
 const API = "https://cash-management-system.onrender.com/clientes";
+
 const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
 if (!usuario) {
-  alert("Sessão expirada. Faça login novamente.");
+
+  alert("Sessão expirada.");
+
   window.location.href = "login.html";
+
 }
 
-const clientesCadastrados = document.querySelector("#clientesCadastrados");
-const caixaForms = document.querySelector("#caixaForms");
-const btnSubmit = document.createElement("button");
-btnSubmit.type = "submit";
-btnSubmit.className = "btn btn-success";
-btnSubmit.innerHTML = '<i class="fas fa-save"></i> Salvar Cliente';
+const empresaId = Number(usuario.empresaId);
 
-let editandoId = null; // <<< estado de edição
+const modal = $("#modalCliente");
 
-// injeta botão e um botão de cancelar
-(function ensureButtons() {
-  const footer = caixaForms.querySelector(".col-md-12.text-right") || caixaForms.querySelector(".text-right") || caixaForms;
-  footer.innerHTML = "";
-  footer.appendChild(btnSubmit);
+const form = document.getElementById("caixaForms");
 
-  const btnCancelar = document.createElement("button");
-  btnCancelar.type = "button";
-  btnCancelar.className = "btn btn-light ml-2";
-  btnCancelar.textContent = "Cancelar";
-  btnCancelar.onclick = cancelarEdicao;
-  footer.appendChild(btnCancelar);
-})();
+const tabela = document.getElementById("clientesCadastrados");
 
-// helpers
-function normaliza(v) {
-  const s = (v || "").toString().trim();
-  return s === "" ? null : s;
+const buscarCliente = document.getElementById("buscarCliente");
+
+const tituloModal = document.getElementById("tituloModalCliente");
+
+const totalClientes = document.getElementById("totalClientes");
+
+const clientesMensal = document.getElementById("clientesMensal");
+
+const clientesQuinzenal = document.getElementById("clientesQuinzenal");
+
+let clientes = [];
+
+let clienteEditando = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  carregarClientes();
+
+  document
+    .getElementById("btnNovoCliente")
+    ?.addEventListener("click", abrirNovoCliente);
+
+  document
+    .getElementById("btnNovoClienteTabela")
+    ?.addEventListener("click", abrirNovoCliente);
+
+  buscarCliente?.addEventListener("input", pesquisarClientes);
+
+  form.addEventListener("submit", salvarCliente);
+
+});
+
+function abrirNovoCliente() {
+
+  clienteEditando = null;
+
+  form.reset();
+
+  tituloModal.innerText = "Novo Cliente";
+
+  modal.modal("show");
+
 }
+async function carregarClientes() {
 
-function setModoEdicao(ativo) {
-  if (ativo) {
-    btnSubmit.className = "btn btn-warning";
-    btnSubmit.innerHTML = '<i class="fas fa-sync-alt"></i> Atualizar Cliente';
-  } else {
-    btnSubmit.className = "btn btn-success";
-    btnSubmit.innerHTML = '<i class="fas fa-save"></i> Salvar Cliente';
+  try {
+
+    const resp = await fetch(
+      `${API}?empresaId=${empresaId}`
+    );
+
+    clientes = await resp.json();
+
+    if (!Array.isArray(clientes)) {
+
+      clientes = [];
+
+    }
+
+    atualizarResumo();
+
+    renderizarTabela(clientes);
+
+  } catch (err) {
+
+    console.error(err);
+
+    tabela.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-danger">
+                    Erro ao carregar clientes.
+                </td>
+            </tr>
+        `;
+
   }
+
 }
 
-// submit (POST ou PUT)
-caixaForms.addEventListener("submit", async (e) => {
-  e.preventDefault();
+function atualizarResumo() {
+
+  totalClientes.textContent =
+    clientes.length;
+
+  clientesMensal.textContent =
+    clientes.filter(c =>
+      c.pacoteMensal
+    ).length;
+
+  clientesQuinzenal.textContent =
+    clientes.filter(c =>
+      c.pacoteQuinzenal
+    ).length;
+
+}
+
+function pesquisarClientes() {
+
+  const texto =
+    buscarCliente.value
+      .toLowerCase()
+      .trim();
+
+  const filtrados =
+    clientes.filter(c => {
+
+      return (
+
+        (c.nome || "")
+          .toLowerCase()
+          .includes(texto)
+
+        ||
+
+        (c.telefone || "")
+          .toLowerCase()
+          .includes(texto)
+
+        ||
+
+        (c.servico || "")
+          .toLowerCase()
+          .includes(texto)
+
+      );
+
+    });
+
+  renderizarTabela(filtrados);
+
+}
+
+function renderizarTabela(lista) {
+
+  tabela.innerHTML = "";
+
+  if (!lista.length) {
+
+    tabela.innerHTML = `
+
+            <tr>
+
+                <td colspan="5" class="text-center text-muted py-4">
+
+                    Nenhum cliente encontrado.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    return;
+
+  }
+
+  lista.forEach(cliente => {
+
+    tabela.innerHTML += `
+
+            <tr>
+
+                <td>
+
+                    <strong>
+
+                        ${cliente.nome}
+
+                    </strong>
+
+                    <br>
+
+                    <small class="text-muted">
+
+                        ${cliente.email || "-"}
+
+                    </small>
+
+                </td>
+
+                <td>
+
+                    ${cliente.telefone || "-"}
+
+                </td>
+
+                <td>
+
+                    ${cliente.servico || "-"}
+
+                </td>
+
+                <td>
+
+                    ${cliente.pacoteMensal
+        ? '<span class="badge badge-success">Mensal</span>'
+        : cliente.pacoteQuinzenal
+          ? '<span class="badge badge-warning">Quinzenal</span>'
+          : '<span class="badge badge-secondary">Avulso</span>'
+      }
+
+                </td>
+
+                <td>
+
+                    <button
+
+                        class="btn btn-sm btn-outline-primary"
+
+                        onclick="editarCliente(${cliente.id})">
+
+                        <i class="fas fa-edit"></i>
+
+                    </button>
+
+                    <button
+
+                        class="btn btn-sm btn-outline-danger ml-1"
+
+                        onclick="excluirCliente(${cliente.id})">
+
+                        <i class="fas fa-trash"></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+  });
+
+}
+async function salvarCliente(event) {
+
+  event.preventDefault();
 
   const payload = {
-    nome: normaliza(caixaForms.nome.value),
-    cpf: normaliza(caixaForms.cpf.value),
-    cnpj: normaliza(caixaForms.cnpj.value),
-    endereco: normaliza(caixaForms.endereco.value),
-    telefone: normaliza(caixaForms.telefone.value),
-    email: normaliza(caixaForms.email.value),
 
-    // NOVOS CAMPOS
-    descricao: normaliza(caixaForms.descricao.value),
-    servico: normaliza(caixaForms.servico.value),
-    pacoteQuinzenal: caixaForms.pacoteQuinzenal.checked,
-    pacoteMensal: caixaForms.pacoteMensal.checked,
-    porteCachorro: normaliza(caixaForms.porteCachorro.value),
+    nome: form.nome.value.trim(),
+    cpf: form.cpf.value.trim(),
+    cnpj: form.cnpj.value.trim(),
+    endereco: form.endereco.value.trim(),
+    telefone: form.telefone.value.trim(),
+    email: form.email.value.trim(),
 
-    empresaId: Number(usuario.empresaId),
+    servico: form.servico.value.trim(),
+    descricao: form.descricao.value.trim(),
+    porteCachorro: form.porteCachorro.value,
+
+    pacoteMensal: form.pacoteMensal.checked,
+    pacoteQuinzenal: form.pacoteQuinzenal.checked,
+
+    empresaId
+
   };
 
   try {
-    const method = editandoId ? "PUT" : "POST";
-    const url = editandoId ? `${API}/${editandoId}` : API;
+
+    const url = clienteEditando
+      ? `${API}/${clienteEditando}`
+      : API;
+
+    const method = clienteEditando
+      ? "PUT"
+      : "POST";
 
     const resp = await fetch(url, {
+
       method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+
+      headers: {
+
+        "Content-Type": "application/json"
+
+      },
+
+      body: JSON.stringify(payload)
+
     });
 
-    const data = await resp.json().catch(() => ({}));
+    const data = await resp.json();
 
     if (!resp.ok) {
+
       alert(data.error || "Erro ao salvar cliente.");
+
       return;
+
     }
 
-    alert(editandoId ? "✅ Cliente atualizado!" : "✅ Cliente cadastrado!");
-    caixaForms.reset();
-    editandoId = null;
-    setModoEdicao(false);
+    modal.modal("hide");
+
+    clienteEditando = null;
+
+    form.reset();
+
     carregarClientes();
-  } catch (error) {
-    console.error(error);
-    alert("Erro ao conectar com o servidor.");
-  }
-});
 
-// listar (cards)
-async function carregarClientes() {
-  try {
-    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
-    const lista = await resp.json();
-
-    clientesCadastrados.innerHTML = "";
-    if (!Array.isArray(lista) || !lista.length) {
-      clientesCadastrados.innerHTML = `<p class="text-muted">Nenhum cliente cadastrado ainda.</p>`;
-      return;
-    }
-
-    lista.forEach((c) => {
-      clientesCadastrados.innerHTML += `
-        <div class="card-cliente card border-0 shadow-sm p-3" style="flex:1 1 320px; max-width:360px; border-left:5px solid #007bff;">
-          <div>
-            <h6 class="font-weight-bold text-dark mb-1">
-              <i class="fas fa-user text-primary mr-1"></i> ${c.nome}
-            </h6>
-            <p class="mb-1 small text-muted"><i class="fas fa-map-marker-alt mr-1 text-secondary"></i> ${c.endereco || "—"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-phone mr-1 text-secondary"></i> ${c.telefone || "—"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-envelope mr-1 text-secondary"></i> ${c.email || "—"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-id-card mr-1 text-secondary"></i> CPF: ${c.cpf || "—"} | CNPJ: ${c.cnpj || "—"}</p>
-
-            <hr class="my-2">
-
-            <p class="mb-1 small text-muted"><i class="fas fa-align-left mr-1 text-secondary"></i> Serviço: ${c.servico || "—"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-align-left mr-1 text-secondary"></i> Serviço mais detalhado: ${c.porteCachorro || "—"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-calendar-check mr-1 text-secondary"></i> Pacote Quinzenal: ${c.pacoteQuinzenal ? "Sim" : "Não"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-calendar-alt mr-1 text-secondary"></i> Pacote Mensal: ${c.pacoteMensal ? "Sim" : "Não"}</p>
-            <p class="mb-1 small text-muted"><i class="fas fa-align-left mr-1 text-secondary"></i> Descrição: ${c.descricao || "—"}</p>
-          </div>
-          <div class="mt-3 d-flex justify-content-end">
-            <button class="btn btn-warning btn-sm mr-2" onclick="editarCliente(${c.id})" title="Editar">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn btn-danger btn-sm" onclick="excluirCliente(${c.id})" title="Excluir">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      `;
-    });
   } catch (err) {
+
     console.error(err);
-    clientesCadastrados.innerHTML = `<p class="text-danger">Falha ao listar clientes.</p>`;
+
+    alert("Erro ao salvar cliente.");
+
   }
+
 }
 
-// excluir
-async function excluirCliente(id) {
-  if (!confirm("Deseja realmente excluir este cliente?")) return;
-  try {
-    const resp = await fetch(`${API}/${id}`, { method: "DELETE" });
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok) {
-      alert(data.error || "Erro ao excluir.");
-      return;
-    }
-    alert("🗑️ Cliente excluído com sucesso!");
-    if (editandoId === id) cancelarEdicao();
-    carregarClientes();
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-// preencher form para edição
 async function editarCliente(id) {
-  try {
-    const resp = await fetch(`${API}?empresaId=${usuario.empresaId}`);
-    const lista = await resp.json();
-    const c = lista.find((x) => x.id === id);
-    if (!c) return alert("Cliente não encontrado.");
 
-    caixaForms.nome.value = c.nome || "";
-    caixaForms.cpf.value = c.cpf || "";
-    caixaForms.cnpj.value = c.cnpj || "";
-    caixaForms.endereco.value = c.endereco || "";
-    caixaForms.telefone.value = c.telefone || "";
-    caixaForms.email.value = c.email || "";
+  const cliente = clientes.find(c => c.id === id);
 
-    // NOVOS CAMPOS
-    caixaForms.descricao.value = c.descricao || "";
-    caixaForms.servico.value = c.servico || "";
-    caixaForms.pacoteQuinzenal.checked = !!c.pacoteQuinzenal;
-    caixaForms.pacoteMensal.checked = !!c.pacoteMensal;
-    caixaForms.porteCachorro.value = c.porteCachorro || "";
+  if (!cliente) return;
 
-    editandoId = id;
-    setModoEdicao(true);
-    caixaForms.scrollIntoView({ behavior: "smooth", block: "center" });
-  } catch (e) {
-    console.error(e);
+  clienteEditando = id;
+
+  tituloModal.innerText = "Editar Cliente";
+
+  form.nome.value = cliente.nome || "";
+  form.cpf.value = cliente.cpf || "";
+  form.cnpj.value = cliente.cnpj || "";
+  form.endereco.value = cliente.endereco || "";
+  form.telefone.value = cliente.telefone || "";
+  form.email.value = cliente.email || "";
+
+  form.servico.value = cliente.servico || "";
+  form.descricao.value = cliente.descricao || "";
+  form.porteCachorro.value = cliente.porteCachorro || "";
+
+  form.pacoteMensal.checked = cliente.pacoteMensal;
+  form.pacoteQuinzenal.checked = cliente.pacoteQuinzenal;
+
+  modal.modal("show");
+
+}
+
+async function excluirCliente(id) {
+
+  if (!confirm("Deseja realmente excluir este cliente?")) {
+
+    return;
+
   }
+
+  try {
+
+    const resp = await fetch(`${API}/${id}`, {
+
+      method: "DELETE"
+
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+
+      alert(data.error || "Erro ao excluir cliente.");
+
+      return;
+
+    }
+
+    carregarClientes();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Erro ao excluir cliente.");
+
+  }
+
 }
 
-function cancelarEdicao() {
-  editandoId = null;
-  setModoEdicao(false);
-  caixaForms.reset();
-}
-
-document.addEventListener("DOMContentLoaded", carregarClientes);
+window.editarCliente = editarCliente;
+window.excluirCliente = excluirCliente;

@@ -2,217 +2,599 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Relatório de Vendas | Paiva Tech</title>
-    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css2/sb-admin-2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/menu-vendas.css">
-    <link rel="stylesheet" href="css/vendas.css">
-    <style>
 
-    </style>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Relatório de Vendas | Paiva Tech</title>
+
+    <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css2/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- CSS PADRÃO DO SISTEMA -->
+    <link rel="stylesheet" href="css/app.css">
+
+    <!-- MENU -->
+    <link rel="stylesheet" href="css/menu-vendas.css">
+
 </head>
 
 <body>
+
     <div class="mobile-overlay"></div>
+
     <div id="wrapper">
-        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- SIDEBAR -->
+
+        <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
+
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
-                <div class="sidebar-brand-text mx-3">Paiva Tech</div>
+
+                <div class="sidebar-brand-icon">
+
+                    <i class="fas fa-layer-group"></i>
+
+                </div>
+
+                <div class="sidebar-brand-text mx-3">
+
+                    Paiva Tech
+
+                </div>
+
             </a>
 
-            <hr class="sidebar-divider my-0" />
+            <hr class="sidebar-divider my-0">
 
-            <li class="nav-item active">
+            <li class="nav-item">
+
                 <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+
+                    <i class="fas fa-chart-pie"></i>
+
                     <span>Dashboard</span>
+
                 </a>
+
             </li>
 
-            <hr class="sidebar-divider" />
-            <div class="sidebar-heading">Páginas</div>
+            <hr class="sidebar-divider">
 
-            <li class="nav-item">
-                <a class="nav-link" href="movimentacoes.html">
-                    <i class="fa fa-university"></i>
-                    <span>Caixa</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="categorias-financeiras.html">
-                    <i class="fas fa-tags"></i>
-                    <span>Categorias Financeiras</span>
-                </a>
-            </li>
+            <div class="sidebar-heading">
 
-            <li class="nav-item">
-                <a class="nav-link" href="centros-custo.html">
-                    <i class="fas fa-sitemap"></i>
-                    <span>Centros de Custo</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="pdvvenda.html">
-                    <i class="fas fa-cash-register"></i>
-                    <span>PDV</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="agenda.html">
-                    <i class="fas fa-cash-register"></i>
-                    <span>Agenda</span>
-                </a>
-            </li>
+                Gestão
 
-            <li class="nav-item">
-                <a class="nav-link" href="vendas.html">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Relatório de Vendas</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="criarCliente.html">
-                    <i class="fas fa-users"></i>
-                    <span>Clientes</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="produtos.html">
-                    <i class="fas fa-boxes"></i>
-                    <span>Produtos</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="propostas.html">
-                    <i class="fas fa-file-invoice"></i>
-                    <span>Propostas</span>
-                </a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="empresa.html">
-                    <i class="fas fa-building"></i>
-                    <span>Minha Empresa</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="login.html">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sair</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider d-none d-md-block" />
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="movimentacoes.html">
+
+                    <i class="fas fa-wallet"></i>
+
+                    <span>Caixa</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="categorias-financeiras.html">
+
+                    <i class="fas fa-tags"></i>
+
+                    <span>Categorias Financeiras</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="centros-custo.html">
+
+                    <i class="fas fa-sitemap"></i>
+
+                    <span>Centros de Custo</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="pdvvenda.html">
+
+                    <i class="fas fa-cash-register"></i>
+
+                    <span>PDV</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="agenda.html">
+
+                    <i class="fas fa-calendar-alt"></i>
+
+                    <span>Agenda</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item active">
+
+                <a class="nav-link" href="vendas.html">
+
+                    <i class="fas fa-chart-line"></i>
+
+                    <span>Relatório de Vendas</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="criarCliente.html">
+
+                    <i class="fas fa-users"></i>
+
+                    <span>Clientes</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="produtos.html">
+
+                    <i class="fas fa-boxes"></i>
+
+                    <span>Produtos</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="propostas.html">
+
+                    <i class="fas fa-file-invoice-dollar"></i>
+
+                    <span>Propostas</span>
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="empresa.html">
+
+                    <i class="fas fa-building"></i>
+
+                    <span>Minha Empresa</span>
+
+                </a>
+
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+
+                <a class="nav-link" href="login.html">
+
+                    <i class="fas fa-sign-out-alt"></i>
+
+                    <span>Sair</span>
+
+                </a>
+
+            </li>
+
         </ul>
 
+        <!-- CONTENT -->
+
         <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content-wrapper" class="d-flex flex-column">
 
-                <div id="content">
+            <div id="content">
 
-                    <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+                <!-- TOPBAR -->
 
-                        <button id="menuToggleMobile" class="btn d-md-none mr-3">
+                <nav class="navbar navbar-expand navbar-light topbar topbar-premium mb-4 static-top">
 
-                            <i class="fas fa-bars"></i>
+                    <button id="menuToggleMobile" class="btn d-md-none mr-3">
 
-                        </button>
+                        <i class="fas fa-bars"></i>
 
-                        <h5 class="m-0 font-weight-bold text-dark">
+                    </button>
 
-                            <i class="fas fa-chart-line text-danger mr-2"></i>
+                    <div>
+
+                        <h1 class="page-title">
 
                             Relatório de Vendas
 
-                        </h5>
+                        </h1>
 
-                    </nav>
+                        <p class="page-subtitle">
 
-                    <div class="container-fluid">
-                        <div class="container-fluid mt-4">
-                            <!-- Cards -->
-                            <div class="row text-center">
-                                <div class="col-md-4 mb-3">
-                                    <div class="card border-left-primary shadow py-3">
-                                        <div class="card-body">
-                                            <i class="fas fa-calendar-day fa-2x mb-2 text-primary"></i>
-                                            <h5>Vendas do Dia</h5>
-                                            <h3 id="vDia">R$ 0,00</h3>
-                                            <p id="qDia" class="text-muted"></p>
-                                        </div>
-                                    </div>
+                            Acompanhe o desempenho comercial da empresa.
+
+                        </p>
+
+                    </div>
+
+                </nav>
+
+                <div class="container-fluid">
+
+                    <!-- HERO -->
+
+                    <section class="hero-dashboard mb-4">
+
+                        <div class="row align-items-center">
+
+                            <div class="col-lg-8">
+
+                                <div class="hero-kicker">
+
+                                    Comercial
+
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="card border-left-success shadow py-3">
-                                        <div class="card-body">
-                                            <i class="fas fa-calendar-alt fa-2x mb-2 text-success"></i>
-                                            <h5>Vendas do Mês</h5>
-                                            <h3 id="vMes">R$ 0,00</h3>
-                                            <p id="qMes" class="text-muted"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="card border-left-warning shadow py-3">
-                                        <div class="card-body">
-                                            <i class="fas fa-chart-line fa-2x mb-2 text-warning"></i>
-                                            <h5>Vendas do Ano</h5>
-                                            <h3 id="vAno">R$ 0,00</h3>
-                                            <p id="qAno" class="text-muted"></p>
-                                        </div>
-                                    </div>
-                                </div>
+
+                                <h2 class="hero-title">
+
+                                    Relatórios de vendas em tempo real
+
+                                </h2>
+
+                                <p class="mb-0">
+
+                                    Visualize indicadores, gráficos e histórico completo das vendas realizadas.
+
+                                </p>
+
                             </div>
 
-                            <!-- Gráficos -->
-                            <canvas id="graficoVendas" height="100"></canvas>
-                            <canvas id="graficoMensal" height="100"></canvas>
+                            <div class="col-lg-4 text-lg-right mt-4 mt-lg-0">
 
-                            <!-- Relatório detalhado -->
-                            <hr class="my-4">
-                            <h4 class="text-center mb-3"><i class="fas fa-list"></i> Vendas Registradas</h4>
+                                <button id="btnExportar" class="btn-hero">
 
-                            <div class="d-flex justify-content-end mb-3">
-                                <button id="btnExportar" class="btn btn-danger">
-                                    <i class="fas fa-file-excel"></i> Exportar para Excel
+                                    <i class="fas fa-file-excel mr-2"></i>
+
+                                    Exportar Excel
+
                                 </button>
+
                             </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- CARDS -->
+
+                    <div class="row mb-4">
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        VENDAS DO DIA
+
+                                    </div>
+
+                                    <div id="vDia" class="dashboard-card-value">
+
+                                        R$ 0,00
+
+                                    </div>
+
+                                    <div id="qDia" class="dashboard-card-subtitle">
+
+                                        0 vendas
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-primary-soft">
+
+                                    <i class="fas fa-calendar-day text-primary"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        VENDAS DO MÊS
+
+                                    </div>
+
+                                    <div id="vMes" class="dashboard-card-value text-success">
+
+                                        R$ 0,00
+
+                                    </div>
+
+                                    <div id="qMes" class="dashboard-card-subtitle">
+
+                                        0 vendas
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-success-soft">
+
+                                    <i class="fas fa-calendar-alt text-success"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+
+                            <div class="dashboard-card">
+
+                                <div class="dashboard-card-info">
+
+                                    <div class="dashboard-card-label">
+
+                                        VENDAS DO ANO
+
+                                    </div>
+
+                                    <div id="vAno" class="dashboard-card-value">
+
+                                        R$ 0,00
+
+                                    </div>
+
+                                    <div id="qAno" class="dashboard-card-subtitle">
+
+                                        0 vendas
+
+                                    </div>
+
+                                </div>
+
+                                <div class="dashboard-card-icon bg-warning-soft">
+
+                                    <i class="fas fa-chart-line text-warning"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- GRÁFICOS -->
+
+                    <div class="row">
+
+                        <div class="col-xl-6 mb-4">
+
+                            <div class="chart-card">
+
+                                <div class="chart-header">
+
+                                    <div>
+
+                                        <h3 class="chart-title">
+
+                                            Evolução das Vendas
+
+                                        </h3>
+
+                                        <div class="chart-subtitle">
+
+                                            Últimos dias
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="chart-area-custom">
+
+                                    <canvas id="graficoVendas"></canvas>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-6 mb-4">
+
+                            <div class="chart-card">
+
+                                <div class="chart-header">
+
+                                    <div>
+
+                                        <h3 class="chart-title">
+
+                                            Vendas Mensais
+
+                                        </h3>
+
+                                        <div class="chart-subtitle">
+
+                                            Comparativo do ano
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="chart-area-custom">
+
+                                    <canvas id="graficoMensal"></canvas>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- TABELA -->
+
+                    <div class="chart-card">
+
+                        <div class="chart-header">
+
+                            <div>
+
+                                <h3 class="chart-title">
+
+                                    Histórico de Vendas
+
+                                </h3>
+
+                                <div class="chart-subtitle">
+
+                                    Todas as vendas registradas no sistema.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-body">
 
                             <div class="table-responsive">
-                                <table class="table table-striped table-bordered">
-                                    <thead>
+
+                                <table class="table table-hover align-middle mb-0">
+
+                                    <thead class="thead-light">
+
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Cliente</th>
-                                            <th>Data</th>
-                                            <th>Pagamento</th>
-                                            <th>Valor</th>
-                                            <th>NF-e</th>
-                                            <th width="260">Ações</th>
+
+                                            <th width="80">
+
+                                                #
+
+                                            </th>
+
+                                            <th>
+
+                                                Cliente
+
+                                            </th>
+
+                                            <th width="170">
+
+                                                Data
+
+                                            </th>
+
+                                            <th width="170">
+
+                                                Pagamento
+
+                                            </th>
+
+                                            <th width="180">
+
+                                                Valor
+
+                                            </th>
+
+                                            <th width="120">
+
+                                                NF-e
+
+                                            </th>
+
+                                            <th width="240">
+
+                                                Ações
+
+                                            </th>
+
                                         </tr>
+
                                     </thead>
-                                    <tbody id="tabelaVendas"></tbody>
+
+                                    <tbody id="tabelaVendas">
+
+                                    </tbody>
+
                                 </table>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
 
+
+
+    <script src="vendor2/jquery/jquery.min.js"></script>
+
+    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+
+    <script src="js2/sb-admin-2.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="js/vendas.js"></script>
-    <script src="js/menu-vendas.js"></script>
+
 </body>
+
+</html>
 
 </html>

@@ -185,52 +185,79 @@ async function salvarCentro(e) {
     }
 
 }
-
 function criarCard(centro) {
 
     return `
 
-    <div class="card-centro">
+        <div class="col-xl-4 col-lg-6 mb-4">
 
-        <div class="centro-header">
+            <div class="metric-card">
 
-            <div>
+                <div class="metric-top">
 
-                <h5>
+                    <div>
+
+                        <div class="metric-label">
+
+                            CENTRO DE CUSTO
+
+                        </div>
+
+                    </div>
+
+                    <div class="metric-icon">
+
+                        <i class="fas fa-sitemap text-primary"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="metric-value">
+
                     ${centro.nome}
-                </h5>
 
-            </div>
+                </div>
 
-            <div>
+                <div class="metric-footer">
 
-                <button
-                    class="btn btn-sm btn-outline-primary"
-                    onclick="abrirEdicao(${centro.id})">
+                    Utilizado para organizar receitas, despesas e relatórios financeiros.
 
-                    <i class="fas fa-edit"></i>
+                </div>
 
-                </button>
+                <hr>
 
-                <button
-                    class="btn btn-sm btn-outline-danger"
-                    onclick="abrirExclusao(${centro.id})">
+                <div class="d-flex justify-content-end">
 
-                    <i class="fas fa-trash"></i>
+                    <button
+                        class="btn btn-outline-primary btn-sm mr-2"
+                        onclick="abrirEdicao(${centro.id})"
+                        title="Editar">
 
-                </button>
+                        <i class="fas fa-edit"></i>
+
+                    </button>
+
+                    <button
+                        class="btn btn-outline-danger btn-sm"
+                        onclick="abrirExclusao(${centro.id})"
+                        title="Excluir">
+
+                        <i class="fas fa-trash"></i>
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="area-${centro.id}"
+                    class="mt-3">
+
+                </div>
 
             </div>
 
         </div>
-
-        <div
-            id="area-${centro.id}"
-            class="area-acoes">
-
-        </div>
-
-    </div>
 
     `;
 

@@ -7,18 +7,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>PDV - Venda Rápida | Paiva Tech</title>
+    <title>PDV | Paiva Tech</title>
 
-    <!-- CSS -->
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/pdv-menu.css">
-
-    <link rel="stylesheet" href="css/pdv.css">
+    <link rel="stylesheet" href="css/app.css">
 
 </head>
 
@@ -28,17 +23,20 @@
 
     <div id="wrapper">
 
-        <!-- SIDEBAR -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
 
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                <div class="sidebar-brand-icon">
+
+                    <i class="fas fa-layer-group"></i>
+
                 </div>
 
                 <div class="sidebar-brand-text mx-3">
-                    Paiva Tech
+
+                    PAIVA TECH
+
                 </div>
 
             </a>
@@ -49,7 +47,7 @@
 
                 <a class="nav-link" href="index.html">
 
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-chart-pie"></i>
 
                     <span>Dashboard</span>
 
@@ -61,7 +59,7 @@
 
             <div class="sidebar-heading">
 
-                Páginas
+                Gestão
 
             </div>
 
@@ -69,26 +67,38 @@
 
                 <a class="nav-link" href="movimentacoes.html">
 
-                    <i class="fa fa-university"></i>
+                    <i class="fas fa-university"></i>
 
                     <span>Caixa</span>
 
                 </a>
 
             </li>
+
             <li class="nav-item">
+
                 <a class="nav-link" href="categorias-financeiras.html">
+
                     <i class="fas fa-tags"></i>
+
                     <span>Categorias Financeiras</span>
+
                 </a>
+
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link" href="centros-custo.html">
+
                     <i class="fas fa-sitemap"></i>
+
                     <span>Centros de Custo</span>
+
                 </a>
+
             </li>
+
             <li class="nav-item active">
 
                 <a class="nav-link" href="pdvvenda.html">
@@ -105,7 +115,7 @@
 
                 <a class="nav-link" href="agenda.html">
 
-                    <i class="fas fa-calendar"></i>
+                    <i class="fas fa-calendar-alt"></i>
 
                     <span>Agenda</span>
 
@@ -153,19 +163,28 @@
 
                 <a class="nav-link" href="propostas.html">
 
-                    <i class="fas fa-file-invoice"></i>
+                    <i class="fas fa-file-invoice-dollar"></i>
 
                     <span>Propostas</span>
 
                 </a>
 
             </li>
-            <li class="nav-item active">
+
+            <li class="nav-item">
+
                 <a class="nav-link" href="empresa.html">
+
                     <i class="fas fa-building"></i>
+
                     <span>Minha Empresa</span>
+
                 </a>
+
             </li>
+
+            <hr class="sidebar-divider">
+
             <li class="nav-item">
 
                 <a class="nav-link" href="login.html">
@@ -180,14 +199,11 @@
 
         </ul>
 
-        <!-- CONTENT -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <div id="content">
 
-                <!-- TOPBAR -->
-
-                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+                <nav class="navbar navbar-expand navbar-light topbar topbar-premium mb-4 static-top">
 
                     <button id="menuToggleMobile" class="btn d-md-none mr-3">
 
@@ -195,99 +211,61 @@
 
                     </button>
 
+                    <div>
 
+                        <h1 class="page-title">
+
+                            Ponto de Venda
+
+                        </h1>
+
+                        <p class="page-subtitle">
+
+                            Registre vendas rapidamente e acompanhe o fechamento da operação.
+
+                        </p>
+
+                    </div>
 
                 </nav>
 
-                <!-- CONTEÚDO -->
-
                 <div class="container-fluid">
 
-                    <!-- CARD PRINCIPAL -->
+                    <section class="hero-dashboard">
 
-                    <div class="card shadow mb-4">
+                        <div class="row align-items-center">
 
-                        <div class="card-header py-3">
+                            <div class="col-lg-8">
 
-                            <h6 class="m-0 font-weight-bold text-success">
+                                <div class="hero-kicker">
 
-                                <i class="fas fa-cash-register"></i>
-
-                                Nova Venda
-
-                            </h6>
-
-                        </div>
-
-                        <div class="card-body">
-
-                            <!-- CLIENTE E PAGAMENTO -->
-
-                            <div class="row">
-
-                                <div class="col-lg-6 mb-3">
-
-                                    <label>Cliente</label>
-
-                                    <select id="cliente" class="form-control">
-
-                                    </select>
+                                    VENDA RÁPIDA
 
                                 </div>
 
-                                <div class="col-lg-6 mb-3">
+                                <h2 class="hero-title">
 
-                                    <label>Método de Pagamento</label>
+                                    PDV Inteligente
 
-                                    <select id="pagamento" class="form-control">
+                                </h2>
 
-                                        <option value="DINHEIRO">
-                                            Dinheiro
-                                        </option>
+                                <p class="mb-0" style="opacity:.85;">
 
-                                        <option value="PIX">
-                                            PIX
-                                        </option>
+                                    Selecione o cliente, adicione produtos e finalize a venda em poucos segundos.
 
-                                        <option value="CARTAO">
-                                            Cartão
-                                        </option>
-
-                                    </select>
-
-                                </div>
+                                </p>
 
                             </div>
 
-                            <!-- PRODUTO -->
+                            <div class="col-lg-4">
 
-                            <div class="row">
+                                <div class="hero-actions">
 
-                                <div class="col-lg-6 mb-3">
+                                    <button class="btn-hero" onclick="document.getElementById('produto').focus()">
 
-                                    <label>Produto</label>
+                                        <i class="fas fa-barcode mr-2"></i>
 
-                                    <select id="produto" class="form-control">
-
-                                    </select>
-
-                                </div>
-
-                                <div class="col-lg-3 mb-3">
-
-                                    <label>Quantidade</label>
-
-                                    <input type="number" id="quantidade" class="form-control" min="1" value="1">
-
-                                </div>
-
-                                <div class="col-lg-3 mb-3 d-flex align-items-end">
-
-                                    <button id="adicionar" class="btn btn-primary btn-block">
-
-                                        <i class="fas fa-plus"></i>
-
-                                        Adicionar
+                                        Nova Venda
 
                                     </button>
 
@@ -297,84 +275,259 @@
 
                         </div>
 
-                    </div>
+                    </section><!-- ==========================================================
+NOVA VENDA
+=========================================================== -->
 
-                    <!-- LISTA PRODUTOS -->
+                    <div class="chart-card mb-4">
 
-                    <div class="card shadow mb-4">
+                        <div class="chart-header">
 
-                        <div class="card-header py-3">
+                            <div>
 
-                            <h6 class="m-0 font-weight-bold text-primary">
+                                <h3 class="chart-title">
 
-                                Produtos da Venda
+                                    Nova Venda
 
-                            </h6>
+                                </h3>
 
-                        </div>
+                                <div class="chart-subtitle">
 
-                        <div class="card-body">
-
-                            <div id="listaProdutos"></div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- TOTAL -->
-
-                    <div class="card shadow mb-4">
-
-                        <div class="card-body">
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-
-                                    <label>Valor Recebido</label>
-
-                                    <input type="number" id="valorRecebido" class="form-control" min="0" step="0.01"
-                                        value="0">
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <label>Troco</label>
-
-                                    <input type="text" id="troco" class="form-control" readonly>
+                                    Informe o cliente, forma de pagamento e adicione os produtos.
 
                                 </div>
 
                             </div>
 
-                            <hr>
+                        </div>
 
-                            <div class="text-right">
+                        <div class="row">
 
-                                <h5>Total da Venda</h5>
+                            <div class="col-lg-6 mb-3">
 
-                                <h2 class="font-weight-bold text-success" id="total">
+                                <label>
+
+                                    Cliente
+
+                                </label>
+
+                                <select id="cliente" class="form-control">
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+
+                                <label>
+
+                                    Método de Pagamento
+
+                                </label>
+
+                                <select id="pagamento" class="form-control">
+
+                                    <option value="DINHEIRO">
+
+                                        Dinheiro
+
+                                    </option>
+
+                                    <option value="PIX">
+
+                                        PIX
+
+                                    </option>
+
+                                    <option value="CARTAO">
+
+                                        Cartão
+
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 mb-3">
+
+                                <label>
+
+                                    Produto
+
+                                </label>
+
+                                <select id="produto" class="form-control">
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-lg-2 mb-3">
+
+                                <label>
+
+                                    Quantidade
+
+                                </label>
+
+                                <input id="quantidade" type="number" class="form-control" min="1" value="1">
+
+                            </div>
+
+                            <div class="col-lg-4 d-flex align-items-end mb-3">
+
+                                <button id="adicionar" class="btn btn-primary btn-block">
+
+                                    <i class="fas fa-plus-circle mr-2"></i>
+
+                                    Adicionar Produto
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ==========================================================
+PRODUTOS DA VENDA
+=========================================================== -->
+
+                    <div class="chart-card mb-4">
+
+                        <div class="chart-header">
+
+                            <div>
+
+                                <h3 class="chart-title">
+
+                                    Produtos da Venda
+
+                                </h3>
+
+                                <div class="chart-subtitle">
+
+                                    Itens adicionados ao carrinho.
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <span id="contadorProdutos" class="badge badge-primary px-3 py-2">
+
+                                    0 produtos
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div id="listaProdutos" class="row">
+
+                        </div>
+
+                    </div>
+                    <!-- ==========================================================
+RESUMO DA VENDA
+=========================================================== -->
+
+                    <div class="chart-card mb-5">
+
+                        <div class="chart-header">
+
+                            <div>
+
+                                <h3 class="chart-title">
+
+                                    Resumo da Venda
+
+                                </h3>
+
+                                <div class="chart-subtitle">
+
+                                    Confira os valores antes de finalizar.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6">
+
+                                <label>
+
+                                    Valor Recebido
+
+                                </label>
+
+                                <input type="number" id="valorRecebido" class="form-control" min="0" step="0.01"
+                                    value="0">
+
+                            </div>
+
+                            <div class="col-lg-6">
+
+                                <label>
+
+                                    Troco
+
+                                </label>
+
+                                <input type="text" id="troco" class="form-control" readonly>
+
+                            </div>
+
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="row align-items-center">
+
+                            <div class="col-lg-6">
+
+                                <div class="metric-label">
+
+                                    TOTAL DA VENDA
+
+                                </div>
+
+                                <div id="total" class="metric-value text-success">
 
                                     R$ 0,00
 
-                                </h2>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-6 text-right">
+
+                                <button id="finalizar" class="btn btn-success btn-lg px-5">
+
+                                    <i class="fas fa-check-circle mr-2"></i>
+
+                                    Finalizar Venda
+
+                                </button>
 
                             </div>
 
                         </div>
 
                     </div>
-
-                    <!-- BOTÃO FINALIZAR -->
-
-                    <button id="finalizar" class="btn btn-success btn-lg btn-block mb-5">
-
-                        <i class="fas fa-check-circle"></i>
-
-                        Finalizar Venda
-
-                    </button>
 
                 </div>
 
@@ -382,23 +535,17 @@
 
         </div>
 
-    </div>
+        <script src="vendor2/jquery/jquery.min.js"></script>
 
-    <!-- JS -->
+        <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <script src="vendor2/jquery/jquery.min.js"></script>
+        <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 
-    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="js2/sb-admin-2.min.js"></script>
 
-    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <script src="js2/sb-admin-2.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <script src="js/pdvvenda.js"></script>
-
-    <script src="js/menu-pdv.js"></script>
+        <script src="js/pdvvenda.js"></script>
 
 </body>
 

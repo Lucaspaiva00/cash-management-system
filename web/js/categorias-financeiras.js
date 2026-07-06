@@ -49,60 +49,91 @@ function atualizarResumo(lista) {
         ).length;
 
 }
+
 function criarCard(cat) {
 
-    return `
-    
-    <div class="card-categoria ${cat.tipo.toLowerCase()}">
-
-        <div class="categoria-header">
-
-            <div>
-
-                <h5>${cat.nome}</h5>
-
-                <span class="badge badge-${cat.tipo === "ENTRADA"
+    const cor =
+        cat.tipo === "ENTRADA"
             ? "success"
-            : "danger"
-        }">
+            : "danger";
 
-                    ${cat.tipo}
+    const icone =
+        cat.tipo === "ENTRADA"
+            ? "fa-arrow-down"
+            : "fa-arrow-up";
 
-                </span>
+    return `
 
-            </div>
+        <div class="col-xl-4 col-lg-6 mb-4">
 
-            <div>
+            <div class="metric-card">
 
-                <button
-                    class="btn btn-sm btn-outline-primary"
-                    onclick="abrirEdicao(${cat.id})">
+                <div class="metric-top">
 
-                    <i class="fas fa-edit"></i>
+                    <div>
 
-                </button>
+                        <div class="metric-label">
 
-                <button
-                    class="btn btn-sm btn-outline-danger"
-                    onclick="abrirExclusao(${cat.id})">
+                            ${cat.tipo}
 
-                    <i class="fas fa-trash"></i>
+                        </div>
 
-                </button>
+                    </div>
+
+                    <div class="metric-icon">
+
+                        <i class="fas ${icone} text-${cor}"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="metric-value">
+
+                    ${cat.nome}
+
+                </div>
+
+                <div class="metric-footer">
+
+                    Categoria financeira de ${cat.tipo.toLowerCase()}.
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-end">
+
+                    <button
+                        class="btn btn-outline-primary btn-sm mr-2"
+                        onclick="abrirEdicao(${cat.id})">
+
+                        <i class="fas fa-edit"></i>
+
+                    </button>
+
+                    <button
+                        class="btn btn-outline-danger btn-sm"
+                        onclick="abrirExclusao(${cat.id})">
+
+                        <i class="fas fa-trash"></i>
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="area-${cat.id}"
+                    class="mt-3">
+
+                </div>
 
             </div>
 
         </div>
-
-        <div
-            id="area-${cat.id}"
-            class="area-acoes">
-
-        </div>
-
-    </div>
 
     `;
+
 }
 async function carregarCategorias() {
 

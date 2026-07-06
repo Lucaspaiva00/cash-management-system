@@ -33,25 +33,191 @@ async function carregarSelects() {
 }
 
 function atualizarLista() {
-    const lista = document.getElementById("listaProdutos");
 
-    if (produtosVenda.length === 0) {
-        lista.innerHTML = `<p class="text-muted text-center">Nenhum produto adicionado.</p>`;
-        document.getElementById("total").innerText = "R$ 0,00";
-        return;
+    const lista =
+        document.getElementById("listaProdutos");
+
+    const contador =
+        document.getElementById("contadorProdutos");
+
+    if (contador) {
+
+        contador.textContent =
+            `${produtosVenda.length} produto${produtosVenda.length != 1 ? "s" : ""}`;
+
     }
 
-    lista.innerHTML = produtosVenda.map((p, i) => `
-    <div class="produto-item">
-      <span>${p.nome} (x${p.qtd})</span>
-      <strong>R$ ${(p.preco * p.qtd).toFixed(2)}</strong>
-      <button class="btn btn-sm btn-danger" onclick="removerProduto(${i})"><i class="fas fa-trash"></i></button>
-    </div>
-  `).join("");
+    if (produtosVenda.length === 0) {
 
-    const total = produtosVenda.reduce((acc, p) => acc + p.preco * p.qtd, 0);
-    document.getElementById("total").innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        lista.innerHTML = `
+
+            <div class="col-12">
+
+                <div class="text-center py-5 text-muted">
+
+                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+
+                    <h5>
+
+                        Nenhum produto adicionado
+
+                    </h5>
+
+                    <p>
+
+                        Utilize o formulário acima para adicionar produtos.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+        document.getElementById("total").innerHTML =
+            "R$ 0,00";
+
+        calcularTroco();
+
+        return;
+
+    }
+
+    lista.innerHTML =
+        produtosVenda.map((p, i) => `
+
+            <div class="col-xl-4 col-lg-6 mb-4">
+
+                <div class="metric-card">
+
+                    <div class="metric-top">
+
+                        <div>
+
+                            <div class="metric-label">
+
+                                PRODUTO
+
+                            </div>
+
+                        </div>
+
+                        <div class="metric-icon">
+
+                            <i class="fas fa-box text-primary"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        ${p.nome}
+
+                    </div>
+
+                    <hr>
+
+                    <div class="row text-center">
+
+                        <div class="col-4">
+
+                            <small class="text-muted">
+
+                                Quantidade
+
+                            </small>
+
+                            <h5>
+
+                                ${p.qtd}
+
+                            </h5>
+
+                        </div>
+
+                        <div class="col-4">
+
+                            <small class="text-muted">
+
+                                Unitário
+
+                            </small>
+
+                            <h6>
+
+                                ${p.preco.toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        )}
+
+                            </h6>
+
+                        </div>
+
+                        <div class="col-4">
+
+                            <small class="text-muted">
+
+                                Subtotal
+
+                            </small>
+
+                            <h5 class="text-success">
+
+                                ${(p.preco * p.qtd).toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        )}
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <button
+                        class="btn btn-outline-danger btn-block"
+                        onclick="removerProduto(${i})">
+
+                        <i class="fas fa-trash mr-2"></i>
+
+                        Remover Produto
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+    const total =
+        produtosVenda.reduce(
+            (acc, p) => acc + (p.preco * p.qtd),
+            0
+        );
+
+    document.getElementById("total").innerHTML =
+        total.toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+
     calcularTroco();
+
 }
 
 function removerProduto(i) {
@@ -69,7 +235,31 @@ document.getElementById("adicionar").addEventListener("click", () => {
     if (!produto) return alert("Produto não encontrado.");
     if (produto.estoque < qtd) return alert(`Estoque insuficiente (${produto.estoque} disponível)`);
 
-    produtosVenda.push({ produtoId, nome: produto.nome, preco: produto.precoVenda || 0, qtd });
+
+    const existente =
+        produtosVenda.find(
+            p => p.produtoId === produtoId
+        );
+
+    if (existente) {
+
+        existente.qtd += qtd;
+
+    } else {
+
+        produtosVenda.push({
+
+            produtoId,
+
+            nome: produto.nome,
+
+            preco: produto.precoVenda || 0,
+
+            qtd
+
+        });
+
+    }
     document.getElementById("produto").value = "";
     document.getElementById("quantidade").value = 1;
     atualizarLista();

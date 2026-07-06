@@ -681,130 +681,101 @@ function atualizarTotalRegistros(total) {
 
 function criarCard(op) {
 
-  const entrada =
-    op.tipoOperacao === "ENTRADA";
+  const entrada = op.tipoOperacao === "ENTRADA";
 
-  const classe =
-    entrada
-      ? "entrada"
-      : "saida";
+  const corValor = entrada ? "text-success" : "text-danger";
 
-  const corValor =
-    entrada
-      ? "text-success"
-      : "text-danger";
+  const icone = entrada
+    ? "fa-arrow-down"
+    : "fa-arrow-up";
 
-  const dataFmt =
-    formatarDataBR(
-      op.dataOperacao
-    );
+  const corIcone = entrada
+    ? "success"
+    : "danger";
 
-  const statusBadge =
-    obterBadgeStatus(
-      op.status
-    );
+  const dataFmt = formatarDataBR(op.dataOperacao);
+
+  const statusBadge = obterBadgeStatus(op.status);
 
   return `
 
-        <div class="card-op ${classe}">
+<div class="col-xl-4 col-lg-6 mb-4">
 
-            <div class="d-flex justify-content-between align-items-start">
+    <div class="metric-card movimentacao-card">
 
-                <div>
+        <div class="metric-top">
 
-                    <h6 class="mb-1">
-                        ${op.tipoOperacao || "-"}
-                    </h6>
+            <div>
 
-                    <p class="small text-muted mb-1">
-                        ${op.meioPagamento || "-"} • ${dataFmt}
-                    </p>
+                <div class="metric-label">
 
-                    ${statusBadge}
-
-                    <p class="mt-2 mb-1">
-                        ${op.descricao || "-"}
-                    </p>
-
-                    <p class="small text-muted mb-1">
-                        <strong>Cliente:</strong>
-                        ${op.cliente?.nome || "-"}
-                    </p>
-
-                    <p class="small text-muted mb-1">
-                        <strong>Categoria:</strong>
-                        ${op.categoria?.nome || "-"}
-                    </p>
-
-                    <p class="small text-muted mb-1">
-                        <strong>Centro:</strong>
-                        ${op.centroCusto?.nome || "-"}
-                    </p>
-
-                    <p class="small text-muted mb-1">
-                        <strong>Fornecedor:</strong>
-                        ${op.fornecedor || "-"}
-                    </p>
-
-                    <p class="small text-muted mb-1">
-                        <strong>Parcela:</strong>
-                        ${op.parcelaAtual || 1}/${op.parcelas || 1}
-                    </p>
-
-                    <p class="small text-muted mb-1">
-                        <strong>Juros:</strong>
-                        ${fmtBRL(op.jurosMaquina)}
-                    </p>
-
-                    <strong class="${corValor}">
-                        ${fmtBRL(op.valor)}
-                    </strong>
+                    ${op.tipoOperacao}
 
                 </div>
 
-                <div class="text-right">
+                <small class="text-muted">
 
-                    <button
-                        class="btn btn-sm btn-outline-secondary mb-2"
-                        onclick="abrirModalEdicao(${op.id})"
-                        title="Editar">
+                    ${op.meioPagamento || "-"}
 
-                        <i class="fas fa-edit"></i>
+                </small>
 
-                    </button>
+            </div>
 
-                    <br>
+            <div class="metric-icon metric-${corIcone}">
 
-                    <button
-                        class="btn btn-sm btn-outline-success mb-2"
-                        onclick="marcarComoPaga(${op.id})"
-                        title="Marcar como pago">
+                <i class="fas ${icone}"></i>
 
-                        <i class="fas fa-check"></i>
+            </div>
 
-                    </button>
+        </div>
 
-                    <br>
+        <div class="mt-3">
 
-                    <button
-                        class="btn btn-sm btn-outline-warning mb-2"
-                        onclick="cancelarOperacao(${op.id})"
-                        title="Cancelar">
+            ${statusBadge}
 
-                        <i class="fas fa-ban"></i>
+        </div>
 
-                    </button>
+        <div class="mt-3">
 
-                    <br>
+            <strong>
 
-                    <button
-                        class="btn btn-sm btn-outline-danger"
-                        onclick="excluirOperacao(${op.id})"
-                        title="Excluir">
+                ${op.descricao || "Sem descrição"}
 
-                        <i class="fas fa-trash"></i>
+            </strong>
 
-                    </button>
+        </div>
+
+        <hr>
+
+        <div class="row">
+
+            <div class="col-6">
+
+                <small class="text-muted">
+
+                    Cliente
+
+                </small>
+
+                <div>
+
+                    ${op.cliente?.nome || "-"}
+
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <small class="text-muted">
+
+                    Categoria
+
+                </small>
+
+                <div>
+
+                    ${op.categoria?.nome || "-"}
 
                 </div>
 
@@ -812,7 +783,139 @@ function criarCard(op) {
 
         </div>
 
-    `;
+        <div class="row mt-3">
+
+            <div class="col-6">
+
+                <small class="text-muted">
+
+                    Centro
+
+                </small>
+
+                <div>
+
+                    ${op.centroCusto?.nome || "-"}
+
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <small class="text-muted">
+
+                    Fornecedor
+
+                </small>
+
+                <div>
+
+                    ${op.fornecedor || "-"}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-6">
+
+                <small class="text-muted">
+
+                    Parcela
+
+                </small>
+
+                <div>
+
+                    ${op.parcelaAtual || 1}/${op.parcelas || 1}
+
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <small class="text-muted">
+
+                    Data
+
+                </small>
+
+                <div>
+
+                    ${dataFmt}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+
+            <div>
+
+                <small class="text-muted">
+
+                    Valor
+
+                </small>
+
+                <div class="metric-value ${corValor}" style="font-size:30px">
+
+                    ${fmtBRL(op.valor)}
+
+                </div>
+
+            </div>
+
+            <div class="btn-group-vertical">
+
+                <button
+                    class="btn btn-light mb-2"
+                    onclick="abrirModalEdicao(${op.id})">
+
+                    <i class="fas fa-edit"></i>
+
+                </button>
+
+                <button
+                    class="btn btn-success mb-2"
+                    onclick="marcarComoPaga(${op.id})">
+
+                    <i class="fas fa-check"></i>
+
+                </button>
+
+                <button
+                    class="btn btn-warning mb-2"
+                    onclick="cancelarOperacao(${op.id})">
+
+                    <i class="fas fa-ban"></i>
+
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="excluirOperacao(${op.id})">
+
+                    <i class="fas fa-trash"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+`;
 
 }
 

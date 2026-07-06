@@ -4,18 +4,18 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Movimentações do Caixa - Paiva Tech</title>
+    <title>Caixa - Paiva Tech</title>
 
     <link href="vendor2/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="css2/sb-admin-2.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/movimentacoes.css">
+    <!-- AGORA SOMENTE O APP.CSS -->
+    <link rel="stylesheet" href="css/app.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
 </head>
 
@@ -25,12 +25,14 @@
 
     <div id="wrapper">
 
+        <!-- SIDEBAR -->
+
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark" id="accordionSidebar">
 
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
 
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-layer-group"></i>
                 </div>
 
                 <div class="sidebar-brand-text mx-3">
@@ -41,11 +43,11 @@
 
             <hr class="sidebar-divider my-0">
 
-            <li class="nav-item active">
+            <li class="nav-item">
 
                 <a class="nav-link" href="index.html">
 
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-chart-pie"></i>
 
                     <span>Dashboard</span>
 
@@ -56,141 +58,101 @@
             <hr class="sidebar-divider">
 
             <div class="sidebar-heading">
-                Páginas
+
+                Gestão
+
             </div>
 
-            <li class="nav-item">
-
-                <a class="nav-link" href="movimentacoes.html">
-
-                    <i class="fa fa-university"></i>
-
-                    <span>Caixa</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="categorias-financeiras.html">
-
-                    <i class="fas fa-tags"></i>
-
-                    <span>Categorias Financeiras</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="centros-custo.html">
-
-                    <i class="fas fa-sitemap"></i>
-
-                    <span>Centros de Custo</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="pdvvenda.html">
-
-                    <i class="fas fa-cash-register"></i>
-
-                    <span>PDV</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="agenda.html">
-
-                    <i class="fas fa-calendar"></i>
-
-                    <span>Agenda</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="vendas.html">
-
-                    <i class="fas fa-chart-line"></i>
-
-                    <span>Relatório de Vendas</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="criarCliente.html">
-
-                    <i class="fas fa-users"></i>
-
-                    <span>Clientes</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="produtos.html">
-
-                    <i class="fas fa-boxes"></i>
-
-                    <span>Produtos</span>
-
-                </a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link" href="propostas.html">
-
-                    <i class="fas fa-file-invoice"></i>
-
-                    <span>Propostas</span>
-
-                </a>
-
-            </li>
             <li class="nav-item active">
+                <a class="nav-link" href="movimentacoes.html">
+                    <i class="fas fa-university"></i>
+                    <span>Caixa</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="categorias-financeiras.html">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorias Financeiras</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="centros-custo.html">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Centros de Custo</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="pdvvenda.html">
+                    <i class="fas fa-cash-register"></i>
+                    <span>PDV</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="agenda.html">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Agenda</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="vendas.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Relatório de Vendas</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="criarCliente.html">
+                    <i class="fas fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="produtos.html">
+                    <i class="fas fa-boxes"></i>
+                    <span>Produtos</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="propostas.html">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Propostas</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link" href="empresa.html">
                     <i class="fas fa-building"></i>
                     <span>Minha Empresa</span>
                 </a>
             </li>
+
+            <hr class="sidebar-divider">
+
             <li class="nav-item">
-
                 <a class="nav-link" href="login.html">
-
                     <i class="fas fa-sign-out-alt"></i>
-
                     <span>Sair</span>
-
                 </a>
-
             </li>
 
         </ul>
+
+        <!-- CONTENT -->
 
         <div id="content-wrapper" class="d-flex flex-column">
 
             <div id="content">
 
-                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+                <!-- TOPBAR -->
+
+                <nav class="navbar navbar-expand navbar-light topbar topbar-premium mb-4 static-top">
 
                     <button id="menuToggleMobile" class="btn d-md-none mr-3">
 
@@ -198,252 +160,640 @@
 
                     </button>
 
-                    <h5 class="m-0 font-weight-bold text-dark">
+                    <div>
 
-                        Movimentações
-
-                    </h5>
-
-                </nav>
-
-                <!-- RESUMO FINANCEIRO -->
-
-                <div class="container-fluid mb-4">
-
-                    <div class="row">
-
-                        <div class="col-md-3 mb-3">
-
-                            <div class="card border-left-success shadow h-100 py-2">
-
-                                <div class="card-body">
-
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-
-                                        Entradas
-
-                                    </div>
-
-                                    <div id="totalEntradas" class="h5 mb-0 font-weight-bold text-gray-800">
-
-                                        R$ 0,00
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <div class="card border-left-danger shadow h-100 py-2">
-
-                                <div class="card-body">
-
-                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-
-                                        Saídas
-
-                                    </div>
-
-                                    <div id="totalSaidas" class="h5 mb-0 font-weight-bold text-gray-800">
-
-                                        R$ 0,00
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <div class="card border-left-primary shadow h-100 py-2">
-
-                                <div class="card-body">
-
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-
-                                        Saldo
-
-                                    </div>
-
-                                    <div id="saldoGeral" class="h5 mb-0 font-weight-bold text-gray-800">
-
-                                        R$ 0,00
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <div class="card border-left-warning shadow h-100 py-2">
-
-                                <div class="card-body">
-
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-
-                                        Pendentes
-
-                                    </div>
-
-                                    <div id="totalPendentes" class="h5 mb-0 font-weight-bold text-gray-800">
-
-                                        0
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- BOTÃO NOVA MOVIMENTAÇÃO -->
-
-                <div class="container-fluid mb-4">
-
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-
-                        <h5 class="mb-0">
-
-                            <i class="fas fa-wallet text-danger"></i>
+                        <h1 class="page-title">
 
                             Gestão Financeira
 
-                        </h5>
+                        </h1>
 
-                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalMovimentacao">
+                        <p class="page-subtitle">
 
-                            <i class="fas fa-plus"></i>
+                            Controle completo das entradas e saídas da empresa.
 
-                            Nova Movimentação
-
-                        </button>
+                        </p>
 
                     </div>
 
-                </div>
-                <!-- FILTROS -->
+                </nav>
 
-                <div class="container-fluid mb-4">
+                <div class="container-fluid">
 
-                    <div class="card shadow-sm">
+                    <!-- HERO -->
 
-                        <div class="card-body">
+                    <section class="hero-dashboard">
 
-                            <h5 class="mb-3">
+                        <div class="row align-items-center">
 
-                                <i class="fas fa-filter text-danger"></i>
+                            <div class="col-lg-8">
 
-                                Filtros de Pesquisa
+                                <div class="hero-kicker">
 
-                            </h5>
-
-                            <div class="form-row">
-
-                                <div class="col-md-2 mb-2">
-
-                                    <label>Status</label>
-
-                                    <select id="filtroStatus" class="form-control">
-
-                                        <option value="">
-                                            Todos
-                                        </option>
-
-                                        <option value="PENDENTE">
-                                            Pendente
-                                        </option>
-
-                                        <option value="PAGO">
-                                            Pago
-                                        </option>
-
-                                        <option value="ATRASADO">
-                                            Atrasado
-                                        </option>
-
-                                        <option value="CANCELADO">
-                                            Cancelado
-                                        </option>
-
-                                    </select>
+                                    CONTROLE FINANCEIRO
 
                                 </div>
 
-                                <div class="col-md-2 mb-2">
+                                <h2 class="hero-title">
 
-                                    <label>Tipo</label>
+                                    Fluxo de Caixa
 
-                                    <select id="filtroTipo" class="form-control">
+                                </h2>
 
-                                        <option value="">
-                                            Todos
-                                        </option>
+                                <p>
 
-                                        <option value="ENTRADA">
-                                            Entradas
-                                        </option>
+                                    Cadastre entradas, saídas, pagamentos e acompanhe a saúde financeira da empresa.
 
-                                        <option value="SAIDA">
-                                            Saídas
-                                        </option>
+                                </p>
 
-                                    </select>
+                            </div>
+
+                            <div class="col-lg-4 text-right">
+
+                                <button class="btn-hero" data-toggle="modal" data-target="#modalMovimentacao">
+
+                                    <i class="fas fa-plus mr-2"></i>
+
+                                    Nova Movimentação
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- CARDS -->
+
+                    <div class="row mb-4">
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="metric-card metric-success">
+
+                                <div class="metric-top">
+
+                                    <div>
+
+                                        <div class="metric-label">
+
+                                            ENTRADAS
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="metric-icon">
+
+                                        <i class="fas fa-arrow-down text-success"></i>
+
+                                    </div>
 
                                 </div>
 
-                                <div class="col-md-2 mb-2">
+                                <div id="totalEntradas" class="metric-value text-success">
 
-                                    <label>Cliente</label>
-
-                                    <select id="filtroCliente" class="form-control">
-
-                                        <option value="">
-                                            Todos
-                                        </option>
-
-                                    </select>
+                                    R$ 0,00
 
                                 </div>
 
-                                <div class="col-md-2 mb-2">
+                                <div class="metric-footer">
 
-                                    <label>Data Inicial</label>
-
-                                    <input type="date" id="filtroInicio" class="form-control">
+                                    Total recebido
 
                                 </div>
 
-                                <div class="col-md-2 mb-2">
+                            </div>
 
-                                    <label>Data Final</label>
+                        </div>
 
-                                    <input type="date" id="filtroFim" class="form-control">
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="metric-card metric-danger">
+
+                                <div class="metric-top">
+
+                                    <div>
+
+                                        <div class="metric-label">
+
+                                            SAÍDAS
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="metric-icon">
+
+                                        <i class="fas fa-arrow-up text-danger"></i>
+
+                                    </div>
 
                                 </div>
 
-                                <div class="col-md-2 mb-2 d-flex align-items-end">
+                                <div id="totalSaidas" class="metric-value text-danger">
 
-                                    <button id="btnLimparFiltros" class="btn btn-outline-secondary w-100">
+                                    R$ 0,00
 
-                                        <i class="fas fa-undo"></i>
+                                </div>
 
-                                        Limpar
+                                <div class="metric-footer">
+
+                                    Total pago
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="metric-card metric-primary">
+
+                                <div class="metric-top">
+
+                                    <div>
+
+                                        <div class="metric-label">
+
+                                            SALDO
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="metric-icon">
+
+                                        <i class="fas fa-wallet text-primary"></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div id="saldoGeral" class="metric-value text-primary">
+
+                                    R$ 0,00
+
+                                </div>
+
+                                <div class="metric-footer">
+
+                                    Saldo disponível
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+
+                            <div class="metric-card metric-warning">
+
+                                <div class="metric-top">
+
+                                    <div>
+
+                                        <div class="metric-label">
+
+                                            PENDENTES
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="metric-icon">
+
+                                        <i class="fas fa-hourglass-half text-warning"></i>
+
+                                    </div>
+
+                                </div>
+
+                                <div id="totalPendentes" class="metric-value text-warning">
+
+                                    0
+
+                                </div>
+
+                                <div class="metric-footer">
+
+                                    Aguardando pagamento
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- DAQUI PRA BAIXO ENTRA A PARTE 2 -->
+                    <!-- =========================
+     FILTROS
+========================== -->
+
+                    <div class="filter-card mb-4">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+                            <div>
+
+                                <div class="filter-title">
+
+                                    Filtros Inteligentes
+
+                                </div>
+
+                                <div class="resumo-periodo">
+
+                                    Utilize os filtros abaixo para localizar movimentações rapidamente.
+
+                                </div>
+
+                            </div>
+
+                            <button id="btnLimparFiltros" class="btn btn-outline-secondary">
+
+                                <i class="fas fa-sync-alt mr-2"></i>
+
+                                Limpar Filtros
+
+                            </button>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-2 col-md-4 mb-3">
+
+                                <label>Status</label>
+
+                                <select id="filtroStatus" class="form-control">
+
+                                    <option value="">Todos</option>
+                                    <option value="PENDENTE">Pendente</option>
+                                    <option value="PAGO">Pago</option>
+                                    <option value="ATRASADO">Atrasado</option>
+                                    <option value="CANCELADO">Cancelado</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-lg-2 col-md-4 mb-3">
+
+                                <label>Tipo</label>
+
+                                <select id="filtroTipo" class="form-control">
+
+                                    <option value="">Todos</option>
+                                    <option value="ENTRADA">Entradas</option>
+                                    <option value="SAIDA">Saídas</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-lg-3 col-md-4 mb-3">
+
+                                <label>Cliente</label>
+
+                                <select id="filtroCliente" class="form-control">
+
+                                    <option value="">Todos</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-lg-2 col-md-6 mb-3">
+
+                                <label>Data Inicial</label>
+
+                                <input id="filtroInicio" type="date" class="form-control">
+
+                            </div>
+
+                            <div class="col-lg-2 col-md-6 mb-3">
+
+                                <label>Data Final</label>
+
+                                <input id="filtroFim" type="date" class="form-control">
+
+                            </div>
+
+                            <div class="col-lg-1 d-flex align-items-end mb-3">
+
+                                <button class="btn btn-primary w-100" onclick="carregarOperacoes()">
+
+                                    <i class="fas fa-search"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =========================
+     LISTAGEM
+========================== -->
+
+                    <div class="chart-card">
+
+                        <div class="chart-header">
+
+                            <div>
+
+                                <h3 class="chart-title">
+
+                                    Movimentações Financeiras
+
+                                </h3>
+
+                                <div class="chart-subtitle">
+
+                                    Todas as entradas e saídas registradas.
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <span id="totalRegistros" class="badge badge-primary px-3 py-2">
+
+                                    0 registros
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div id="listaOperacoes" class="row">
+
+                            <!-- scriptCaixa.js renderiza aqui -->
+
+                        </div>
+
+                    </div>
+
+                    <!-- =========================
+     MODAL
+========================== -->
+
+                    <div class="modal fade" id="modalMovimentacao" tabindex="-1">
+
+                        <div class="modal-dialog modal-xl modal-dialog-centered">
+
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+
+                                    <h5 class="modal-title">
+
+                                        Nova Movimentação
+
+                                    </h5>
+
+                                    <button class="close" data-dismiss="modal">
+
+                                        <span>&times;</span>
+
+                                    </button>
+
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <form id="caixaForm" autocomplete="off">
+
+                                        <input type="hidden" id="movimentacaoId">
+
+                                        <div class="row">
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Tipo Operação</label>
+
+                                                <select id="tipoOperacao" class="form-control">
+
+                                                    <option value="">Selecione...</option>
+                                                    <option value="ENTRADA">Entrada</option>
+                                                    <option value="SAIDA">Saída</option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Status</label>
+
+                                                <select id="status" class="form-control">
+
+                                                    <option value="PENDENTE">Pendente</option>
+                                                    <option value="PAGO">Pago</option>
+                                                    <option value="ATRASADO">Atrasado</option>
+                                                    <option value="CANCELADO">Cancelado</option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Valor</label>
+
+                                                <input id="valor" type="number" step="0.01" class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Valor Pago</label>
+
+                                                <input id="valorPago" type="number" step="0.01" class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Meio Pagamento</label>
+
+                                                <select id="meioPagamento" class="form-control">
+
+                                                    <option value="">Selecione...</option>
+                                                    <option value="PIX">PIX</option>
+                                                    <option value="CARTAO">Cartão</option>
+                                                    <option value="DINHEIRO">Dinheiro</option>
+                                                    <option value="BOLETO">Boleto</option>
+                                                    <option value="TRANSFERENCIA">Transferência</option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Cliente</label>
+
+                                                <select id="clienteId" class="form-control">
+
+                                                    <option value="">Sem cliente</option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Categoria Financeira</label>
+
+                                                <select id="categoriaId" class="form-control">
+
+                                                    <option value="">Selecione...</option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Centro de Custo</label>
+
+                                                <select id="centroCustoId" class="form-control">
+
+                                                    <option value="">Selecione...</option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Data Operação</label>
+
+                                                <input id="dataOperacao" type="date" class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Data Vencimento</label>
+
+                                                <input id="dataVencimento" type="date" class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Fornecedor</label>
+
+                                                <input id="fornecedor" type="text" class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Juros Máquina</label>
+
+                                                <input id="jurosMaquina" type="number" step="0.01" class="form-control">
+
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Parcelas</label>
+
+                                                <input id="parcelas" type="number" min="1" value="1"
+                                                    class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Recorrente</label>
+
+                                                <select id="recorrente" class="form-control">
+
+                                                    <option value="false">
+                                                        Não
+                                                    </option>
+
+                                                    <option value="true">
+                                                        Sim
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+
+                                                <label>Tipo Recorrência</label>
+
+                                                <select id="tipoRecorrencia" class="form-control">
+
+                                                    <option value="NENHUMA">
+                                                        Nenhuma
+                                                    </option>
+
+                                                    <option value="SEMANAL">
+                                                        Semanal
+                                                    </option>
+
+                                                    <option value="MENSAL">
+                                                        Mensal
+                                                    </option>
+
+                                                    <option value="ANUAL">
+                                                        Anual
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-12 mb-3">
+
+                                                <label>Descrição</label>
+
+                                                <input id="descricao" type="text" class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-12 mb-4">
+
+                                                <label>Observações</label>
+
+                                                <textarea id="observacoes" rows="4" class="form-control"></textarea>
+
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                                <div class="modal-footer">
+
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">
+
+                                        Cancelar
+
+                                    </button>
+
+                                    <button type="submit" form="caixaForm" class="btn btn-primary">
+
+                                        <i class="fas fa-save mr-2"></i>
+
+                                        Salvar Movimentação
 
                                     </button>
 
@@ -457,402 +807,19 @@
 
                 </div>
 
-                <!-- LISTAGEM -->
-
-                <div class="container-fluid mb-5">
-
-                    <div class="card shadow-sm">
-
-                        <div class="card-body">
-
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                                <h5 class="mb-0">
-
-                                    <i class="fas fa-list"></i>
-
-                                    Movimentações Registradas
-
-                                </h5>
-
-                                <span id="totalRegistros" class="badge badge-primary">
-
-                                    0 registros
-
-                                </span>
-
-                            </div>
-
-                            <div id="listaOperacoes" class="row">
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- MODAL MOVIMENTAÇÃO -->
-
-                <div class="modal fade" id="modalMovimentacao" tabindex="-1" role="dialog">
-
-                    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-
-                        <div class="modal-content">
-
-                            <div class="modal-header">
-
-                                <h5 class="modal-title">
-
-                                    Nova Movimentação
-
-                                </h5>
-
-                                <button type="button" class="close" data-dismiss="modal">
-
-                                    <span>&times;</span>
-
-                                </button>
-
-                            </div>
-
-                            <div class="modal-body">
-
-                                <form id="caixaForm" autocomplete="off">
-
-                                    <input type="hidden" id="movimentacaoId">
-
-                                    <div class="form-row">
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Tipo Operação
-                                            </label>
-
-                                            <select name="tipoOperacao" id="tipoOperacao" class="form-control">
-
-                                                <option value="">
-                                                    Selecione...
-                                                </option>
-
-                                                <option value="ENTRADA">
-                                                    Entrada
-                                                </option>
-
-                                                <option value="SAIDA">
-                                                    Saída
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Status
-                                            </label>
-
-                                            <select id="status" name="status" class="form-control">
-
-                                                <option value="PENDENTE">
-                                                    Pendente
-                                                </option>
-
-                                                <option value="PAGO">
-                                                    Pago
-                                                </option>
-
-                                                <option value="ATRASADO">
-                                                    Atrasado
-                                                </option>
-
-                                                <option value="CANCELADO">
-                                                    Cancelado
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Valor
-                                            </label>
-
-                                            <input type="number" step="0.01" id="valor" name="valor"
-                                                class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Valor Pago
-                                            </label>
-
-                                            <input type="number" step="0.01" id="valorPago" name="valorPago"
-                                                class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Meio de Pagamento
-                                            </label>
-
-                                            <select id="meioPagamento" name="meioPagamento" class="form-control">
-
-                                                <option value="">
-                                                    Selecione...
-                                                </option>
-
-                                                <option value="PIX">
-                                                    PIX
-                                                </option>
-
-                                                <option value="CARTAO">
-                                                    Cartão
-                                                </option>
-
-                                                <option value="DINHEIRO">
-                                                    Dinheiro
-                                                </option>
-
-                                                <option value="BOLETO">
-                                                    Boleto
-                                                </option>
-
-                                                <option value="TRANSFERENCIA">
-                                                    Transferência
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Cliente
-                                            </label>
-
-                                            <select id="clienteId" name="clienteId" class="form-control">
-
-                                                <option value="">
-                                                    Sem cliente
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Categoria Financeira
-                                            </label>
-
-                                            <select id="categoriaId" name="categoriaId" class="form-control">
-
-                                                <option value="">
-                                                    Selecione...
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Centro de Custo
-                                            </label>
-
-                                            <select id="centroCustoId" name="centroCustoId" class="form-control">
-
-                                                <option value="">
-                                                    Selecione...
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Data Operação
-                                            </label>
-
-                                            <input type="date" id="dataOperacao" name="dataOperacao"
-                                                class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Data Vencimento
-                                            </label>
-
-                                            <input type="date" id="dataVencimento" name="dataVencimento"
-                                                class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Fornecedor
-                                            </label>
-
-                                            <input type="text" id="fornecedor" name="fornecedor" class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Juros Máquina
-                                            </label>
-
-                                            <input type="number" step="0.01" id="jurosMaquina" name="jurosMaquina"
-                                                class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Parcelas
-                                            </label>
-
-                                            <input type="number" min="1" value="1" id="parcelas" name="parcelas"
-                                                class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Recorrente
-                                            </label>
-
-                                            <select id="recorrente" name="recorrente" class="form-control">
-
-                                                <option value="false">
-                                                    Não
-                                                </option>
-
-                                                <option value="true">
-                                                    Sim
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-3 mb-3">
-
-                                            <label>
-                                                Tipo Recorrência
-                                            </label>
-
-                                            <select id="tipoRecorrencia" name="tipoRecorrencia" class="form-control">
-
-                                                <option value="NENHUMA">
-                                                    Nenhuma
-                                                </option>
-
-                                                <option value="SEMANAL">
-                                                    Semanal
-                                                </option>
-
-                                                <option value="MENSAL">
-                                                    Mensal
-                                                </option>
-
-                                                <option value="ANUAL">
-                                                    Anual
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                        <div class="col-md-12 mb-3">
-
-                                            <label>
-                                                Descrição
-                                            </label>
-
-                                            <input type="text" id="descricao" name="descricao" class="form-control">
-
-                                        </div>
-
-                                        <div class="col-md-12 mb-3">
-
-                                            <label>
-                                                Observações
-                                            </label>
-
-                                            <textarea id="observacoes" name="observacoes" rows="4"
-                                                class="form-control"></textarea>
-
-                                        </div>
-
-                                    </div>
-
-                                </form>
-
-                            </div>
-
-                            <div class="modal-footer">
-
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-
-                                    Cancelar
-
-                                </button>
-
-                                <button type="submit" form="caixaForm" class="btn btn-danger">
-
-                                    <i class="fas fa-save"></i>
-
-                                    Salvar Movimentação
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
             </div>
 
         </div>
 
-    </div>
+        <script src="vendor2/jquery/jquery.min.js"></script>
 
-    <script src="vendor2/jquery/jquery.min.js"></script>
+        <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <script src="vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
 
-    <script src="vendor2/jquery-easing/jquery.easing.min.js"></script>
+        <script src="js2/sb-admin-2.min.js"></script>
 
-    <script src="js2/sb-admin-2.min.js"></script>
-
-    <script src="js/scriptCaixa.js"></script>
-
-    <script src="js/menumovimentacao.js"></script>
+        <script src="js/scriptCaixa.js"></script>
 
 </body>
 
