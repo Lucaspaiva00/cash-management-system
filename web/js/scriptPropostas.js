@@ -1,192 +1,714 @@
-// ===============================
-// 🔗 CONFIGURAÇÕES GERAIS
-// ===============================
-const API = "https://cash-management-system.onrender.com/propostas";
-const API_CLIENTES = "https://cash-management-system.onrender.com/clientes";
+// ======================================================
+// CONFIGURAÇÕES
+// ======================================================
 
-const fmtBRL = n =>
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(n || 0));
+const API =
+  "https://cash-management-system.onrender.com/propostas";
 
-const empresaId = JSON.parse(localStorage.getItem("usuarioLogado"))?.empresaId || 1;
+const API_CLIENTES =
+  "https://cash-management-system.onrender.com/clientes";
 
-// ===============================
-// 🎯 ELEMENTOS DO DOM
-// ===============================
-const form = document.querySelector("#formProposta");
-const lista = document.querySelector("#propostasCadastrados");
-const selCliente = document.querySelector("#clienteId");
-const totalAberto = document.querySelector("#totalAberto");
-const totalFechado = document.querySelector("#totalFechado");
-const totalGeral = document.querySelector("#totalGeral");
+const usuario =
+  JSON.parse(localStorage.getItem("usuarioLogado"));
 
-// ===============================
-// 🚀 INICIALIZAÇÃO
-// ===============================
-document.addEventListener("DOMContentLoaded", () => {
-  carregarClientes();  // carrega clientes no select
-  carregarPropostas(); // carrega as propostas
-  form.addEventListener("submit", salvarProposta);
-});
+if (!usuario) {
 
-// ===============================
-// 👥 CARREGAR CLIENTES (SELECT)
-// ===============================
-async function carregarClientes() {
-  try {
-    const resp = await fetch(`${API_CLIENTES}?empresaId=${empresaId}`);
-    if (!resp.ok) throw new Error("Falha ao buscar clientes");
-    const clientes = await resp.json();
+  alert("Sessão expirada.");
 
-    console.log("📦 Clientes recebidos:", clientes);
+  window.location.href = "login.html";
 
-    if (!Array.isArray(clientes) || clientes.length === 0) {
-      selCliente.innerHTML = '<option value="">Nenhum cliente cadastrado</option>';
-      return;
-    }
-
-    selCliente.innerHTML = '<option value="">(Opcional) Selecionar cliente</option>';
-    clientes.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c.id;
-      opt.textContent = c.nome;
-      selCliente.appendChild(opt);
-    });
-  } catch (e) {
-    console.error("❌ Erro ao carregar clientes:", e);
-    selCliente.innerHTML = '<option value="">Erro ao carregar clientes</option>';
-  }
 }
 
-// ===============================
-// 🟩 CREATE - SALVAR PROPOSTA
-// ===============================
-async function salvarProposta(e) {
-  e.preventDefault();
+const empresaId =
+  usuario.empresaId;
 
-  const data = {
-    numero: parseInt(form.numero.value),
-    data: form.data.value || undefined,
-    descricao: form.descricao.value.trim(),
-    valorTotal: parseFloat(form.valorTotal.value),
-    status: form.status.value.trim() || "Aberto",
-    empresaId,
-    clienteId: form.clienteId.value ? parseInt(form.clienteId.value) : null,
+// ======================================================
+// ELEMENTOS
+// ======================================================
+
+const form =
+  document.querySelector("#formProposta");
+
+const tabela =
+  document.querySelector("#propostasCadastrados");
+
+const buscar =
+  document.querySelector("#buscarProposta");
+
+const clienteSelect =
+  document.querySelector("#clienteId");
+
+let listaPropostas = [];
+
+let editandoId = null;
+
+// ======================================================
+// HELPERS
+// ======================================================
+
+function moeda(valor) {
+
+  return new Intl.NumberFormat(
+
+    "pt-BR",
+
+    {
+
+      style: "currency",
+
+      currency: "BRL"
+
+    }
+
+  ).format(Number(valor || 0));
+
+}
+
+function numero(v) {
+
+  return Number(v || 0);
+
+}
+
+function toast(msg, tipo = "success") {
+
+  const cores = {
+
+    success: "#22c55e",
+
+    error: "#ef4444",
+
+    warning: "#f59e0b",
+
+    info: "#2563eb"
+
   };
 
-  if (!data.numero || !data.descricao || isNaN(data.valorTotal)) {
-    alert("Preencha Número, Descrição e Valor corretamente.");
-    return;
-  }
+  const div =
+    document.createElement("div");
 
-  const resp = await fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+  div.innerHTML = msg;
+
+  Object.assign(div.style, {
+
+    position: "fixed",
+
+    right: "25px",
+
+    bottom: "25px",
+
+    background: cores[tipo],
+
+    color: "#fff",
+
+    padding: "12px 22px",
+
+    borderRadius: "10px",
+
+    fontWeight: "600",
+
+    zIndex: 99999,
+
+    boxShadow: "0 10px 25px rgba(0,0,0,.2)"
+
   });
-  console.log("🛰️ Enviando proposta:", data);
-  const json = await resp.json();
-  if (!resp.ok) {
-    console.error("Erro ao salvar proposta:", json);
-    alert(json.error || "Erro ao salvar proposta.");
-    return;
-  }
-  console.log("🛰️ Enviando proposta:", data);
-  form.reset();
-  carregarPropostas();
+
+  document.body.appendChild(div);
+
+  setTimeout(() => {
+
+    div.remove();
+
+  }, 3000);
+
 }
 
-// ===============================
-// 📋 READ - LISTAR PROPOSTAS
-// ===============================
-async function carregarPropostas() {
-  lista.innerHTML = "<p>Carregando...</p>";
-  try {
-    const resp = await fetch(`${API}?empresaId=${empresaId}`);
-    if (!resp.ok) throw new Error("Erro ao buscar propostas");
-    const propostas = await resp.json();
+// ======================================================
+// EVENTOS
+// ======================================================
 
-    if (!Array.isArray(propostas) || propostas.length === 0) {
-      lista.innerHTML = '<p class="text-muted">Nenhuma proposta cadastrada.</p>';
-      totalAberto.textContent = totalFechado.textContent = totalGeral.textContent = "R$ 0,00";
-      return;
+document.addEventListener(
+
+  "DOMContentLoaded",
+
+  () => {
+
+    carregarClientes();
+
+    carregarPropostas();
+
+    form.addEventListener(
+
+      "submit",
+
+      salvarProposta
+
+    );
+
+    if (buscar) {
+
+      buscar.addEventListener(
+
+        "keyup",
+
+        pesquisarPropostas
+
+      );
+
     }
 
-    lista.innerHTML = propostas.map(cardPropostaHTML).join("");
+  }
 
-    const aberto = propostas
+);
+// ======================================================
+// KPIs
+// ======================================================
+
+function atualizarKPIs(propostas) {
+
+  const total =
+    propostas.length;
+
+  const abertas =
+    propostas
       .filter(p => (p.status || "").toLowerCase() === "aberto")
-      .reduce((acc, p) => acc + (p.valorTotal || 0), 0);
+      .reduce((s, p) => s + numero(p.valorTotal), 0);
 
-    const fechado = propostas
+  const fechadas =
+    propostas
       .filter(p => (p.status || "").toLowerCase() === "fechado")
-      .reduce((acc, p) => acc + (p.valorTotal || 0), 0);
+      .reduce((s, p) => s + numero(p.valorTotal), 0);
 
-    totalAberto.textContent = fmtBRL(aberto);
-    totalFechado.textContent = fmtBRL(fechado);
-    totalGeral.textContent = fmtBRL(aberto + fechado);
-  } catch (e) {
-    console.error("Erro ao carregar propostas:", e);
-    lista.innerHTML = '<p class="text-danger">Erro ao carregar propostas.</p>';
-  }
+  document.querySelector("#kpiTotalPropostas").innerHTML =
+    total;
+
+  document.querySelector("#kpiAberto").innerHTML =
+    moeda(abertas);
+
+  document.querySelector("#kpiFechado").innerHTML =
+    moeda(fechadas);
+
+  document.querySelector("#kpiTotalGeral").innerHTML =
+    moeda(abertas + fechadas);
+
 }
 
-// ===============================
-// 🟨 UPDATE - ALTERAR STATUS
-// ===============================
-async function alternarStatus(p) {
-  const novoStatus = (p.status || "Aberto").toLowerCase() === "aberto" ? "Fechado" : "Aberto";
+// ======================================================
+// CARREGAR CLIENTES
+// ======================================================
+
+async function carregarClientes() {
+
   try {
-    await fetch(`${API}/${p.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: novoStatus }),
+
+    const resposta =
+      await fetch(
+
+        `${API_CLIENTES}?empresaId=${empresaId}`
+
+      );
+
+    const clientes =
+      await resposta.json();
+
+    clienteSelect.innerHTML = `
+
+      <option value="">
+
+        Selecione...
+
+      </option>
+
+    `;
+
+    clientes.forEach(cliente => {
+
+      clienteSelect.innerHTML += `
+
+        <option value="${cliente.id}">
+
+          ${cliente.nome}
+
+        </option>
+
+      `;
+
     });
-    carregarPropostas();
-  } catch (e) {
-    console.error("Erro ao atualizar status:", e);
+
   }
+
+  catch (erro) {
+
+    console.error(erro);
+
+  }
+
 }
 
-// ===============================
-// 🟥 DELETE - EXCLUIR PROPOSTA
-// ===============================
-async function excluirProposta(id) {
-  if (!confirm("Excluir esta proposta?")) return;
+// ======================================================
+// LISTAR PROPOSTAS
+// ======================================================
+
+async function carregarPropostas() {
+
+  tabela.innerHTML = `
+
+      <tr>
+
+        <td colspan="6"
+
+            class="text-center py-4">
+
+          Carregando...
+
+        </td>
+
+      </tr>
+
+  `;
+
   try {
-    await fetch(`${API}/${id}`, { method: "DELETE" });
-    carregarPropostas();
-  } catch (e) {
-    console.error("Erro ao excluir proposta:", e);
+
+    const resposta =
+      await fetch(
+
+        `${API}?empresaId=${empresaId}`
+
+      );
+
+    listaPropostas =
+      await resposta.json();
+
+    if (!Array.isArray(listaPropostas)) {
+
+      listaPropostas = [];
+
+    }
+
+    atualizarKPIs(
+
+      listaPropostas
+
+    );
+
+    renderizarTabela(
+
+      listaPropostas
+
+    );
+
   }
+
+  catch (erro) {
+
+    console.error(erro);
+
+    tabela.innerHTML = `
+
+      <tr>
+
+        <td colspan="6"
+
+            class="text-center text-danger py-4">
+
+          Erro ao carregar propostas.
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
 }
 
-// ===============================
-// 💳 TEMPLATE VISUAL (CARD)
-// ===============================
-function cardPropostaHTML(p) {
-  const statusLower = (p.status || "Aberto").toLowerCase();
-  const cor = statusLower === "fechado" ? "card-status-fechado" : "card-status-aberto";
-  const dataBR = p.data ? new Date(p.data).toLocaleDateString("pt-BR") : "—";
-  const cliente = p.cliente?.nome || "—";
+// ======================================================
+// SALVAR PROPOSTA
+// ======================================================
 
-  return `
-    <div class="card card-proposta ${cor} p-3 shadow-sm mb-2">
-      <div class="d-flex justify-content-between align-items-start">
-        <div>
-          <h5 class="mb-1 text-dark">#${p.numero}</h5>
-          <p class="small text-muted mb-1">${dataBR} • ${cliente}</p>
-          <p class="small text-muted mb-1">${p.descricao || "Sem descrição"}</p>
-          <p><span class="badge badge-${statusLower === "fechado" ? "success" : "primary"}">${p.status}</span></p>
-          <h6 class="text-primary font-weight-bold">${fmtBRL(p.valorTotal)}</h6>
-        </div>
-        <div>
-          <button class="btn btn-sm btn-warning mr-1" onclick='alternarStatus(${JSON.stringify(p)})' title="Alternar status">
-            <i class="fas fa-sync"></i>
+async function salvarProposta(e) {
+
+  e.preventDefault();
+
+  const payload = {
+
+    numero: parseInt(form.numero.value),
+
+    data: form.data.value || null,
+
+    descricao: form.descricao.value.trim(),
+
+    valorTotal: numero(form.valorTotal.value),
+
+    status: form.status.value,
+
+    validade: form.validade?.value || null,
+
+    formaPagamento: form.formaPagamento?.value || "",
+
+    parcelas: parseInt(form.parcelas?.value || 1),
+
+    observacoes: form.observacoes?.value || "",
+
+    clienteId:
+
+      form.clienteId.value
+
+        ? parseInt(form.clienteId.value)
+
+        : null,
+
+    empresaId
+
+  };
+
+  try {
+
+    const resposta = await fetch(
+
+      editandoId
+
+        ? `${API}/${editandoId}`
+
+        : API,
+
+      {
+
+        method:
+
+          editandoId
+
+            ? "PUT"
+
+            : "POST",
+
+        headers: {
+
+          "Content-Type": "application/json"
+
+        },
+
+        body: JSON.stringify(payload)
+
+      }
+
+    );
+
+    const json =
+      await resposta.json();
+
+    if (!resposta.ok) {
+
+      throw new Error(
+
+        json.error ||
+
+        "Erro ao salvar."
+
+      );
+
+    }
+
+    toast(
+
+      editandoId
+
+        ? "Proposta atualizada."
+
+        : "Proposta cadastrada."
+
+    );
+
+    form.reset();
+
+    editandoId = null;
+
+    $("#modalProposta").modal("hide");
+
+    carregarPropostas();
+
+  }
+
+  catch (erro) {
+
+    console.error(erro);
+
+    toast(
+
+      erro.message,
+
+      "error"
+
+    );
+
+  }
+
+}
+
+// ======================================================
+// TABELA
+// ======================================================
+
+function renderizarTabela(propostas) {
+
+  if (!propostas.length) {
+
+    tabela.innerHTML = `
+
+      <tr>
+
+        <td colspan="6"
+
+            class="text-center py-5">
+
+          Nenhuma proposta encontrada.
+
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+  tabela.innerHTML = propostas.map(p => {
+
+    const badge =
+
+      (p.status || "").toLowerCase() == "fechado"
+
+        ? '<span class="badge badge-success">Fechado</span>'
+
+        : '<span class="badge badge-warning">Aberto</span>';
+
+    return `
+
+      <tr>
+
+        <td>
+
+          ${p.numero}
+
+        </td>
+
+        <td>
+
+          ${p.cliente?.nome || "-"}
+
+        </td>
+
+        <td>
+
+          ${p.descricao}
+
+        </td>
+
+        <td>
+
+          ${badge}
+
+        </td>
+
+        <td>
+
+          ${moeda(p.valorTotal)}
+
+        </td>
+
+        <td>
+
+          <button
+
+            class="btn btn-warning btn-sm mr-1"
+
+            onclick="editarProposta(${p.id})">
+
+            <i class="fas fa-edit"></i>
+
           </button>
-          <button class="btn btn-sm btn-danger" onclick="excluirProposta(${p.id})" title="Excluir">
+
+          <button
+
+            class="btn btn-danger btn-sm"
+
+            onclick="excluirProposta(${p.id})">
+
             <i class="fas fa-trash"></i>
+
           </button>
-        </div>
-      </div>
-    </div>`;
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }).join("");
+
 }
+
+// ======================================================
+// PESQUISA
+// ======================================================
+
+function pesquisarPropostas() {
+
+  const texto =
+
+    buscar.value
+
+      .toLowerCase()
+
+      .trim();
+
+  const lista =
+
+    listaPropostas.filter(p =>
+
+      String(p.numero)
+
+        .includes(texto)
+
+      ||
+
+      (p.descricao || "")
+
+        .toLowerCase()
+
+        .includes(texto)
+
+      ||
+
+      (p.cliente?.nome || "")
+
+        .toLowerCase()
+
+        .includes(texto)
+
+    );
+
+  renderizarTabela(lista);
+
+}
+
+// ======================================================
+// EDITAR
+// ======================================================
+
+function editarProposta(id) {
+
+  const proposta =
+
+    listaPropostas.find(
+
+      p => p.id === id
+
+    );
+
+  if (!proposta)
+
+    return;
+
+  editandoId = id;
+
+  Object.keys(proposta).forEach(campo => {
+
+    if (form[campo]) {
+
+      form[campo].value =
+
+        proposta[campo] ?? "";
+
+    }
+
+  });
+
+  if (proposta.clienteId) {
+
+    form.clienteId.value =
+
+      proposta.clienteId;
+
+  }
+
+  $("#modalProposta").modal("show");
+
+}
+
+// ======================================================
+// EXCLUIR
+// ======================================================
+
+async function excluirProposta(id) {
+
+  if (!confirm("Deseja excluir esta proposta?"))
+
+    return;
+
+  try {
+
+    const resposta = await fetch(
+
+      `${API}/${id}`,
+
+      {
+
+        method: "DELETE"
+
+      }
+
+    );
+
+    const json =
+      await resposta.json();
+
+    if (!resposta.ok) {
+
+      throw new Error(
+
+        json.error ||
+
+        "Erro ao excluir."
+
+      );
+
+    }
+
+    toast(
+
+      "Proposta excluída."
+
+    );
+
+    carregarPropostas();
+
+  }
+
+  catch (erro) {
+
+    console.error(erro);
+
+    toast(
+
+      erro.message,
+
+      "error"
+
+    );
+
+  }
+
+}
+
+// ======================================================
+// GLOBAIS
+// ======================================================
+
+window.editarProposta =
+  editarProposta;
+
+window.excluirProposta =
+  excluirProposta;
