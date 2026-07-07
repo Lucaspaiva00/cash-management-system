@@ -1,8 +1,8 @@
-const API = "https://cash-management-system.onrender.com/caixa";
-const API_CLIENTES = "https://cash-management-system.onrender.com/clientes";
-const API_CATEGORIAS = "https://cash-management-system.onrender.com/categorias";
-const API_CENTROS = "https://cash-management-system.onrender.com/centros-custo";
-const API_DASHBOARD = "https://cash-management-system.onrender.com/financeiro/dashboard";
+const API = `${API_BASE}/caixa`;
+const API_CLIENTES = `${API_BASE}/clientes`;
+const API_CATEGORIAS = `${API_BASE}/categorias`;
+const API_CENTROS = `${API_BASE}/centros-custo`;
+const API_DASHBOARD = `${API_BASE}/financeiro/dashboard`;
 
 const usuarioLogado =
   JSON.parse(
@@ -56,6 +56,9 @@ const elSaldoGeral =
 
 const elTotalPendentes =
   document.querySelector("#totalPendentes");
+
+const elLucroVendas =
+  document.querySelector("#lucroVendas");
 
 const elTotalRegistros =
   document.querySelector("#totalRegistros");
@@ -343,6 +346,15 @@ async function carregarDashboard() {
       elSaldoGeral.textContent =
         fmtBRL(
           dados.saldo || 0
+        );
+
+    }
+
+    if (elLucroVendas) {
+
+      elLucroVendas.textContent =
+        fmtBRL(
+          dados.lucroVendas || 0
         );
 
     }

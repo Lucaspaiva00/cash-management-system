@@ -1,4 +1,4 @@
-const API = "https://cash-management-system.onrender.com";
+const API = API_BASE;
 
 document.querySelector("#formLogin").addEventListener("submit", async (e) => {
   e.preventDefault();

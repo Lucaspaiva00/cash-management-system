@@ -1,4 +1,4 @@
-const API = "https://cash-management-system.onrender.com/clientes";
+const API = `${API_BASE}/clientes`;
 
 const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 

@@ -1,5 +1,4 @@
-const API =
-    "https://cash-management-system.onrender.com/centros-custo";
+const API = `${API_BASE}/centros-custo`;
 
 const empresaId =
     JSON.parse(

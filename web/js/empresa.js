@@ -1,5 +1,4 @@
-const API =
-    "https://cash-management-system.onrender.com";
+const API = API_BASE;
 
 const usuario =
     JSON.parse(

@@ -1,4 +1,4 @@
-const API = "https://cash-management-system.onrender.com";
+const API = API_BASE;
 
 const cardsContainer = document.querySelector("#cardsResumo");
 const btnAplicarFiltro = document.getElementById("btnAplicarFiltro");
@@ -17,6 +17,7 @@ const botoesPeriodo = document.querySelectorAll(".periodo-btn");
 let caixaCache = [];
 let propostasCache = [];
 let clientesCache = [];
+let vendasCache = [];
 let dadosCarregados = false;
 
 let graficoFluxoMensal = null;
@@ -42,9 +43,16 @@ const indicadores = [
   },
   {
     id: "lucro",
-    nome: "Lucro",
+    nome: "Saldo Caixa",
     cor: "success",
     icone: "fa-chart-line",
+    moeda: true
+  },
+  {
+    id: "lucroVendas",
+    nome: "Lucro Vendas",
+    cor: "info",
+    icone: "fa-coins",
     moeda: true
   },
   {
@@ -128,15 +136,17 @@ async function fetchJson(url) {
 async function carregarDados(usuario) {
   if (dadosCarregados) return;
 
-  const [caixa, propostas, clientes] = await Promise.all([
+  const [caixa, propostas, clientes, vendas] = await Promise.all([
     fetchJson(`${API}/caixa?empresaId=${usuario.empresaId}`),
     fetchJson(`${API}/propostas?empresaId=${usuario.empresaId}`),
-    fetchJson(`${API}/clientes?empresaId=${usuario.empresaId}`)
+    fetchJson(`${API}/clientes?empresaId=${usuario.empresaId}`),
+    fetchJson(`${API}/vendas?empresaId=${usuario.empresaId}`)
   ]);
 
   caixaCache = caixa || [];
   propostasCache = propostas || [];
   clientesCache = clientes || [];
+  vendasCache = vendas || [];
   dadosCarregados = true;
 }
 
@@ -752,6 +762,7 @@ async function carregarDashboard() {
 
     const caixaFiltrado = filtrarPeriodo(caixaCache, "dataOperacao");
     const propostasFiltradas = filtrarPeriodo(propostasCache, "data");
+    const vendasFiltradas = filtrarPeriodo(vendasCache, "data");
 
     let entrada = 0;
     let saida = 0;
@@ -764,6 +775,10 @@ async function carregarDashboard() {
     });
 
     const lucro = entrada - saida;
+    const lucroVendas = vendasFiltradas.reduce(
+      (total, venda) => total + Number(venda.lucro || 0),
+      0
+    );
 
     const totalPropostas = propostasFiltradas.reduce((total, item) => {
       return total + Number(item.valorTotal || 0);
@@ -780,6 +795,7 @@ async function carregarDashboard() {
     atualizarValor("creditos", entrada);
     atualizarValor("debitos", saida);
     atualizarValor("lucro", lucro);
+    atualizarValor("lucroVendas", lucroVendas);
     atualizarValor("propostas", totalPropostas);
     atualizarValor("aprovadas", aprovadas, false);
     atualizarValor("pendentes", pendentes, false);
@@ -795,7 +811,7 @@ async function carregarDashboard() {
     }
 
     if (heroLucro) {
-      heroLucro.innerText = `Lucro líquido: ${formatarMoeda(lucro)}`;
+      heroLucro.innerText = `Lucro vendas: ${formatarMoeda(lucroVendas)} · Saldo caixa: ${formatarMoeda(lucro)}`;
     }
 
     if (ultimaAtualizacao) {

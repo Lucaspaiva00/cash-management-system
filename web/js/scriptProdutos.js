@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES
 // =======================================================
 
-const API = "https://cash-management-system.onrender.com/produtos";
+const API = `${API_BASE}/produtos`;
 
 const usuario =
   JSON.parse(localStorage.getItem("usuarioLogado"));

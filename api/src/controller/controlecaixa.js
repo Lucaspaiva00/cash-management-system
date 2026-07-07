@@ -732,6 +732,12 @@ const dashboard = async (req, res) => {
                     "ATRASADO"
             ).length;
 
+        const lucroVendas =
+            await prisma.venda.aggregate({
+                where: { empresaId },
+                _sum: { lucro: true }
+            });
+
         return res.status(200).json({
 
             totalEntradas,
@@ -741,6 +747,9 @@ const dashboard = async (req, res) => {
             saldo:
                 totalEntradas -
                 totalSaidas,
+
+            lucroVendas:
+                lucroVendas._sum.lucro || 0,
 
             pendentes,
 

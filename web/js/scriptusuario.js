@@ -1,5 +1,5 @@
 // web/js/scriptusuario.js
-const API = "https://cash-management-system.onrender.com";
+const API = API_BASE;
 
 // Cadastro combinado (Empresa + Admin)
 document.getElementById("formUsuario").addEventListener("submit", async (e) => {
