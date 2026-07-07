@@ -276,6 +276,11 @@ const create = async (req, res) => {
                         empresaId:
                             Number(empresaId),
 
+                        clienteId:
+                            clienteId
+                                ? Number(clienteId)
+                                : null,
+
                         tipoOperacao:
                             "ENTRADA",
 
@@ -284,7 +289,15 @@ const create = async (req, res) => {
                         valor: total,
 
                         descricao:
-                            `Venda PDV #${novaVenda.id}`
+                            `Venda PDV #${novaVenda.id}`,
+
+                        status: "PAGO",
+
+                        dataPagamento: new Date(),
+
+                        dataVencimento: new Date(),
+
+                        jurosMaquina: 0
 
                     }
 

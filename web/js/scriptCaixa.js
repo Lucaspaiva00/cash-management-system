@@ -4,13 +4,23 @@ const API_CATEGORIAS = `${API_BASE}/categorias`;
 const API_CENTROS = `${API_BASE}/centros-custo`;
 const API_DASHBOARD = `${API_BASE}/financeiro/dashboard`;
 
-const usuarioLogado =
-  JSON.parse(
-    localStorage.getItem("usuarioLogado")
+function obterEmpresaId() {
+  const usuario = JSON.parse(
+    localStorage.getItem("usuarioLogado") || "null"
   );
 
-const empresaId =
-  usuarioLogado?.empresaId || 1;
+  return usuario?.empresaId || null;
+}
+
+function garantirSessao() {
+  if (!obterEmpresaId()) {
+    alert("Sessão expirada. Faça login novamente.");
+    window.location.href = "login.html";
+    return false;
+  }
+
+  return true;
+}
 
 const form =
   document.querySelector("#caixaForm");
@@ -114,6 +124,8 @@ document.addEventListener(
   "DOMContentLoaded",
   async () => {
 
+    if (!garantirSessao()) return;
+
     garantirModalEdicao();
 
     if (form) {
@@ -194,6 +206,9 @@ async function carregarClientes() {
 
   try {
 
+    const empresaId = obterEmpresaId();
+    if (!empresaId) return;
+
     CLIENTES =
       await requestJson(
         `${API_CLIENTES}?empresaId=${empresaId}`
@@ -226,6 +241,9 @@ async function carregarCategorias() {
 
   try {
 
+    const empresaId = obterEmpresaId();
+    if (!empresaId) return;
+
     CATEGORIAS =
       await requestJson(
         `${API_CATEGORIAS}?empresaId=${empresaId}`
@@ -251,6 +269,9 @@ async function carregarCategorias() {
 async function carregarCentrosCusto() {
 
   try {
+
+    const empresaId = obterEmpresaId();
+    if (!empresaId) return;
 
     CENTROS =
       await requestJson(
@@ -317,6 +338,9 @@ function preencherSelectEdicao(selectId, itens, textoInicial) {
 async function carregarDashboard() {
 
   try {
+
+    const empresaId = obterEmpresaId();
+    if (!empresaId) return;
 
     const dados =
       await requestJson(
@@ -387,7 +411,7 @@ function montarPayloadFormulario(prefixo = "") {
 
   return {
 
-    empresaId,
+    empresaId: obterEmpresaId(),
 
     tipoOperacao:
       get("tipoOperacao")?.value || "",
@@ -526,23 +550,54 @@ async function carregarOperacoes() {
 
   if (!lista) return;
 
+  const empresaId = obterEmpresaId();
+  if (!empresaId) return;
+
   lista.innerHTML =
     `<p class="text-muted">Carregando...</p>`;
 
   try {
 
-    const dados =
-      await requestJson(
-        `${API}?empresaId=${empresaId}`
-      );
+    const [caixa, vendas] = await Promise.all([
+      requestJson(`${API}?empresaId=${empresaId}`),
+      requestJson(`${API_BASE}/vendas?empresaId=${empresaId}`).catch(() => [])
+    ]);
 
-    if (!Array.isArray(dados)) {
+    if (!Array.isArray(caixa)) {
 
       throw new Error(
         "Erro ao carregar movimentações."
       );
 
     }
+
+    const vendasNoCaixa = new Set(
+      caixa
+        .map(op => op.descricao?.match(/Venda PDV #(\d+)/)?.[1])
+        .filter(Boolean)
+    );
+
+    const vendasSemCaixa = (Array.isArray(vendas) ? vendas : [])
+      .filter(v => !vendasNoCaixa.has(String(v.id)))
+      .map(v => ({
+        id: `venda-${v.id}`,
+        tipoOperacao: "ENTRADA",
+        meioPagamento: v.meioPagamento,
+        valor: v.total,
+        descricao: `Venda PDV #${v.id}`,
+        status: "PAGO",
+        dataOperacao: v.data,
+        cliente: v.cliente || null,
+        clienteId: v.cliente?.id || null,
+        categoria: null,
+        centroCusto: null,
+        fornecedor: null,
+        parcelaAtual: 1,
+        parcelas: 1,
+        _vendaPdv: true
+      }));
+
+    const dados = [...caixa, ...vendasSemCaixa];
 
     OPERACOES =
       dados
@@ -694,6 +749,7 @@ function atualizarTotalRegistros(total) {
 function criarCard(op) {
 
   const entrada = op.tipoOperacao === "ENTRADA";
+  const isPdv = op._vendaPdv || op.descricao?.includes("Venda PDV");
 
   const corValor = entrada ? "text-success" : "text-danger";
 
@@ -744,6 +800,8 @@ function criarCard(op) {
         <div class="mt-3">
 
             ${statusBadge}
+
+            ${isPdv ? `<span class="badge badge-info ml-2">PDV</span>` : ""}
 
         </div>
 
@@ -887,6 +945,11 @@ function criarCard(op) {
 
             <div class="btn-group-vertical">
 
+                ${op._vendaPdv ? `
+                <span class="text-muted small text-center px-2">
+                    Registro da venda
+                </span>
+                ` : `
                 <button
                     class="btn btn-light mb-2"
                     onclick="abrirModalEdicao(${op.id})">
@@ -918,6 +981,7 @@ function criarCard(op) {
                     <i class="fas fa-trash"></i>
 
                 </button>
+                `}
 
             </div>
 
