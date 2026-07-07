@@ -2,6 +2,26 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
+function montarDescricaoVendaPdv(vendaId, itensResumo) {
+
+    const partes = itensResumo.map(item =>
+        item.quantidade > 1
+            ? `${item.nome} x${item.quantidade}`
+            : item.nome
+    );
+
+    let produtos = partes.join(", ");
+
+    if (produtos.length > 200) {
+        produtos = `${produtos.slice(0, 197)}...`;
+    }
+
+    return produtos
+        ? `Venda PDV #${vendaId} - ${produtos}`
+        : `Venda PDV #${vendaId}`;
+
+}
+
 // =====================================================
 // LISTAR VENDAS
 // =====================================================
@@ -53,6 +73,16 @@ const read = async (req, res) => {
                     select: {
                         id: true,
                         nome: true
+                    }
+                },
+                itens: {
+                    select: {
+                        quantidade: true,
+                        produto: {
+                            select: {
+                                nome: true
+                            }
+                        }
                     }
                 }
             }
@@ -113,6 +143,7 @@ const create = async (req, res) => {
         let custoTotal = 0;
 
         const itensProcessados = [];
+        const itensResumo = [];
 
         for (const item of itens) {
 
@@ -174,6 +205,11 @@ const create = async (req, res) => {
                 aliquotaCofins: produto.aliquotaCofins,
 
                 aliquotaIpi: produto.aliquotaIpi
+            });
+
+            itensResumo.push({
+                nome: produto.nome,
+                quantidade
             });
 
         }
@@ -289,7 +325,10 @@ const create = async (req, res) => {
                         valor: total,
 
                         descricao:
-                            `Venda PDV #${novaVenda.id}`,
+                            montarDescricaoVendaPdv(
+                                novaVenda.id,
+                                itensResumo
+                            ),
 
                         status: "PAGO",
 
@@ -297,7 +336,10 @@ const create = async (req, res) => {
 
                         dataVencimento: new Date(),
 
-                        jurosMaquina: 0
+                        jurosMaquina: 0,
+
+                        observacoes:
+                            `lucro=${lucro.toFixed(2)};custo=${custoTotal.toFixed(2)}`
 
                     }
 

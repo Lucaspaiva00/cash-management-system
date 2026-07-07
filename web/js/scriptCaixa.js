@@ -120,6 +120,73 @@ const obterNome = item =>
   item?.descricao ||
   "Sem nome";
 
+function montarDescricaoVendaPdv(venda) {
+  const itens = venda.itens || [];
+
+  const partes = itens.map(item => {
+    const nome = item.produto?.nome || "Produto";
+    const qtd = Number(item.quantidade || 1);
+
+    return qtd > 1 ? `${nome} x${qtd}` : nome;
+  });
+
+  let produtos = partes.join(", ");
+
+  if (produtos.length > 200) {
+    produtos = `${produtos.slice(0, 197)}...`;
+  }
+
+  return produtos
+    ? `Venda PDV #${venda.id} - ${produtos}`
+    : `Venda PDV #${venda.id}`;
+}
+
+function extrairVendaId(descricao) {
+  return descricao?.match(/Venda PDV #(\d+)/)?.[1] || null;
+}
+
+function extrairProdutosPdv(descricao) {
+  const match = descricao?.match(/Venda PDV #\d+\s*-\s*(.+)/);
+  return match ? match[1] : "Venda PDV";
+}
+
+function parseObservacoesPdv(observacoes) {
+  if (!observacoes) return {};
+
+  return {
+    lucro: observacoes.match(/lucro=([\d.]+)/)?.[1],
+    custo: observacoes.match(/custo=([\d.]+)/)?.[1]
+  };
+}
+
+function enriquecerOperacaoPdv(op, vendasMap) {
+  const vendaId = extrairVendaId(op.descricao);
+  if (!vendaId && !op._vendaPdv) return op;
+
+  const venda = vendasMap[vendaId || op._vendaId];
+  const meta = parseObservacoesPdv(op.observacoes);
+
+  const lucro = Number(
+    venda?.lucro ?? meta.lucro ?? op._lucro ?? 0
+  );
+
+  const custo = Number(
+    venda?.custoTotal ?? meta.custo ?? op._custo ?? 0
+  );
+
+  return {
+    ...op,
+    _vendaId: vendaId || op._vendaId,
+    _lucro: lucro,
+    _custo: custo
+  };
+}
+
+function calcularMargem(lucro, receita) {
+  if (!receita) return 0;
+  return Math.round((lucro / receita) * 100);
+}
+
 document.addEventListener(
   "DOMContentLoaded",
   async () => {
@@ -571,9 +638,15 @@ async function carregarOperacoes() {
 
     }
 
+    const vendasMap = {};
+
+    (Array.isArray(vendas) ? vendas : []).forEach(venda => {
+      vendasMap[venda.id] = venda;
+    });
+
     const vendasNoCaixa = new Set(
       caixa
-        .map(op => op.descricao?.match(/Venda PDV #(\d+)/)?.[1])
+        .map(op => extrairVendaId(op.descricao))
         .filter(Boolean)
     );
 
@@ -584,7 +657,7 @@ async function carregarOperacoes() {
         tipoOperacao: "ENTRADA",
         meioPagamento: v.meioPagamento,
         valor: v.total,
-        descricao: `Venda PDV #${v.id}`,
+        descricao: montarDescricaoVendaPdv(v),
         status: "PAGO",
         dataOperacao: v.data,
         cliente: v.cliente || null,
@@ -594,10 +667,16 @@ async function carregarOperacoes() {
         fornecedor: null,
         parcelaAtual: 1,
         parcelas: 1,
-        _vendaPdv: true
+        _vendaPdv: true,
+        _vendaId: v.id,
+        _lucro: Number(v.lucro || 0),
+        _custo: Number(v.custoTotal || 0)
       }));
 
-    const dados = [...caixa, ...vendasSemCaixa];
+    const dados = [
+      ...caixa.map(op => enriquecerOperacaoPdv(op, vendasMap)),
+      ...vendasSemCaixa
+    ];
 
     OPERACOES =
       dados
@@ -746,10 +825,81 @@ function atualizarTotalRegistros(total) {
 
 }
 
+function criarCardPdv(op) {
+  const receita = Number(op.valor || 0);
+  const lucro = Number(op._lucro || 0);
+  const custo = Number(op._custo || 0);
+  const margem = calcularMargem(lucro, receita);
+  const produtos = extrairProdutosPdv(op.descricao);
+  const dataFmt = formatarDataBR(op.dataOperacao);
+  const statusBadge = obterBadgeStatus(op.status);
+  const lucroPositivo = lucro >= 0;
+
+  return `
+<div class="col-xl-4 col-lg-6 mb-4">
+    <div class="metric-card movimentacao-card movimentacao-card-pdv">
+        <div class="pdv-card-header">
+            <div>
+                <div class="pdv-card-type">Entrada · PDV</div>
+                <div class="pdv-card-meta">${op.meioPagamento || "-"} · #${op._vendaId || extrairVendaId(op.descricao) || "-"}</div>
+            </div>
+            <div class="pdv-card-badges">
+                ${statusBadge}
+            </div>
+        </div>
+
+        <div class="pdv-produtos" title="${produtos}">
+            <i class="fas fa-shopping-basket mr-2"></i>${produtos}
+        </div>
+
+        <div class="pdv-finance-grid">
+            <div class="pdv-finance-item">
+                <span>Receita</span>
+                <strong>${fmtBRL(receita)}</strong>
+            </div>
+            <div class="pdv-finance-item pdv-finance-custo">
+                <span>Custo</span>
+                <strong>${fmtBRL(custo)}</strong>
+            </div>
+            <div class="pdv-finance-item pdv-finance-lucro ${lucroPositivo ? "is-positive" : "is-negative"}">
+                <span>Lucro</span>
+                <strong>${fmtBRL(lucro)}</strong>
+            </div>
+        </div>
+
+        <div class="pdv-margem">
+            <div class="pdv-margem-label">
+                <span>Margem</span>
+                <strong>${margem}%</strong>
+            </div>
+            <div class="pdv-margem-bar">
+                <div class="pdv-margem-fill ${lucroPositivo ? "is-positive" : "is-negative"}" style="width:${Math.min(Math.max(margem, 0), 100)}%"></div>
+            </div>
+        </div>
+
+        <div class="pdv-card-footer">
+            <div>
+                <small>Cliente</small>
+                <div>${op.cliente?.nome || "Consumidor final"}</div>
+            </div>
+            <div class="text-right">
+                <small>Data</small>
+                <div>${dataFmt}</div>
+            </div>
+        </div>
+    </div>
+</div>`;
+}
+
 function criarCard(op) {
 
-  const entrada = op.tipoOperacao === "ENTRADA";
   const isPdv = op._vendaPdv || op.descricao?.includes("Venda PDV");
+
+  if (isPdv) {
+    return criarCardPdv(op);
+  }
+
+  const entrada = op.tipoOperacao === "ENTRADA";
 
   const corValor = entrada ? "text-success" : "text-danger";
 
@@ -800,8 +950,6 @@ function criarCard(op) {
         <div class="mt-3">
 
             ${statusBadge}
-
-            ${isPdv ? `<span class="badge badge-info ml-2">PDV</span>` : ""}
 
         </div>
 
@@ -945,11 +1093,6 @@ function criarCard(op) {
 
             <div class="btn-group-vertical">
 
-                ${op._vendaPdv ? `
-                <span class="text-muted small text-center px-2">
-                    Registro da venda
-                </span>
-                ` : `
                 <button
                     class="btn btn-light mb-2"
                     onclick="abrirModalEdicao(${op.id})">
@@ -981,7 +1124,6 @@ function criarCard(op) {
                     <i class="fas fa-trash"></i>
 
                 </button>
-                `}
 
             </div>
 
@@ -1080,6 +1222,14 @@ function atualizarTotais(items) {
           i.status === "PENDENTE"
       ).length;
 
+  const lucroVendasFiltrado =
+    items
+      .filter(op => op.descricao?.includes("Venda PDV") || op._vendaPdv)
+      .reduce(
+        (acc, op) => acc + Number(op._lucro || 0),
+        0
+      );
+
   if (elTotalEntradas) {
 
     elTotalEntradas.textContent =
@@ -1100,6 +1250,13 @@ function atualizarTotais(items) {
       fmtBRL(
         entradas - saidas
       );
+
+  }
+
+  if (elLucroVendas) {
+
+    elLucroVendas.textContent =
+      fmtBRL(lucroVendasFiltrado);
 
   }
 

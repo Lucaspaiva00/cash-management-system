@@ -1230,3 +1230,173 @@ label {
     }
 
 }
+
+/* PDV — cards de movimentação */
+
+.movimentacao-card-pdv {
+    border: 1px solid #dbeafe;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.pdv-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.pdv-card-type {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #2563eb;
+}
+
+.pdv-card-meta {
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: #64748b;
+}
+
+.pdv-card-badges .badge {
+    font-size: 0.72rem;
+}
+
+.pdv-produtos {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #0f172a;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.pdv-produtos i {
+    color: #2563eb;
+    margin-top: 2px;
+}
+
+.pdv-finance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.pdv-finance-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.pdv-finance-item span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.pdv-finance-item strong {
+    font-size: 0.98rem;
+    color: #0f172a;
+}
+
+.pdv-finance-custo strong {
+    color: #64748b;
+}
+
+.pdv-finance-lucro.is-positive {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.pdv-finance-lucro.is-positive span,
+.pdv-finance-lucro.is-positive strong {
+    color: #047857;
+}
+
+.pdv-finance-lucro.is-negative {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.pdv-finance-lucro.is-negative span,
+.pdv-finance-lucro.is-negative strong {
+    color: #b91c1c;
+}
+
+.pdv-margem {
+    margin-bottom: 16px;
+}
+
+.pdv-margem-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    color: #64748b;
+}
+
+.pdv-margem-label strong {
+    color: #0f172a;
+    font-size: 0.92rem;
+}
+
+.pdv-margem-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    overflow: hidden;
+}
+
+.pdv-margem-fill {
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.35s ease;
+}
+
+.pdv-margem-fill.is-positive {
+    background: linear-gradient(90deg, #34d399, #059669);
+}
+
+.pdv-margem-fill.is-negative {
+    background: linear-gradient(90deg, #f87171, #dc2626);
+}
+
+.pdv-card-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.pdv-card-footer small {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.pdv-card-footer div {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+}
