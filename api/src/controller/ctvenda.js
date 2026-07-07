@@ -39,13 +39,22 @@ const read = async (req, res) => {
             },
             select: {
                 id: true,
+                data: true,
                 total: true,
+                custoTotal: true,
+                lucro: true,
+                meioPagamento: true,
                 statusNfe: true,
                 numeroNota: true,
                 serieNota: true,
                 chaveNfe: true,
                 protocoloNfe: true,
-                xmlNfe: true
+                cliente: {
+                    select: {
+                        id: true,
+                        nome: true
+                    }
+                }
             }
         });
 
@@ -101,6 +110,7 @@ const create = async (req, res) => {
         });
 
         let totalItens = 0;
+        let custoTotal = 0;
 
         const itensProcessados = [];
 
@@ -126,19 +136,24 @@ const create = async (req, res) => {
 
             }
 
-            const subtotal =
-                Number(item.quantidade) *
-                Number(produto.precoVenda);
+            const quantidade = Number(item.quantidade);
+            const precoVenda = Number(produto.precoVenda);
+            const custoUnitario = Number(produto.precoCompra || 0);
+
+            const subtotal = quantidade * precoVenda;
 
             totalItens += subtotal;
+            custoTotal += quantidade * custoUnitario;
 
             itensProcessados.push({
 
                 produtoId: produto.id,
 
-                quantidade: Number(item.quantidade),
+                quantidade,
 
-                precoUnitario: Number(produto.precoVenda),
+                precoUnitario: precoVenda,
+
+                custoUnitario,
 
                 subtotal,
 
@@ -170,6 +185,8 @@ const create = async (req, res) => {
             Number(seguro) +
             Number(outrasDespesas);
 
+        const lucro = total - custoTotal;
+
         const venda = await prisma.$transaction(
 
             async (tx) => {
@@ -190,6 +207,10 @@ const create = async (req, res) => {
                             meioPagamento,
 
                             total,
+
+                            custoTotal,
+
+                            lucro,
 
                             desconto:
                                 Number(desconto),
@@ -413,7 +434,9 @@ const resumo = async (req, res) => {
                         }
                     },
                     _sum: {
-                        total: true
+                        total: true,
+                        lucro: true,
+                        custoTotal: true
                     },
                     _count: {
                         id: true
@@ -429,7 +452,9 @@ const resumo = async (req, res) => {
                         }
                     },
                     _sum: {
-                        total: true
+                        total: true,
+                        lucro: true,
+                        custoTotal: true
                     },
                     _count: {
                         id: true
@@ -445,7 +470,9 @@ const resumo = async (req, res) => {
                         }
                     },
                     _sum: {
-                        total: true
+                        total: true,
+                        lucro: true,
+                        custoTotal: true
                     },
                     _count: {
                         id: true

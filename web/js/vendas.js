@@ -15,13 +15,13 @@ async function carregarResumo() {
         const fmt = (n) => (n || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
         document.getElementById("vDia").textContent = fmt(dados.dia._sum.total);
-        document.getElementById("qDia").textContent = `${dados.dia._count.id} vendas`;
+        document.getElementById("qDia").textContent = `${dados.dia._count.id} vendas · Lucro ${fmt(dados.dia._sum.lucro)}`;
 
         document.getElementById("vMes").textContent = fmt(dados.mes._sum.total);
-        document.getElementById("qMes").textContent = `${dados.mes._count.id} vendas`;
+        document.getElementById("qMes").textContent = `${dados.mes._count.id} vendas · Lucro ${fmt(dados.mes._sum.lucro)}`;
 
         document.getElementById("vAno").textContent = fmt(dados.ano._sum.total);
-        document.getElementById("qAno").textContent = `${dados.ano._count.id} vendas`;
+        document.getElementById("qAno").textContent = `${dados.ano._count.id} vendas · Lucro ${fmt(dados.ano._sum.lucro)}`;
 
         desenharGraficoBarras(dados);
     } catch (e) {
@@ -115,7 +115,7 @@ async function carregarTabela() {
         corpo.innerHTML = "";
 
         if (!Array.isArray(vendas) || vendas.length === 0) {
-            corpo.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Nenhuma venda registrada.</td></tr>`;
+            corpo.innerHTML = `<tr><td colspan="8" class="text-center text-muted">Nenhuma venda registrada.</td></tr>`;
             return;
         }
 
@@ -123,6 +123,7 @@ async function carregarTabela() {
             const nomeCliente = v.cliente ? v.cliente.nome : "Consumidor Final";
             const dataVenda = new Date(v.data).toLocaleDateString("pt-BR");
             const valor = v.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            const lucro = (v.lucro ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
             const badgeNfe =
                 v.statusNfe === "AUTORIZADA"
@@ -145,6 +146,8 @@ async function carregarTabela() {
     <td>${v.meioPagamento}</td>
 
     <td>${valor}</td>
+
+    <td>${lucro}</td>
 
     <td>${badgeNfe}</td>
 
@@ -231,10 +234,10 @@ document.getElementById("btnExportar").addEventListener("click", () => {
     const tabela = document.getElementById("tabelaVendas");
     if (!tabela || tabela.rows.length === 0) return alert("Nenhuma venda para exportar!");
 
-    let csv = "ID;Cliente;Data;Pagamento;Valor (R$)\n";
+    let csv = "ID;Cliente;Data;Pagamento;Valor (R$);Lucro (R$)\n";
     for (let i = 0; i < tabela.rows.length; i++) {
         const cells = tabela.rows[i].cells;
-        csv += `${cells[0].innerText};${cells[1].innerText};${cells[2].innerText};${cells[3].innerText};${cells[4].innerText}\n`;
+        csv += `${cells[0].innerText};${cells[1].innerText};${cells[2].innerText};${cells[3].innerText};${cells[4].innerText};${cells[5].innerText}\n`;
     }
 
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });

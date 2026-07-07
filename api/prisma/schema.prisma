@@ -301,6 +301,10 @@ model Venda {
 
   total Float
 
+  custoTotal Float @default(0)
+
+  lucro Float @default(0)
+
   desconto Float @default(0)
 
   frete Float @default(0)
@@ -358,6 +362,8 @@ model VendaItem {
   quantidade Int
 
   precoUnitario Float
+
+  custoUnitario Float @default(0)
 
   desconto Float @default(0)
 
