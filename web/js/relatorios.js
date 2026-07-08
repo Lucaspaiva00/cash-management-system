@@ -1,14 +1,10 @@
 /* ==========================================================
    CONFIGURAÇÕES
 ========================================================== */
-
 const empresaId =
     localStorage.getItem(
         "empresaId"
     );
-
-const API =
-    API_URL;
 
 let tipoRelatorio =
     "entradas";
