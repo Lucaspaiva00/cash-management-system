@@ -1,19 +1,24 @@
 /* ==========================================================
+   RELATÓRIOS FINANCEIROS
+   PAIVA TECH
+========================================================== */
+
+/* ==========================================================
    CONFIGURAÇÕES
 ========================================================== */
 
 const API = API_BASE;
 
-const usuario =
+const usuarioLogado =
     JSON.parse(
         localStorage.getItem(
             "usuarioLogado"
         )
     );
 
-if (!usuario) {
+if (!usuarioLogado) {
 
-    alert("Sessão expirada.");
+    alert("Sua sessão expirou.");
 
     window.location.href =
         "login.html";
@@ -21,73 +26,225 @@ if (!usuario) {
 }
 
 const empresaId =
-    Number(usuario.empresaId);
+    Number(
+        usuarioLogado.empresaId
+    );
 
-
-let tipoRelatorio = "entradas";
+let tipoRelatorio =
+    "entradas";
 
 /* ==========================================================
-   INICIALIZAÇÃO
+   DOM
+========================================================== */
+
+const selectTipo =
+    document.getElementById(
+        "tipoRelatorio"
+    );
+
+const dataInicial =
+    document.getElementById(
+        "dataInicial"
+    );
+
+const dataFinal =
+    document.getElementById(
+        "dataFinal"
+    );
+
+const btnPesquisar =
+    document.getElementById(
+        "btnPesquisar"
+    );
+
+const btnLimpar =
+    document.getElementById(
+        "btnLimpar"
+    );
+
+const btnExcel =
+    document.getElementById(
+        "btnExportarExcel"
+    );
+
+const tabelaHead =
+    document.getElementById(
+        "cabecalhoTabela"
+    );
+
+const tabelaBody =
+    document.getElementById(
+        "corpoTabela"
+    );
+
+/* ==========================================================
+   START
 ========================================================== */
 
 document.addEventListener(
 
     "DOMContentLoaded",
 
-    () => {
-
-        atualizarTitulo();
-
-        configurarEventos();
-
-        carregarRelatorio();
-
-    }
+    iniciarPagina
 
 );
+
+function iniciarPagina() {
+
+    registrarEventos();
+
+    atualizarTitulo();
+
+    carregarRelatorio();
+
+}
 
 /* ==========================================================
    EVENTOS
 ========================================================== */
 
-function configurarEventos() {
+function registrarEventos() {
 
-    document
-        .getElementById("btnPesquisar")
-        .addEventListener(
-            "click",
-            carregarRelatorio
+    selectTipo.addEventListener(
+
+        "change",
+
+        () => {
+
+            tipoRelatorio =
+                selectTipo.value;
+
+            atualizarTitulo();
+
+            carregarRelatorio();
+
+        }
+
+    );
+
+    btnPesquisar.addEventListener(
+
+        "click",
+
+        carregarRelatorio
+
+    );
+
+    btnLimpar.addEventListener(
+
+        "click",
+
+        limparFiltros
+
+    );
+
+    btnExcel.addEventListener(
+
+        "click",
+
+        exportarExcel
+
+    );
+
+}
+
+/* ==========================================================
+   TÍTULOS
+========================================================== */
+
+function atualizarTitulo() {
+
+    const titulo =
+        document.getElementById(
+            "tituloTabela"
         );
 
-    document
-        .getElementById("btnLimpar")
-        .addEventListener(
-            "click",
-            limparFiltros
+    const subtitulo =
+        document.getElementById(
+            "subTituloTabela"
         );
 
-    document
-        .getElementById("btnExportarExcel")
-        .addEventListener(
-            "click",
-            exportarExcel
+    const card =
+        document.getElementById(
+            "cardTipo"
         );
 
-    document
-        .getElementById("tipoRelatorio")
-        .addEventListener(
+    const textos = {
 
-            "change",
+        entradas: {
 
-            function () {
+            titulo:
+                "Relatório de Entradas",
 
-                tipoRelatorio = this.value;
+            subtitulo:
+                "Todas as entradas financeiras.",
 
-                atualizarTitulo();
+            card:
+                "Entradas"
 
-            }
+        },
 
+        saidas: {
+
+            titulo:
+                "Relatório de Saídas",
+
+            subtitulo:
+                "Todas as saídas financeiras.",
+
+            card:
+                "Saídas"
+
+        },
+
+        clientes: {
+
+            titulo:
+                "Relatório por Clientes",
+
+            subtitulo:
+                "Resumo financeiro por cliente.",
+
+            card:
+                "Clientes"
+
+        }
+
+    };
+
+    titulo.innerHTML =
+        textos[tipoRelatorio].titulo;
+
+    subtitulo.innerHTML =
+        textos[tipoRelatorio].subtitulo;
+
+    card.innerHTML =
+        textos[tipoRelatorio].card;
+
+}
+
+/* ==========================================================
+   LOADING
+========================================================== */
+
+function mostrarLoading(
+
+    mostrar
+
+) {
+
+    const loading =
+        document.getElementById(
+            "loadingRelatorio"
         );
+
+    if (!loading)
+        return;
+
+    loading.style.display =
+        mostrar
+            ? "block"
+            : "none";
 
 }
 
@@ -102,158 +259,134 @@ async function carregarRelatorio() {
     try {
 
         tipoRelatorio =
-            document.getElementById(
-                "tipoRelatorio"
-            ).value;
-
-        const inicio =
-            document.getElementById(
-                "dataInicial"
-            ).value;
-
-        const fim =
-            document.getElementById(
-                "dataFinal"
-            ).value;
+            selectTipo.value;
 
         let url =
             `${API}/relatorios/${tipoRelatorio}?empresaId=${empresaId}`;
 
         if (
-            inicio &&
-            fim
+
+            dataInicial.value &&
+            dataFinal.value
+
         ) {
 
             url +=
-                `&inicio=${inicio}&fim=${fim}`;
+                `&inicio=${dataInicial.value}&fim=${dataFinal.value}`;
 
         }
 
-        console.log("URL:", url);
+        console.log(
+
+            "URL:",
+
+            url
+
+        );
 
         const resposta =
             await fetch(url);
+
+        if (!resposta.ok) {
+
+            const texto =
+                await resposta.text();
+
+            console.error(texto);
+
+            throw new Error(
+
+                "Erro ao consultar relatório."
+
+            );
+
+        }
 
         const dados =
             await resposta.json();
 
         console.log(dados);
 
-        if (!resposta.ok) {
+        atualizarCards(
 
-            console.error(dados);
-
-            alert(
-                dados.error ||
-                "Erro ao carregar relatório."
-            );
-
-            return;
-
-        }
-
-        renderizarTabela(
             dados
+
         );
 
-        atualizarCards(
+        renderizarTabela(
+
             dados
+
         );
 
     }
 
     catch (erro) {
 
-        console.error(erro);
+        console.error(
+
+            erro
+
+        );
+
+        tabelaHead.innerHTML = "";
+
+        tabelaBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="20"
+                    class="text-center py-5 text-danger">
+
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+
+                    Não foi possível carregar o relatório.
+
+                </td>
+
+            </tr>
+
+        `;
 
     }
 
     finally {
 
-        mostrarLoading(false);
+        mostrarLoading(
 
-    }
+            false
 
-}
-
-function atualizarTitulo() {
-
-    const titulo =
-        document.getElementById("tituloTabela");
-
-    const subtitulo =
-        document.getElementById("subTituloTabela");
-
-    const card =
-        document.getElementById("cardTipo");
-
-    switch (tipoRelatorio) {
-
-        case "entradas":
-
-            titulo.innerHTML =
-                "Relatório de Entradas";
-
-            subtitulo.innerHTML =
-                "Todas as entradas encontradas.";
-
-            card.innerHTML =
-                "Entradas";
-
-            break;
-
-        case "saidas":
-
-            titulo.innerHTML =
-                "Relatório de Saídas";
-
-            subtitulo.innerHTML =
-                "Todas as saídas encontradas.";
-
-            card.innerHTML =
-                "Saídas";
-
-            break;
-
-        case "clientes":
-
-            titulo.innerHTML =
-                "Relatório por Clientes";
-
-            subtitulo.innerHTML =
-                "Resumo financeiro por cliente.";
-
-            card.innerHTML =
-                "Clientes";
-
-            break;
+        );
 
     }
 
 }
 
 /* ==========================================================
-   RENDERIZAR TABELA
+   RENDERIZAÇÃO
 ========================================================== */
 
-function renderizarTabela(dados) {
+function renderizarTabela(
 
-    switch (tipoRelatorio) {
+    dados
+
+) {
+
+    switch (
+
+    tipoRelatorio
+
+    ) {
 
         case "entradas":
-
-            renderizarMovimentacoes(
-                dados.movimentacoes,
-                "success"
-            );
-
-            break;
 
         case "saidas":
 
             renderizarMovimentacoes(
-                dados.movimentacoes,
-                "danger"
+
+                dados.movimentacoes || []
+
             );
 
             break;
@@ -261,7 +394,9 @@ function renderizarTabela(dados) {
         case "clientes":
 
             renderizarClientes(
-                dados.clientes
+
+                dados.clientes || []
+
             );
 
             break;
@@ -276,23 +411,11 @@ function renderizarTabela(dados) {
 
 function renderizarMovimentacoes(
 
-    movimentacoes,
-
-    cor
+    lista
 
 ) {
 
-    const cabecalho =
-        document.getElementById(
-            "cabecalhoTabela"
-        );
-
-    const corpo =
-        document.getElementById(
-            "corpoTabela"
-        );
-
-    cabecalho.innerHTML = `
+    tabelaHead.innerHTML = `
 
         <tr>
 
@@ -320,25 +443,23 @@ function renderizarMovimentacoes(
 
     `;
 
-    corpo.innerHTML = "";
+    tabelaBody.innerHTML = "";
 
     if (
 
-        !movimentacoes ||
-
-        movimentacoes.length === 0
+        lista.length === 0
 
     ) {
 
-        corpo.innerHTML = `
+        tabelaBody.innerHTML = `
 
             <tr>
 
                 <td
                     colspan="8"
-                    class="text-center py-5 text-muted">
+                    class="text-center py-5">
 
-                    Nenhuma movimentação encontrada.
+                    Nenhum registro encontrado.
 
                 </td>
 
@@ -350,18 +471,20 @@ function renderizarMovimentacoes(
 
     }
 
-    movimentacoes.forEach(
+    lista.forEach(
 
         item => {
 
-            corpo.innerHTML += `
+            tabelaBody.innerHTML += `
 
                 <tr>
 
                     <td>
 
                         ${formatarData(
+
                 item.dataOperacao
+
             )}
 
                     </td>
@@ -398,19 +521,20 @@ function renderizarMovimentacoes(
 
                     <td>
 
-                        <span class="badge badge-${cor}">
-
-                            ${item.status || "-"}
-
-                        </span>
+                        ${item.status || "-"}
 
                     </td>
 
-                    <td class="text-right font-weight-bold text-${cor}">
+                    <td
+                        class="text-right font-weight-bold ${tipoRelatorio === "entradas"
+                    ? "text-success"
+                    : "text-danger"}">
 
                         ${formatarMoeda(
-                item.valor
-            )}
+
+                        item.valor
+
+                    )}
 
                     </td>
 
@@ -423,7 +547,6 @@ function renderizarMovimentacoes(
     );
 
 }
-
 /* ==========================================================
    CLIENTES
 ========================================================== */
@@ -434,71 +557,39 @@ function renderizarClientes(
 
 ) {
 
-    const cabecalho =
-        document.getElementById(
-            "cabecalhoTabela"
-        );
-
-    const corpo =
-        document.getElementById(
-            "corpoTabela"
-        );
-
-    cabecalho.innerHTML = `
+    tabelaHead.innerHTML = `
 
         <tr>
 
-            <th>
+            <th>Cliente</th>
 
-                Cliente
+            <th class="text-right">Entradas</th>
 
-            </th>
+            <th class="text-right">Saídas</th>
 
-            <th class="text-right">
+            <th class="text-right">Saldo</th>
 
-                Entradas
-
-            </th>
-
-            <th class="text-right">
-
-                Saídas
-
-            </th>
-
-            <th class="text-right">
-
-                Saldo
-
-            </th>
-
-            <th class="text-center">
-
-                Movimentações
-
-            </th>
+            <th class="text-center">Movimentações</th>
 
         </tr>
 
     `;
 
-    corpo.innerHTML = "";
+    tabelaBody.innerHTML = "";
 
     if (
-
-        !clientes ||
 
         clientes.length === 0
 
     ) {
 
-        corpo.innerHTML = `
+        tabelaBody.innerHTML = `
 
             <tr>
 
                 <td
                     colspan="5"
-                    class="text-center py-5 text-muted">
+                    class="text-center py-5">
 
                     Nenhum cliente encontrado.
 
@@ -516,7 +607,7 @@ function renderizarClientes(
 
         cliente => {
 
-            corpo.innerHTML += `
+            tabelaBody.innerHTML += `
 
                 <tr>
 
@@ -530,18 +621,22 @@ function renderizarClientes(
 
                     </td>
 
-                    <td class="text-right text-success font-weight-bold">
+                    <td class="text-right text-success">
 
                         ${formatarMoeda(
+
                 cliente.entradas
+
             )}
 
                     </td>
 
-                    <td class="text-right text-danger font-weight-bold">
+                    <td class="text-right text-danger">
 
                         ${formatarMoeda(
+
                 cliente.saidas
+
             )}
 
                     </td>
@@ -549,7 +644,9 @@ function renderizarClientes(
                     <td class="text-right font-weight-bold">
 
                         ${formatarMoeda(
+
                 cliente.saldo
+
             )}
 
                     </td>
@@ -571,10 +668,14 @@ function renderizarClientes(
 }
 
 /* ==========================================================
-   ATUALIZAR CARDS
+   CARDS
 ========================================================== */
 
-function atualizarCards(dados) {
+function atualizarCards(
+
+    dados
+
+) {
 
     const cardRegistros =
         document.getElementById(
@@ -596,7 +697,11 @@ function atualizarCards(dados) {
             "quantidadeRegistros"
         );
 
-    if (tipoRelatorio === "clientes") {
+    if (
+
+        tipoRelatorio === "clientes"
+
+    ) {
 
         const quantidade =
             dados.quantidadeClientes || 0;
@@ -631,23 +736,15 @@ function atualizarCards(dados) {
 
     }
 
-    const inicio =
-        document.getElementById(
-            "dataInicial"
-        ).value;
-
-    const fim =
-        document.getElementById(
-            "dataFinal"
-        ).value;
-
     if (
-        inicio &&
-        fim
+
+        dataInicial.value &&
+        dataFinal.value
+
     ) {
 
         cardPeriodo.innerHTML =
-            `${formatarData(inicio)}<br>${formatarData(fim)}`;
+            `${formatarData(dataInicial.value)}<br>${formatarData(dataFinal.value)}`;
 
     }
 
@@ -666,55 +763,44 @@ function atualizarCards(dados) {
 
 function exportarExcel() {
 
-    const inicio =
-        document.getElementById(
-            "dataInicial"
-        ).value;
-
-    const fim =
-        document.getElementById(
-            "dataFinal"
-        ).value;
-
     let url =
         `${API}/relatorios/${tipoRelatorio}/excel?empresaId=${empresaId}`;
 
     if (
-        inicio &&
-        fim
+
+        dataInicial.value &&
+        dataFinal.value
+
     ) {
 
         url +=
-            `&inicio=${inicio}&fim=${fim}`;
+            `&inicio=${dataInicial.value}&fim=${dataFinal.value}`;
 
     }
 
     window.open(
+
         url,
+
         "_blank"
+
     );
 
 }
 
 /* ==========================================================
-   LIMPAR FILTROS
+   LIMPAR
 ========================================================== */
 
 function limparFiltros() {
 
-    document.getElementById(
-        "tipoRelatorio"
-    ).value =
+    selectTipo.value =
         "entradas";
 
-    document.getElementById(
-        "dataInicial"
-    ).value =
+    dataInicial.value =
         "";
 
-    document.getElementById(
-        "dataFinal"
-    ).value =
+    dataFinal.value =
         "";
 
     tipoRelatorio =
@@ -727,31 +813,42 @@ function limparFiltros() {
 }
 
 /* ==========================================================
-   FORMATAR DATA
+   DATA
 ========================================================== */
 
-function formatarData(data) {
+function formatarData(
+
+    data
+
+) {
 
     if (!data)
         return "-";
 
-    const d =
-        new Date(data);
+    return new Date(data)
 
-    return d.toLocaleDateString(
-        "pt-BR"
-    );
+        .toLocaleDateString(
+
+            "pt-BR"
+
+        );
 
 }
 
 /* ==========================================================
-   FORMATAR MOEDA
+   MOEDA
 ========================================================== */
 
-function formatarMoeda(valor) {
+function formatarMoeda(
+
+    valor
+
+) {
 
     return Number(
+
         valor || 0
+
     ).toLocaleString(
 
         "pt-BR",
@@ -759,9 +856,11 @@ function formatarMoeda(valor) {
         {
 
             style:
+
                 "currency",
 
             currency:
+
                 "BRL"
 
         }
