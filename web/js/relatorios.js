@@ -176,6 +176,62 @@ async function carregarRelatorio() {
 
 }
 
+function atualizarTitulo() {
+
+    const titulo =
+        document.getElementById("tituloTabela");
+
+    const subtitulo =
+        document.getElementById("subTituloTabela");
+
+    const card =
+        document.getElementById("cardTipo");
+
+    switch (tipoRelatorio) {
+
+        case "entradas":
+
+            titulo.innerHTML =
+                "Relatório de Entradas";
+
+            subtitulo.innerHTML =
+                "Todas as entradas encontradas.";
+
+            card.innerHTML =
+                "Entradas";
+
+            break;
+
+        case "saidas":
+
+            titulo.innerHTML =
+                "Relatório de Saídas";
+
+            subtitulo.innerHTML =
+                "Todas as saídas encontradas.";
+
+            card.innerHTML =
+                "Saídas";
+
+            break;
+
+        case "clientes":
+
+            titulo.innerHTML =
+                "Relatório por Clientes";
+
+            subtitulo.innerHTML =
+                "Resumo financeiro por cliente.";
+
+            card.innerHTML =
+                "Clientes";
+
+            break;
+
+    }
+
+}
+
 /* ==========================================================
    RENDERIZAR TABELA
 ========================================================== */
