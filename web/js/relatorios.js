@@ -6,6 +6,9 @@ const empresaId =
         "empresaId"
     );
 
+const API =
+    API_BASE;
+
 let tipoRelatorio =
     "entradas";
 
