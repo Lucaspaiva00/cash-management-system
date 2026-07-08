@@ -14,6 +14,7 @@ const categorias = require("./controller/categoriaFinanceira.controller");
 const centrosCusto = require("./controller/centroCusto.controller");
 const nfe = require("./controller/nfe.controller");
 const limparBanco = require("./controller/limpar-banco");
+const relatorios = require("./controller/relatorios.controller");
 
 routes.get("/", (req, res) => {
   res.status(200).json({
@@ -137,6 +138,36 @@ routes.get("/vendas/:id/xml", nfe.gerarXml);
 routes.post(
   "/vendas/:id/emitir",
   nfe.emitirNfe
+);
+
+routes.get(
+  "/relatorios/entradas",
+  relatorios.relatorioEntradas
+);
+
+routes.get(
+  "/relatorios/saidas",
+  relatorios.relatorioSaidas
+);
+
+routes.get(
+  "/relatorios/clientes",
+  relatorios.relatorioClientes
+);
+
+routes.get(
+  "/relatorios/entradas/excel",
+  relatorios.exportarEntradas
+);
+
+routes.get(
+  "/relatorios/saidas/excel",
+  relatorios.exportarSaidas
+);
+
+routes.get(
+  "/relatorios/clientes/excel",
+  relatorios.exportarClientes
 );
 
 module.exports = routes;
