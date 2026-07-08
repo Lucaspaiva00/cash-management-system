@@ -1,5 +1,8 @@
-const API =
-    API_BASE;
+/* ==========================================================
+   CONFIGURAÇÕES
+========================================================== */
+
+const API = API_BASE;
 
 const usuario =
     JSON.parse(
@@ -18,9 +21,11 @@ if (!usuario) {
 }
 
 const empresaId =
-    Number(
-        usuario.empresaId
-    );
+    Number(usuario.empresaId);
+
+
+let tipoRelatorio = "entradas";
+
 /* ==========================================================
    INICIALIZAÇÃO
 ========================================================== */
@@ -30,6 +35,8 @@ document.addEventListener(
     "DOMContentLoaded",
 
     () => {
+
+        atualizarTitulo();
 
         configurarEventos();
 
@@ -48,31 +55,22 @@ function configurarEventos() {
     document
         .getElementById("btnPesquisar")
         .addEventListener(
-
             "click",
-
             carregarRelatorio
-
         );
 
     document
         .getElementById("btnLimpar")
         .addEventListener(
-
             "click",
-
             limparFiltros
-
         );
 
     document
         .getElementById("btnExportarExcel")
         .addEventListener(
-
             "click",
-
             exportarExcel
-
         );
 
     document
@@ -81,14 +79,11 @@ function configurarEventos() {
 
             "change",
 
-            e => {
+            function () {
 
-                tipoRelatorio =
-                    e.target.value;
+                tipoRelatorio = this.value;
 
                 atualizarTitulo();
-
-                carregarRelatorio();
 
             }
 
@@ -106,6 +101,11 @@ async function carregarRelatorio() {
 
     try {
 
+        tipoRelatorio =
+            document.getElementById(
+                "tipoRelatorio"
+            ).value;
+
         const inicio =
             document.getElementById(
                 "dataInicial"
@@ -119,23 +119,34 @@ async function carregarRelatorio() {
         let url =
             `${API}/relatorios/${tipoRelatorio}?empresaId=${empresaId}`;
 
-        if (inicio && fim) {
+        if (
+            inicio &&
+            fim
+        ) {
 
             url +=
                 `&inicio=${inicio}&fim=${fim}`;
 
         }
 
+        console.log("URL:", url);
+
         const resposta =
             await fetch(url);
 
         const dados =
             await resposta.json();
+
+        console.log(dados);
+
         if (!resposta.ok) {
 
             console.error(dados);
 
-            alert(dados.error);
+            alert(
+                dados.error ||
+                "Erro ao carregar relatório."
+            );
 
             return;
 
@@ -153,13 +164,7 @@ async function carregarRelatorio() {
 
     catch (erro) {
 
-        console.error(
-            erro
-        );
-
-        alert(
-            "Erro ao carregar relatório."
-        );
+        console.error(erro);
 
     }
 
@@ -168,91 +173,6 @@ async function carregarRelatorio() {
         mostrarLoading(false);
 
     }
-
-}
-
-/* ==========================================================
-   ATUALIZAR TÍTULO
-========================================================== */
-
-function atualizarTitulo() {
-
-    const titulo =
-        document.getElementById(
-            "tituloTabela"
-        );
-
-    const subtitulo =
-        document.getElementById(
-            "subTituloTabela"
-        );
-
-    const card =
-        document.getElementById(
-            "cardTipo"
-        );
-
-    switch (tipoRelatorio) {
-
-        case "entradas":
-
-            titulo.innerHTML =
-                "Relatório de Entradas";
-
-            subtitulo.innerHTML =
-                "Todas as entradas encontradas.";
-
-            card.innerHTML =
-                "Entradas";
-
-            break;
-
-        case "saidas":
-
-            titulo.innerHTML =
-                "Relatório de Saídas";
-
-            subtitulo.innerHTML =
-                "Todas as saídas encontradas.";
-
-            card.innerHTML =
-                "Saídas";
-
-            break;
-
-        case "clientes":
-
-            titulo.innerHTML =
-                "Relatório por Clientes";
-
-            subtitulo.innerHTML =
-                "Resumo financeiro por cliente.";
-
-            card.innerHTML =
-                "Clientes";
-
-            break;
-
-    }
-
-}
-
-/* ==========================================================
-   LOADING
-========================================================== */
-
-function mostrarLoading(
-
-    mostrar
-
-) {
-
-    document.getElementById(
-        "loadingRelatorio"
-    ).style.display =
-        mostrar
-            ? "block"
-            : "none";
 
 }
 
@@ -266,16 +186,18 @@ function renderizarTabela(dados) {
 
         case "entradas":
 
-            renderizarEntradas(
-                dados
+            renderizarMovimentacoes(
+                dados.movimentacoes,
+                "success"
             );
 
             break;
 
         case "saidas":
 
-            renderizarSaidas(
-                dados
+            renderizarMovimentacoes(
+                dados.movimentacoes,
+                "danger"
             );
 
             break;
@@ -283,7 +205,7 @@ function renderizarTabela(dados) {
         case "clientes":
 
             renderizarClientes(
-                dados
+                dados.clientes
             );
 
             break;
@@ -293,10 +215,16 @@ function renderizarTabela(dados) {
 }
 
 /* ==========================================================
-   ENTRADAS
+   MOVIMENTAÇÕES
 ========================================================== */
 
-function renderizarEntradas(dados) {
+function renderizarMovimentacoes(
+
+    movimentacoes,
+
+    cor
+
+) {
 
     const cabecalho =
         document.getElementById(
@@ -310,31 +238,63 @@ function renderizarEntradas(dados) {
 
     cabecalho.innerHTML = `
 
-        <th>Data</th>
+        <tr>
 
-        <th>Descrição</th>
+            <th>Data</th>
 
-        <th>Cliente</th>
+            <th>Descrição</th>
 
-        <th>Categoria</th>
+            <th>Cliente</th>
 
-        <th>Centro de Custo</th>
+            <th>Categoria</th>
 
-        <th>Pagamento</th>
+            <th>Centro de Custo</th>
 
-        <th>Status</th>
+            <th>Pagamento</th>
 
-        <th class="text-right">
+            <th>Status</th>
 
-            Valor
+            <th class="text-right">
 
-        </th>
+                Valor
+
+            </th>
+
+        </tr>
 
     `;
 
     corpo.innerHTML = "";
 
-    dados.movimentacoes.forEach(
+    if (
+
+        !movimentacoes ||
+
+        movimentacoes.length === 0
+
+    ) {
+
+        corpo.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="text-center py-5 text-muted">
+
+                    Nenhuma movimentação encontrada.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+    movimentacoes.forEach(
 
         item => {
 
@@ -382,131 +342,15 @@ function renderizarEntradas(dados) {
 
                     <td>
 
-                        <span class="badge badge-success">
+                        <span class="badge badge-${cor}">
 
-                            ${item.status}
-
-                        </span>
-
-                    </td>
-
-                    <td class="text-right font-weight-bold text-success">
-
-                        ${formatarMoeda(
-                item.valor
-            )}
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        }
-
-    );
-
-}
-
-/* ==========================================================
-   SAÍDAS
-========================================================== */
-
-function renderizarSaidas(dados) {
-
-    const cabecalho =
-        document.getElementById(
-            "cabecalhoTabela"
-        );
-
-    const corpo =
-        document.getElementById(
-            "corpoTabela"
-        );
-
-    cabecalho.innerHTML = `
-
-        <th>Data</th>
-
-        <th>Descrição</th>
-
-        <th>Cliente</th>
-
-        <th>Categoria</th>
-
-        <th>Centro de Custo</th>
-
-        <th>Pagamento</th>
-
-        <th>Status</th>
-
-        <th class="text-right">
-
-            Valor
-
-        </th>
-
-    `;
-
-    corpo.innerHTML = "";
-
-    dados.movimentacoes.forEach(
-
-        item => {
-
-            corpo.innerHTML += `
-
-                <tr>
-
-                    <td>
-
-                        ${formatarData(
-                item.dataOperacao
-            )}
-
-                    </td>
-
-                    <td>
-
-                        ${item.descricao || "-"}
-
-                    </td>
-
-                    <td>
-
-                        ${item.cliente?.nome || "-"}
-
-                    </td>
-
-                    <td>
-
-                        ${item.categoria?.nome || "-"}
-
-                    </td>
-
-                    <td>
-
-                        ${item.centroCusto?.nome || "-"}
-
-                    </td>
-
-                    <td>
-
-                        ${item.meioPagamento || "-"}
-
-                    </td>
-
-                    <td>
-
-                        <span class="badge badge-danger">
-
-                            ${item.status}
+                            ${item.status || "-"}
 
                         </span>
 
                     </td>
 
-                    <td class="text-right font-weight-bold text-danger">
+                    <td class="text-right font-weight-bold text-${cor}">
 
                         ${formatarMoeda(
                 item.valor
@@ -528,7 +372,11 @@ function renderizarSaidas(dados) {
    CLIENTES
 ========================================================== */
 
-function renderizarClientes(dados) {
+function renderizarClientes(
+
+    clientes
+
+) {
 
     const cabecalho =
         document.getElementById(
@@ -542,41 +390,73 @@ function renderizarClientes(dados) {
 
     cabecalho.innerHTML = `
 
-        <th>
+        <tr>
 
-            Cliente
+            <th>
 
-        </th>
+                Cliente
 
-        <th class="text-right">
+            </th>
 
-            Entradas
+            <th class="text-right">
 
-        </th>
+                Entradas
 
-        <th class="text-right">
+            </th>
 
-            Saídas
+            <th class="text-right">
 
-        </th>
+                Saídas
 
-        <th class="text-right">
+            </th>
 
-            Saldo
+            <th class="text-right">
 
-        </th>
+                Saldo
 
-        <th class="text-center">
+            </th>
 
-            Movimentações
+            <th class="text-center">
 
-        </th>
+                Movimentações
+
+            </th>
+
+        </tr>
 
     `;
 
     corpo.innerHTML = "";
 
-    dados.clientes.forEach(
+    if (
+
+        !clientes ||
+
+        clientes.length === 0
+
+    ) {
+
+        corpo.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    class="text-center py-5 text-muted">
+
+                    Nenhum cliente encontrado.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+    clientes.forEach(
 
         cliente => {
 
@@ -640,43 +520,60 @@ function renderizarClientes(dados) {
 
 function atualizarCards(dados) {
 
-    if (tipoRelatorio === "clientes") {
-
+    const cardRegistros =
         document.getElementById(
             "cardRegistros"
-        ).innerHTML =
-            dados.quantidadeClientes;
+        );
 
-        document.getElementById(
-            "quantidadeRegistros"
-        ).innerHTML =
-            `${dados.quantidadeClientes} clientes`;
-
+    const cardTotal =
         document.getElementById(
             "cardTotal"
-        ).innerHTML =
-            "-";
+        );
 
-        return;
+    const cardPeriodo =
+        document.getElementById(
+            "cardPeriodo"
+        );
+
+    const badge =
+        document.getElementById(
+            "quantidadeRegistros"
+        );
+
+    if (tipoRelatorio === "clientes") {
+
+        const quantidade =
+            dados.quantidadeClientes || 0;
+
+        cardRegistros.innerHTML =
+            quantidade;
+
+        badge.innerHTML =
+            `${quantidade} clientes`;
+
+        cardTotal.innerHTML =
+            "-";
 
     }
 
-    document.getElementById(
-        "cardRegistros"
-    ).innerHTML =
-        dados.quantidade;
+    else {
 
-    document.getElementById(
-        "cardTotal"
-    ).innerHTML =
-        formatarMoeda(
-            dados.total
-        );
+        const quantidade =
+            dados.quantidade || 0;
 
-    document.getElementById(
-        "quantidadeRegistros"
-    ).innerHTML =
-        `${dados.quantidade} registros`;
+        const total =
+            dados.total || 0;
+
+        cardRegistros.innerHTML =
+            quantidade;
+
+        badge.innerHTML =
+            `${quantidade} registros`;
+
+        cardTotal.innerHTML =
+            formatarMoeda(total);
+
+    }
 
     const inicio =
         document.getElementById(
@@ -693,18 +590,14 @@ function atualizarCards(dados) {
         fim
     ) {
 
-        document.getElementById(
-            "cardPeriodo"
-        ).innerHTML =
+        cardPeriodo.innerHTML =
             `${formatarData(inicio)}<br>${formatarData(fim)}`;
 
     }
 
     else {
 
-        document.getElementById(
-            "cardPeriodo"
-        ).innerHTML =
+        cardPeriodo.innerHTML =
             "Todos";
 
     }
@@ -786,10 +679,12 @@ function formatarData(data) {
     if (!data)
         return "-";
 
-    return new Date(data)
-        .toLocaleDateString(
-            "pt-BR"
-        );
+    const d =
+        new Date(data);
+
+    return d.toLocaleDateString(
+        "pt-BR"
+    );
 
 }
 
@@ -799,19 +694,22 @@ function formatarData(data) {
 
 function formatarMoeda(valor) {
 
-    return Number(valor || 0)
-        .toLocaleString(
+    return Number(
+        valor || 0
+    ).toLocaleString(
 
-            "pt-BR",
+        "pt-BR",
 
-            {
+        {
 
-                style: "currency",
+            style:
+                "currency",
 
-                currency: "BRL"
+            currency:
+                "BRL"
 
-            }
+        }
 
-        );
+    );
 
 }
