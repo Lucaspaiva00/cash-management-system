@@ -1,17 +1,26 @@
-/* ==========================================================
-   CONFIGURAÇÕES
-========================================================== */
-const empresaId =
-    localStorage.getItem(
-        "empresaId"
-    );
-
 const API =
     API_BASE;
 
-let tipoRelatorio =
-    "entradas";
+const usuario =
+    JSON.parse(
+        localStorage.getItem(
+            "usuarioLogado"
+        )
+    );
 
+if (!usuario) {
+
+    alert("Sessão expirada.");
+
+    window.location.href =
+        "login.html";
+
+}
+
+const empresaId =
+    Number(
+        usuario.empresaId
+    );
 /* ==========================================================
    INICIALIZAÇÃO
 ========================================================== */
@@ -122,6 +131,15 @@ async function carregarRelatorio() {
 
         const dados =
             await resposta.json();
+        if (!resposta.ok) {
+
+            console.error(dados);
+
+            alert(dados.error);
+
+            return;
+
+        }
 
         renderizarTabela(
             dados
