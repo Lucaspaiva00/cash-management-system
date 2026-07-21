@@ -12,8 +12,6 @@ const create = async (req, res) => {
             telefone,
             email,
             empresaId,
-
-            // NOVOS CAMPOS
             descricao,
             servico,
             pacoteQuinzenal,
@@ -21,27 +19,47 @@ const create = async (req, res) => {
             porteCachorro
         } = req.body;
 
-        if (!nome || !empresaId) {
-            return res.status(400).json({ error: "Nome e empresaId são obrigatórios." });
+        if (!nome || !String(nome).trim() || !empresaId) {
+            return res.status(400).json({
+                error: "Nome e empresaId são obrigatórios."
+            });
         }
 
         const novo = await prisma.cliente.create({
             data: {
-                nome,
-                cpf,
-                cnpj,
-                endereco,
-                telefone,
-                email,
-                empresaId: parseInt(empresaId),
-
-                // NOVOS CAMPOS
-                descricao,
-                servico,
-                pacoteQuinzenal: pacoteQuinzenal === true || pacoteQuinzenal === "true",
-                pacoteMensal: pacoteMensal === true || pacoteMensal === "true",
-                porteCachorro
-            },
+                nome: String(nome).trim(),
+                cpf: cpf && String(cpf).trim()
+                    ? String(cpf).trim()
+                    : null,
+                cnpj: cnpj && String(cnpj).trim()
+                    ? String(cnpj).trim()
+                    : null,
+                endereco: endereco && String(endereco).trim()
+                    ? String(endereco).trim()
+                    : null,
+                telefone: telefone && String(telefone).trim()
+                    ? String(telefone).trim()
+                    : null,
+                email: email && String(email).trim()
+                    ? String(email).trim().toLowerCase()
+                    : null,
+                empresaId: parseInt(empresaId, 10),
+                descricao: descricao && String(descricao).trim()
+                    ? String(descricao).trim()
+                    : null,
+                servico: servico && String(servico).trim()
+                    ? String(servico).trim()
+                    : null,
+                pacoteQuinzenal:
+                    pacoteQuinzenal === true ||
+                    pacoteQuinzenal === "true",
+                pacoteMensal:
+                    pacoteMensal === true ||
+                    pacoteMensal === "true",
+                porteCachorro: porteCachorro && String(porteCachorro).trim()
+                    ? String(porteCachorro).trim()
+                    : null
+            }
         });
 
         return res.status(201).json({
@@ -51,7 +69,16 @@ const create = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Erro ao cadastrar cliente." });
+
+        if (error.code === "P2002") {
+            return res.status(409).json({
+                error: "Já existe um cliente cadastrado com este CPF, CNPJ ou e-mail."
+            });
+        }
+
+        return res.status(500).json({
+            error: "Erro ao cadastrar cliente."
+        });
     }
 };
 
@@ -75,11 +102,16 @@ const read = async (req, res) => {
         return res.status(500).json({ error: "Erro ao listar clientes." });
     }
 };
-
 // Atualizar cliente
 const update = async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
+
+        if (isNaN(id)) {
+            return res.status(400).json({
+                error: "ID do cliente inválido."
+            });
+        }
 
         const {
             nome,
@@ -88,8 +120,6 @@ const update = async (req, res) => {
             endereco,
             telefone,
             email,
-
-            // NOVOS CAMPOS
             descricao,
             servico,
             pacoteQuinzenal,
@@ -97,23 +127,47 @@ const update = async (req, res) => {
             porteCachorro
         } = req.body;
 
+        if (!nome || !String(nome).trim()) {
+            return res.status(400).json({
+                error: "O nome do cliente é obrigatório."
+            });
+        }
+
         const atualizado = await prisma.cliente.update({
             where: { id },
             data: {
-                nome,
-                cpf,
-                cnpj,
-                endereco,
-                telefone,
-                email,
-
-                // NOVOS CAMPOS
-                descricao,
-                servico,
-                pacoteQuinzenal: pacoteQuinzenal === true || pacoteQuinzenal === "true",
-                pacoteMensal: pacoteMensal === true || pacoteMensal === "true",
-                porteCachorro
-            },
+                nome: String(nome).trim(),
+                cpf: cpf && String(cpf).trim()
+                    ? String(cpf).trim()
+                    : null,
+                cnpj: cnpj && String(cnpj).trim()
+                    ? String(cnpj).trim()
+                    : null,
+                endereco: endereco && String(endereco).trim()
+                    ? String(endereco).trim()
+                    : null,
+                telefone: telefone && String(telefone).trim()
+                    ? String(telefone).trim()
+                    : null,
+                email: email && String(email).trim()
+                    ? String(email).trim().toLowerCase()
+                    : null,
+                descricao: descricao && String(descricao).trim()
+                    ? String(descricao).trim()
+                    : null,
+                servico: servico && String(servico).trim()
+                    ? String(servico).trim()
+                    : null,
+                pacoteQuinzenal:
+                    pacoteQuinzenal === true ||
+                    pacoteQuinzenal === "true",
+                pacoteMensal:
+                    pacoteMensal === true ||
+                    pacoteMensal === "true",
+                porteCachorro: porteCachorro && String(porteCachorro).trim()
+                    ? String(porteCachorro).trim()
+                    : null
+            }
         });
 
         return res.status(200).json({
@@ -123,7 +177,22 @@ const update = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Erro ao atualizar cliente." });
+
+        if (error.code === "P2002") {
+            return res.status(409).json({
+                error: "Já existe um cliente cadastrado com este CPF, CNPJ ou e-mail."
+            });
+        }
+
+        if (error.code === "P2025") {
+            return res.status(404).json({
+                error: "Cliente não encontrado."
+            });
+        }
+
+        return res.status(500).json({
+            error: "Erro ao atualizar cliente."
+        });
     }
 };
 

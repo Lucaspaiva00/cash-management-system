@@ -79,37 +79,27 @@ model Cliente {
 
   nome String @db.VarChar(150)
 
-  cpf String? @unique
-
-  cnpj String? @unique
+  cpf  String?
+  cnpj String?
 
   inscricaoEstadual String? @db.VarChar(30)
 
-  email String? @unique
-
+  email    String?
   telefone String? @db.VarChar(20)
 
-  endereco String? @db.VarChar(255)
-
-  cep String? @db.VarChar(20)
-
-  numero String? @db.VarChar(20)
-
+  endereco    String? @db.VarChar(255)
+  cep         String? @db.VarChar(20)
+  numero      String? @db.VarChar(20)
   complemento String? @db.VarChar(100)
-
-  bairro String? @db.VarChar(100)
-
-  cidade String? @db.VarChar(100)
-
-  estado String? @db.VarChar(2)
+  bairro      String? @db.VarChar(100)
+  cidade      String? @db.VarChar(100)
+  estado      String? @db.VarChar(2)
 
   descricao String? @db.VarChar(255)
-
-  servico String? @db.VarChar(100)
+  servico   String? @db.VarChar(100)
 
   pacoteQuinzenal Boolean @default(false)
-
-  pacoteMensal Boolean @default(false)
+  pacoteMensal    Boolean @default(false)
 
   porteCachorro String? @db.VarChar(50)
 
@@ -118,16 +108,16 @@ model Cliente {
   empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   propostas Proposta[]
-
-  vendas Venda[]
-
+  vendas    Venda[]
   operacoes Caixa[]
+  agendas   Agenda[]
 
-  agendas Agenda[]
-
-  criadoEm DateTime @default(now())
-
+  criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
+
+  @@unique([empresaId, cpf])
+  @@unique([empresaId, cnpj])
+  @@unique([empresaId, email])
 }
 
 model Produto {
