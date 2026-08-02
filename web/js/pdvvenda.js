@@ -203,7 +203,7 @@ function atualizarLista() {
             style: "currency",
             currency: "BRL"
         })}/${p.unidade || "UN"}
-        )}
+        
 
                             </h6>
 
