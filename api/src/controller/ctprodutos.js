@@ -146,10 +146,10 @@ const create = async (req, res) => {
                             : null,
 
                     estoque:
-                        parseInt(estoque || 0),
+                        parseFloat(estoque || 0),
 
                     estoqueMinimo:
-                        parseInt(estoqueMinimo || 0),
+                        parseFloat(estoqueMinimo || 0),
 
                     pesoLiquido:
                         pesoLiquido

@@ -9,6 +9,58 @@ let produtosVenda = [];
 let listaProdutosBD = [];
 let listaClientesBD = [];
 
+function formatarQuantidade(quantidade, unidade = "UN") {
+    const valor = Number(quantidade || 0);
+
+    if (unidade === "KG") {
+        return `${valor.toLocaleString("pt-BR", {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        })} kg`;
+    }
+
+    return `${valor.toLocaleString("pt-BR", {
+        maximumFractionDigits: 3
+    })} ${unidade}`;
+}
+
+function atualizarCampoQuantidade() {
+    const produtoId = Number(
+        document.getElementById("produto").value
+    );
+
+    const produto = listaProdutosBD.find(
+        p => p.id === produtoId
+    );
+
+    const campo = document.getElementById("quantidade");
+    const label = document.getElementById("labelQuantidade");
+    const ajuda = document.getElementById("ajudaQuantidade");
+
+    if (produto?.unidade === "KG") {
+        label.textContent = "Peso em kg";
+        campo.min = "0.001";
+        campo.step = "0.001";
+        campo.value = "0.100";
+        campo.placeholder = "Ex.: 0,200";
+
+        ajuda.textContent =
+            "Exemplo: informe 0,200 para vender 200 gramas.";
+    } else {
+        label.textContent = "Quantidade";
+        campo.min = "1";
+        campo.step = "1";
+        campo.value = "1";
+        campo.placeholder = "";
+
+        ajuda.textContent = "";
+    }
+}
+
+document
+    .getElementById("produto")
+    .addEventListener("change", atualizarCampoQuantidade);
+
 async function carregarSelects() {
     try {
         const [clientes, produtos] = await Promise.all([
@@ -131,7 +183,7 @@ function atualizarLista() {
 
                             <h5>
 
-                                ${p.qtd}
+                                ${formatarQuantidade(p.qtd, p.unidade)}
 
                             </h5>
 
@@ -147,12 +199,10 @@ function atualizarLista() {
 
                             <h6>
 
-                                ${p.preco.toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
+                           ${p.preco.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })}/${p.unidade || "UN"}
         )}
 
                             </h6>
@@ -226,42 +276,58 @@ function removerProduto(i) {
 }
 
 document.getElementById("adicionar").addEventListener("click", () => {
-    const produtoId = parseInt(document.getElementById("produto").value);
-    const qtd = parseInt(document.getElementById("quantidade").value);
+    const produtoId = parseInt(
+        document.getElementById("produto").value
+    );
 
-    if (!produtoId || qtd <= 0) return alert("Selecione um produto e quantidade válida!");
+    const qtd = parseFloat(
+        document.getElementById("quantidade").value
+    );
 
-    const produto = listaProdutosBD.find(p => p.id === produtoId);
-    if (!produto) return alert("Produto não encontrado.");
-    if (produto.estoque < qtd) return alert(`Estoque insuficiente (${produto.estoque} disponível)`);
+    if (!produtoId || !Number.isFinite(qtd) || qtd <= 0) {
+        return alert("Selecione um produto e informe uma quantidade válida!");
+    }
 
+    const produto = listaProdutosBD.find(
+        p => p.id === produtoId
+    );
 
-    const existente =
-        produtosVenda.find(
-            p => p.produtoId === produtoId
+    if (!produto) {
+        return alert("Produto não encontrado.");
+    }
+
+    const existente = produtosVenda.find(
+        p => p.produtoId === produtoId
+    );
+
+    const quantidadeNoCarrinho = existente
+        ? existente.qtd
+        : 0;
+
+    const quantidadeTotal = quantidadeNoCarrinho + qtd;
+
+    if (quantidadeTotal > Number(produto.estoque)) {
+        return alert(
+            `Estoque insuficiente. Disponível: ${formatarQuantidade(produto.estoque, produto.unidade)}`
         );
+    }
 
     if (existente) {
-
-        existente.qtd += qtd;
-
+        existente.qtd = quantidadeTotal;
     } else {
-
         produtosVenda.push({
-
             produtoId,
-
             nome: produto.nome,
-
-            preco: produto.precoVenda || 0,
-
-            qtd
-
+            preco: Number(produto.precoVenda || 0),
+            qtd,
+            unidade: produto.unidade || "UN"
         });
-
     }
+
     document.getElementById("produto").value = "";
-    document.getElementById("quantidade").value = 1;
+    document.getElementById("quantidade").value = "1";
+
+    atualizarCampoQuantidade();
     atualizarLista();
 });
 

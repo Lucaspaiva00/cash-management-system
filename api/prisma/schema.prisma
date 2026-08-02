@@ -157,7 +157,7 @@ model Produto {
 
   precoCompra Float?
 
-  estoque Int @default(0)
+  estoque Float @default(0)
 
   estoqueMinimo Int @default(0)
 
@@ -349,7 +349,7 @@ model VendaItem {
 
   produto Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
 
-  quantidade Int
+  quantidade Float
 
   precoUnitario Float
 
