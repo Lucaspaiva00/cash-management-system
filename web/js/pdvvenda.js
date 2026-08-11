@@ -9,6 +9,112 @@ let produtosVenda = [];
 let listaProdutosBD = [];
 let listaClientesBD = [];
 
+const campoBuscaProduto = document.getElementById("buscaProduto");
+const campoProdutoId = document.getElementById("produto");
+const sugestoesProdutos = document.getElementById("sugestoesProdutos");
+
+function normalizarBusca(texto) {
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function escaparHtml(texto) {
+    return String(texto ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function fecharSugestoesProdutos() {
+    sugestoesProdutos.classList.remove("show");
+    sugestoesProdutos.innerHTML = "";
+}
+
+function selecionarProduto(produtoId) {
+    const produto = listaProdutosBD.find(p => p.id === Number(produtoId));
+
+    if (!produto) return;
+
+    campoProdutoId.value = produto.id;
+    campoBuscaProduto.value = produto.nome;
+    fecharSugestoesProdutos();
+    atualizarCampoQuantidade();
+}
+
+function pesquisarProdutos() {
+    const termo = normalizarBusca(campoBuscaProduto.value);
+    campoProdutoId.value = "";
+
+    if (!termo) {
+        fecharSugestoesProdutos();
+        return;
+    }
+
+    const encontrados = listaProdutosBD
+        .filter(produto => {
+            const texto = normalizarBusca([
+                produto.nome,
+                produto.sku,
+                produto.codigoBarras
+            ].filter(Boolean).join(" "));
+
+            return texto.includes(termo);
+        })
+        .slice(0, 12);
+
+    if (!encontrados.length) {
+        sugestoesProdutos.innerHTML = `
+            <div class="produto-sem-resultado">
+                Nenhum produto encontrado.
+            </div>`;
+        sugestoesProdutos.classList.add("show");
+        return;
+    }
+
+    sugestoesProdutos.innerHTML = encontrados.map(produto => `
+        <button type="button" class="produto-sugestao" data-produto-id="${produto.id}">
+            <span class="produto-sugestao-nome">${escaparHtml(produto.nome)}</span>
+            <span class="produto-sugestao-info">
+                <span>${produto.sku ? `SKU: ${escaparHtml(produto.sku)}` : `Estoque: ${formatarQuantidade(produto.estoque, produto.unidade)}`}</span>
+                <strong>${Number(produto.precoVenda || 0).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+                })}</strong>
+            </span>
+        </button>
+    `).join("");
+
+    sugestoesProdutos.classList.add("show");
+}
+
+campoBuscaProduto.addEventListener("input", pesquisarProdutos);
+
+sugestoesProdutos.addEventListener("click", event => {
+    const botao = event.target.closest("[data-produto-id]");
+    if (botao) selecionarProduto(botao.dataset.produtoId);
+});
+
+campoBuscaProduto.addEventListener("keydown", event => {
+    if (event.key === "Escape") fecharSugestoesProdutos();
+
+    if (event.key === "Enter") {
+        const primeiraSugestao = sugestoesProdutos.querySelector("[data-produto-id]");
+        if (primeiraSugestao) {
+            event.preventDefault();
+            selecionarProduto(primeiraSugestao.dataset.produtoId);
+        }
+    }
+});
+
+document.addEventListener("click", event => {
+    if (!event.target.closest(".produto-search")) fecharSugestoesProdutos();
+});
+
 function formatarQuantidade(quantidade, unidade = "UN") {
     const valor = Number(quantidade || 0);
 
@@ -57,10 +163,6 @@ function atualizarCampoQuantidade() {
     }
 }
 
-document
-    .getElementById("produto")
-    .addEventListener("change", atualizarCampoQuantidade);
-
 async function carregarSelects() {
     try {
         const [clientes, produtos] = await Promise.all([
@@ -75,9 +177,6 @@ async function carregarSelects() {
             `<option value="">Consumidor Final</option>` +
             clientes.map(c => `<option value="${c.id}">${c.nome}</option>`).join("");
 
-        document.getElementById("produto").innerHTML =
-            `<option value="">Selecione...</option>` +
-            produtos.map(p => `<option value="${p.id}">${p.nome} - R$ ${p.precoVenda?.toFixed(2) || 0}</option>`).join("");
     } catch (err) {
         console.error("Erro ao carregar selects:", err);
         alert("Falha ao carregar clientes e produtos.");
@@ -324,7 +423,8 @@ document.getElementById("adicionar").addEventListener("click", () => {
         });
     }
 
-    document.getElementById("produto").value = "";
+    campoProdutoId.value = "";
+    campoBuscaProduto.value = "";
     document.getElementById("quantidade").value = "1";
 
     atualizarCampoQuantidade();

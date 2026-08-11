@@ -400,9 +400,28 @@ NOVA VENDA
 
                                 </label>
 
-                                <select id="produto" class="form-control">
+                                <div class="produto-search">
 
-                                </select>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-search"></i>
+                                            </span>
+                                        </div>
+
+                                        <input
+                                            id="buscaProduto"
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="Digite o nome, SKU ou código de barras"
+                                            autocomplete="off">
+                                    </div>
+
+                                    <input id="produto" type="hidden">
+
+                                    <div id="sugestoesProdutos" class="produto-sugestoes"></div>
+
+                                </div>
 
                             </div>
 
