@@ -370,6 +370,10 @@ async function salvarTudo() {
             }
         );
 
+        if (typeof window.carregarIdentidadeEmpresa === "function") {
+            await window.carregarIdentidadeEmpresa();
+        }
+
         alert(
             "✅ Configurações salvas com sucesso!"
         );

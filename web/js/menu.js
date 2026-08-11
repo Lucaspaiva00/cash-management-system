@@ -1,4 +1,53 @@
+function obterUsuarioLogadoMenu() {
+    try {
+        return JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+    } catch (error) {
+        console.warn("Não foi possível ler a sessão do usuário.", error);
+        return null;
+    }
+}
+
+function aplicarIdentidadeEmpresa(empresa) {
+    const nomeEmpresa = String(empresa?.nome || "").trim();
+
+    if (!nomeEmpresa) return;
+
+    document.querySelectorAll(".sidebar-brand-text, [data-empresa-nome]")
+        .forEach(elemento => {
+            elemento.textContent = nomeEmpresa;
+        });
+
+    const tituloAtual = document.title || "Sistema";
+
+    if (/paiva tech/i.test(tituloAtual)) {
+        document.title = tituloAtual.replace(/paiva tech/gi, nomeEmpresa);
+    } else if (!tituloAtual.toLowerCase().includes(nomeEmpresa.toLowerCase())) {
+        document.title = `${tituloAtual} | ${nomeEmpresa}`;
+    }
+
+    window.empresaLogada = empresa;
+}
+
+async function carregarIdentidadeEmpresa() {
+    const usuario = obterUsuarioLogadoMenu();
+
+    if (!usuario?.empresaId || typeof API_BASE === "undefined") return;
+
+    try {
+        const resposta = await fetch(`${API_BASE}/empresa/${usuario.empresaId}`);
+
+        if (!resposta.ok) return;
+
+        const empresa = await resposta.json();
+        aplicarIdentidadeEmpresa(empresa);
+    } catch (error) {
+        console.warn("Não foi possível carregar a identidade da empresa.", error);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+
+    carregarIdentidadeEmpresa();
 
     const sidebar = document.getElementById("accordionSidebar");
     const overlay = document.querySelector(".mobile-overlay");
@@ -188,3 +237,5 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarScroll();
 
 });
+
+window.carregarIdentidadeEmpresa = carregarIdentidadeEmpresa;
