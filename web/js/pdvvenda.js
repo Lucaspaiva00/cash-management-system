@@ -398,10 +398,11 @@ document.getElementById("finalizar").addEventListener("click", async () => {
         }
 
         const data = await resp.json();
+        const itensCupom = produtosVenda.map(item => ({ ...item }));
         alert(statusPagamento === "PENDENTE"
             ? "✅ Venda registrada como pendente!"
             : "✅ Venda registrada com sucesso!");
-        gerarCupomPDF(data.data || body);
+        await gerarCupomPDF(data.data || body, itensCupom, statusPagamento, vencimento);
         produtosVenda = [];
         situacaoPagamento.value = "PAGO";
         document.getElementById("valorRecebido").value = "0";
@@ -414,14 +415,14 @@ document.getElementById("finalizar").addEventListener("click", async () => {
     }
 });
 
-async function gerarCupomPDF(venda) {
-    const total = venda.valor?.toFixed(2) ||
-        produtosVenda.reduce((a, b) => a + (b.preco * b.qtd), 0).toFixed(2);
+async function gerarCupomPDF(venda, itensCupom, statusPagamento, vencimento) {
+    const total = Number(venda.total ??
+        itensCupom.reduce((a, b) => a + (b.preco * b.qtd), 0)).toFixed(2);
 
     // Buscar informações da empresa
     let nomeEmpresa = "PAIVA TECH - PDV";
     try {
-        const res = await fetch(`${BASE}/empresas/${usuario.empresaId}`);
+        const res = await fetch(`${BASE}/empresa/${usuario.empresaId}`);
         if (res.ok) {
             const empresa = await res.json();
             nomeEmpresa = empresa.nome || nomeEmpresa;
@@ -465,6 +466,21 @@ async function gerarCupomPDF(venda) {
     y += 6;
     doc.text(`Forma de Pagamento: ${venda.meioPagamento}`, pageWidth / 2, y, { align: "center" });
 
+    y += 5;
+    doc.setFont("helvetica", "bold");
+    doc.text(
+        statusPagamento === "PENDENTE" ? "SITUACAO: PAGAMENTO PENDENTE" : "SITUACAO: PAGO",
+        pageWidth / 2,
+        y,
+        { align: "center" }
+    );
+
+    if (statusPagamento === "PENDENTE" && vencimento) {
+        y += 5;
+        const dataFormatada = new Date(`${vencimento}T12:00:00`).toLocaleDateString("pt-BR");
+        doc.text(`VENCIMENTO: ${dataFormatada}`, pageWidth / 2, y, { align: "center" });
+    }
+
     // Linha divisória
     y += 4;
     doc.setLineWidth(0.2);
@@ -479,7 +495,7 @@ async function gerarCupomPDF(venda) {
     y += 3;
     doc.setFont("helvetica", "normal");
 
-    produtosVenda.forEach((p) => {
+    itensCupom.forEach((p) => {
         doc.text(p.nome.substring(0, 20), 5, y);
         doc.text(String(p.qtd), 40, y);
         doc.text(`R$ ${(p.preco * p.qtd).toFixed(2)}`, 55, y);

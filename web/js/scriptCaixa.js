@@ -160,7 +160,7 @@ function parseObservacoesPdv(observacoes) {
 }
 
 function enriquecerOperacaoPdv(op, vendasMap) {
-  const vendaId = extrairVendaId(op.descricao);
+  const vendaId = op.vendaId || extrairVendaId(op.descricao);
   if (!vendaId && !op._vendaPdv) return op;
 
   const venda = vendasMap[vendaId || op._vendaId];
@@ -646,7 +646,8 @@ async function carregarOperacoes() {
 
     const vendasNoCaixa = new Set(
       caixa
-        .map(op => extrairVendaId(op.descricao))
+        .map(op => op.vendaId || extrairVendaId(op.descricao))
+        .map(id => id ? String(id) : null)
         .filter(Boolean)
     );
 
@@ -832,8 +833,16 @@ function criarCardPdv(op) {
   const margem = calcularMargem(lucro, receita);
   const produtos = extrairProdutosPdv(op.descricao);
   const dataFmt = formatarDataBR(op.dataOperacao);
+  const vencimentoFmt = op.dataVencimento
+    ? formatarDataBR(op.dataVencimento)
+    : "-";
   const statusBadge = obterBadgeStatus(op.status);
   const lucroPositivo = lucro >= 0;
+  const botaoReceber = ["PENDENTE", "ATRASADO"].includes(op.status)
+    ? `<button class="btn btn-success btn-sm" onclick="marcarComoPaga(${op.id})">
+         <i class="fas fa-hand-holding-usd mr-1"></i> Receber
+       </button>`
+    : "";
 
   return `
 <div class="col-xl-4 col-lg-6 mb-4">
@@ -885,6 +894,15 @@ function criarCardPdv(op) {
             <div class="text-right">
                 <small>Data</small>
                 <div>${dataFmt}</div>
+            </div>
+        </div>
+        <div class="pdv-card-footer mt-3">
+            <div>
+                <small>Vencimento</small>
+                <div>${vencimentoFmt}</div>
+            </div>
+            <div class="text-right">
+                ${botaoReceber}
             </div>
         </div>
     </div>
