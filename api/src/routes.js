@@ -67,6 +67,7 @@ routes.get("/vendas", vendas.read);
 routes.post("/vendas", vendas.create);
 routes.delete("/vendas/:id", vendas.remove);
 routes.get("/vendas/resumo", vendas.resumo);
+routes.put("/vendas/:id/pagar", vendas.marcarComoPaga);
 
 routes.route("/categorias")
   .get(categorias.read)

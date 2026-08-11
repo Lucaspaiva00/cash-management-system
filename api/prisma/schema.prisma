@@ -250,6 +250,9 @@ model Caixa {
   empresaId Int
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
+  vendaId Int?   @unique
+  venda   Venda? @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 }
@@ -332,6 +335,8 @@ model Venda {
   cliente Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
 
   itens VendaItem[]
+
+  lancamentoFinanceiro Caixa?
 
   criadoEm DateTime @default(now())
 

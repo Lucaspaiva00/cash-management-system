@@ -333,6 +333,23 @@ document.getElementById("adicionar").addEventListener("click", () => {
 
 document.getElementById("valorRecebido").addEventListener("input", calcularTroco);
 
+const situacaoPagamento = document.getElementById("situacaoPagamento");
+const campoVencimento = document.getElementById("campoVencimento");
+const camposRecebimento = document.getElementById("camposRecebimento");
+const dataVencimento = document.getElementById("dataVencimento");
+
+function atualizarSituacaoPagamento() {
+    const pendente = situacaoPagamento.value === "PENDENTE";
+    campoVencimento.style.display = pendente ? "block" : "none";
+    camposRecebimento.style.display = pendente ? "none" : "flex";
+    dataVencimento.required = pendente;
+
+    if (!pendente) dataVencimento.value = "";
+}
+
+situacaoPagamento.addEventListener("change", atualizarSituacaoPagamento);
+atualizarSituacaoPagamento();
+
 function calcularTroco() {
     const total = produtosVenda.reduce((acc, p) => acc + p.preco * p.qtd, 0);
     const recebido = parseFloat(document.getElementById("valorRecebido").value) || 0;
@@ -345,11 +362,23 @@ document.getElementById("finalizar").addEventListener("click", async () => {
 
     const clienteId = document.getElementById("cliente").value || null;
     const meioPagamento = document.getElementById("pagamento").value;
+    const statusPagamento = situacaoPagamento.value;
+    const vencimento = dataVencimento.value;
+
+    if (statusPagamento === "PENDENTE" && !clienteId) {
+        return alert("Selecione o cliente para registrar uma venda pendente.");
+    }
+
+    if (statusPagamento === "PENDENTE" && !vencimento) {
+        return alert("Informe a data de vencimento da venda pendente.");
+    }
 
     const body = {
         empresaId: usuario.empresaId,
         clienteId,
         meioPagamento,
+        statusPagamento,
+        dataVencimento: statusPagamento === "PENDENTE" ? vencimento : null,
         itens: produtosVenda.map(p => ({
             produtoId: p.produtoId,
             quantidade: p.qtd,
@@ -369,9 +398,15 @@ document.getElementById("finalizar").addEventListener("click", async () => {
         }
 
         const data = await resp.json();
-        alert("✅ Venda registrada com sucesso!");
+        alert(statusPagamento === "PENDENTE"
+            ? "✅ Venda registrada como pendente!"
+            : "✅ Venda registrada com sucesso!");
         gerarCupomPDF(data.data || body);
         produtosVenda = [];
+        situacaoPagamento.value = "PAGO";
+        document.getElementById("valorRecebido").value = "0";
+        document.getElementById("troco").value = "";
+        atualizarSituacaoPagamento();
         atualizarLista();
     } catch (err) {
         console.error(err);

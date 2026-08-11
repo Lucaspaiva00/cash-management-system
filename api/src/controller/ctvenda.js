@@ -65,6 +65,14 @@ const read = async (req, res) => {
                 lucro: true,
                 meioPagamento: true,
                 statusNfe: true,
+                lancamentoFinanceiro: {
+                    select: {
+                        id: true,
+                        status: true,
+                        dataVencimento: true,
+                        dataPagamento: true
+                    }
+                },
                 numeroNota: true,
                 serieNota: true,
                 chaveNfe: true,
@@ -119,8 +127,9 @@ const create = async (req, res) => {
             frete = 0,
             seguro = 0,
             outrasDespesas = 0,
-
-            observacoes
+            observacoes,
+            statusPagamento = "PAGO",
+            dataVencimento
         } = req.body;
 
         if (!empresaId || !itens?.length) {
@@ -129,6 +138,26 @@ const create = async (req, res) => {
                 error: "Dados incompletos."
             });
 
+        }
+
+        if (!["PAGO", "PENDENTE"].includes(statusPagamento)) {
+            return res.status(400).json({ error: "Situação de pagamento inválida." });
+        }
+
+        if (statusPagamento === "PENDENTE" && !clienteId) {
+            return res.status(400).json({ error: "Informe o cliente para registrar uma venda pendente." });
+        }
+
+        if (statusPagamento === "PENDENTE" && !dataVencimento) {
+            return res.status(400).json({ error: "Informe o vencimento da venda pendente." });
+        }
+
+        const vencimento = dataVencimento
+            ? new Date(`${dataVencimento}T12:00:00`)
+            : new Date();
+
+        if (Number.isNaN(vencimento.getTime())) {
+            return res.status(400).json({ error: "Data de vencimento inválida." });
         }
 
         const produtos = await prisma.produto.findMany({
@@ -317,6 +346,8 @@ const create = async (req, res) => {
                                 ? Number(clienteId)
                                 : null,
 
+                        vendaId: novaVenda.id,
+
                         tipoOperacao:
                             "ENTRADA",
 
@@ -324,17 +355,25 @@ const create = async (req, res) => {
 
                         valor: total,
 
+                        valorPago:
+                            statusPagamento === "PAGO"
+                                ? total
+                                : null,
+
                         descricao:
                             montarDescricaoVendaPdv(
                                 novaVenda.id,
                                 itensResumo
                             ),
 
-                        status: "PAGO",
+                        status: statusPagamento,
 
-                        dataPagamento: new Date(),
+                        dataPagamento:
+                            statusPagamento === "PAGO"
+                                ? new Date()
+                                : null,
 
-                        dataVencimento: new Date(),
+                        dataVencimento: vencimento,
 
                         jurosMaquina: 0,
 
@@ -374,6 +413,57 @@ const create = async (req, res) => {
 
     }
 
+};
+
+// =====================================================
+// RECEBER VENDA PENDENTE
+// =====================================================
+
+const marcarComoPaga = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const empresaId = Number(req.body.empresaId);
+
+        if (!id || !empresaId) {
+            return res.status(400).json({ error: "Venda e empresa são obrigatórias." });
+        }
+
+        const venda = await prisma.venda.findFirst({
+            where: { id, empresaId },
+            include: { lancamentoFinanceiro: true }
+        });
+
+        if (!venda) {
+            return res.status(404).json({ error: "Venda não encontrada." });
+        }
+
+        if (!venda.lancamentoFinanceiro) {
+            return res.status(409).json({
+                error: "Esta venda antiga não possui lançamento financeiro vinculado. Receba-a pela tela de movimentações."
+            });
+        }
+
+        if (venda.lancamentoFinanceiro.status === "PAGO") {
+            return res.status(200).json({ message: "Venda já estava paga." });
+        }
+
+        const lancamento = await prisma.caixa.update({
+            where: { id: venda.lancamentoFinanceiro.id },
+            data: {
+                status: "PAGO",
+                valorPago: venda.total,
+                dataPagamento: new Date()
+            }
+        });
+
+        return res.status(200).json({
+            message: "Venda recebida com sucesso!",
+            data: lancamento
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao receber venda." });
+    }
 };
 
 // =====================================================
@@ -559,5 +649,6 @@ module.exports = {
     create,
     read,
     remove,
-    resumo
+    resumo,
+    marcarComoPaga
 };

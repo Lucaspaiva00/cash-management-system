@@ -115,7 +115,7 @@ async function carregarTabela() {
         corpo.innerHTML = "";
 
         if (!Array.isArray(vendas) || vendas.length === 0) {
-            corpo.innerHTML = `<tr><td colspan="8" class="text-center text-muted">Nenhuma venda registrada.</td></tr>`;
+            corpo.innerHTML = `<tr><td colspan="10" class="text-center text-muted">Nenhuma venda registrada.</td></tr>`;
             return;
         }
 
@@ -124,6 +124,28 @@ async function carregarTabela() {
             const dataVenda = new Date(v.data).toLocaleDateString("pt-BR");
             const valor = v.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
             const lucro = (v.lucro ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            const financeiro = v.lancamentoFinanceiro;
+            const vencimentoExpirado = financeiro?.status === "PENDENTE"
+                && financeiro?.dataVencimento
+                && new Date(financeiro.dataVencimento) < new Date();
+            const statusFinanceiro = vencimentoExpirado
+                ? "ATRASADO"
+                : (financeiro?.status || "SEM VÍNCULO");
+            const badgeFinanceiro = statusFinanceiro === "PAGO"
+                ? `<span class="badge badge-success">PAGO</span>`
+                : statusFinanceiro === "PENDENTE"
+                    ? `<span class="badge badge-warning">PENDENTE</span>`
+                    : statusFinanceiro === "ATRASADO"
+                        ? `<span class="badge badge-danger">ATRASADO</span>`
+                        : `<span class="badge badge-secondary">SEM VÍNCULO</span>`;
+            const vencimento = financeiro?.dataVencimento
+                ? new Date(financeiro.dataVencimento).toLocaleDateString("pt-BR")
+                : "—";
+            const botaoReceber = ["PENDENTE", "ATRASADO"].includes(statusFinanceiro)
+                ? `<button class="btn btn-warning btn-sm ml-1" onclick="receberVenda(${v.id})">
+                       <i class="fas fa-hand-holding-usd"></i> Receber
+                   </button>`
+                : "";
 
             const badgeNfe =
                 v.statusNfe === "AUTORIZADA"
@@ -149,6 +171,10 @@ async function carregarTabela() {
 
     <td>${lucro}</td>
 
+    <td>${badgeFinanceiro}</td>
+
+    <td>${vencimento}</td>
+
     <td>${badgeNfe}</td>
 
     <td>
@@ -162,6 +188,8 @@ async function carregarTabela() {
             XML
 
         </button>
+
+        ${botaoReceber}
 
         <button
             class="btn btn-success btn-sm ml-1"
@@ -181,6 +209,29 @@ async function carregarTabela() {
         console.error("Erro ao carregar tabela de vendas:", e);
     }
 }
+
+async function receberVenda(id) {
+    if (!confirm("Confirmar o recebimento desta venda?")) return;
+
+    try {
+        const res = await fetch(`${BASE}/vendas/${id}/pagar`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ empresaId: usuario.empresaId })
+        });
+        const dados = await res.json();
+
+        if (!res.ok) throw new Error(dados.error || "Erro ao receber venda.");
+
+        alert("✅ Venda recebida com sucesso!");
+        await carregarTabela();
+    } catch (e) {
+        console.error(e);
+        alert(e.message);
+    }
+}
+
+window.receberVenda = receberVenda;
 
 async function emitirNfe(id) {
 

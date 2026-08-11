@@ -361,6 +361,33 @@ NOVA VENDA
 
                         </div>
 
+                        <div class="row">
+
+                            <div class="col-lg-6 mb-3">
+
+                                <label>Situação do pagamento</label>
+
+                                <select id="situacaoPagamento" class="form-control">
+                                    <option value="PAGO">Recebida agora</option>
+                                    <option value="PENDENTE">Pendente / a prazo</option>
+                                </select>
+
+                            </div>
+
+                            <div id="campoVencimento" class="col-lg-6 mb-3" style="display: none;">
+
+                                <label>Data de vencimento</label>
+
+                                <input id="dataVencimento" type="date" class="form-control">
+
+                                <small class="form-text text-muted">
+                                    Para vendas pendentes, selecione também o cliente.
+                                </small>
+
+                            </div>
+
+                        </div>
+
                         <hr>
 
                         <div class="row">
@@ -474,7 +501,7 @@ RESUMO DA VENDA
 
                         </div>
 
-                        <div class="row">
+                        <div id="camposRecebimento" class="row">
 
                             <div class="col-lg-6">
 
