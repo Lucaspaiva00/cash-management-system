@@ -435,16 +435,19 @@ document.getElementById("valorRecebido").addEventListener("input", calcularTroco
 
 const situacaoPagamento = document.getElementById("situacaoPagamento");
 const campoVencimento = document.getElementById("campoVencimento");
+const campoParcelas = document.getElementById("campoParcelas");
+const inputParcelas = document.getElementById("parcelas");
 const camposRecebimento = document.getElementById("camposRecebimento");
 const dataVencimento = document.getElementById("dataVencimento");
 
 function atualizarSituacaoPagamento() {
     const pendente = situacaoPagamento.value === "PENDENTE";
     campoVencimento.style.display = pendente ? "block" : "none";
+    campoParcelas.style.display = pendente ? "block" : "none";
     camposRecebimento.style.display = pendente ? "none" : "flex";
     dataVencimento.required = pendente;
 
-    if (!pendente) dataVencimento.value = "";
+    if (!pendente) { dataVencimento.value = ""; inputParcelas.value = "1"; }
 }
 
 situacaoPagamento.addEventListener("change", atualizarSituacaoPagamento);
@@ -464,6 +467,7 @@ document.getElementById("finalizar").addEventListener("click", async () => {
     const meioPagamento = document.getElementById("pagamento").value;
     const statusPagamento = situacaoPagamento.value;
     const vencimento = dataVencimento.value;
+    const parcelas = Number(inputParcelas.value || 1);
 
     if (statusPagamento === "PENDENTE" && !clienteId) {
         return alert("Selecione o cliente para registrar uma venda pendente.");
@@ -479,6 +483,7 @@ document.getElementById("finalizar").addEventListener("click", async () => {
         meioPagamento,
         statusPagamento,
         dataVencimento: statusPagamento === "PENDENTE" ? vencimento : null,
+        parcelas: statusPagamento === "PENDENTE" ? parcelas : 1,
         itens: produtosVenda.map(p => ({
             produtoId: p.produtoId,
             quantidade: p.qtd,
@@ -502,7 +507,7 @@ document.getElementById("finalizar").addEventListener("click", async () => {
         alert(statusPagamento === "PENDENTE"
             ? "✅ Venda registrada como pendente!"
             : "✅ Venda registrada com sucesso!");
-        await gerarCupomPDF(data.data || body, itensCupom, statusPagamento, vencimento);
+        await gerarCupomPDF(data.data || body, itensCupom, statusPagamento, vencimento, parcelas);
         produtosVenda = [];
         situacaoPagamento.value = "PAGO";
         document.getElementById("valorRecebido").value = "0";
@@ -515,7 +520,7 @@ document.getElementById("finalizar").addEventListener("click", async () => {
     }
 });
 
-async function gerarCupomPDF(venda, itensCupom, statusPagamento, vencimento) {
+async function gerarCupomPDF(venda, itensCupom, statusPagamento, vencimento, parcelas = 1) {
     const total = Number(venda.total ??
         itensCupom.reduce((a, b) => a + (b.preco * b.qtd), 0)).toFixed(2);
 
@@ -579,6 +584,8 @@ async function gerarCupomPDF(venda, itensCupom, statusPagamento, vencimento) {
         y += 5;
         const dataFormatada = new Date(`${vencimento}T12:00:00`).toLocaleDateString("pt-BR");
         doc.text(`VENCIMENTO: ${dataFormatada}`, pageWidth / 2, y, { align: "center" });
+        y += 5;
+        doc.text(`PARCELAS: ${parcelas}x de R$ ${(Number(total) / parcelas).toFixed(2)}`, pageWidth / 2, y, { align: "center" });
     }
 
     // Linha divisória
