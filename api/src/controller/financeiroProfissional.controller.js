@@ -11,15 +11,32 @@ async function listarContas(req, res) {
     await prisma.contaReceber.updateMany({ where: { empresaId, status: { in: ["PENDENTE", "PARCIAL"] }, vencimento: { lt: new Date() } }, data: { status: "VENCIDO" } });
     const where = { empresaId, ...(status ? { status } : {}) };
     const contas = await prisma.contaReceber.findMany({ where, include: { cliente: { select: { id: true, nome: true } }, recebimentos: true }, orderBy: { vencimento: "asc" } });
-    res.json(contas);
+    // Mantém visíveis as contas cadastradas antes do módulo profissional.
+    const caixaLegado = await prisma.caixa.findMany({ where: { empresaId, tipoOperacao: "ENTRADA", status: { in: ["PENDENTE", "ATRASADO", "PAGO"] }, vendaId: null }, include: { cliente: { select: { id: true, nome: true } } } });
+    const contasLegadas = caixaLegado.map(c => ({
+      id: -c.id, legado: true, descricao: c.descricao || "Recebimento lançado no caixa",
+      valorOriginal: c.valor, valorRecebido: c.status === "PAGO" ? (c.valorPago || c.valor) : 0,
+      juros: 0, multa: 0, desconto: 0, vencimento: c.dataVencimento || c.dataOperacao,
+      status: c.status === "PAGO" ? "RECEBIDO" : (c.status === "ATRASADO" || (c.dataVencimento && c.dataVencimento < new Date()) ? "VENCIDO" : "PENDENTE"),
+      parcela: c.parcelaAtual || 1, totalParcelas: c.parcelas || 1, cliente: c.cliente
+    })).filter(c => !status || c.status === status);
+    res.json([...contas, ...contasLegadas].sort((a, b) => new Date(a.vencimento) - new Date(b.vencimento)));
   } catch (error) { console.error(error); res.status(500).json({ error: "Erro ao listar contas a receber." }); }
 }
 
 async function baixarConta(req, res) {
   try {
-    const contaId = Number(req.params.id);
+    const contaId = req.params.id;
     const { valor, juros = 0, multa = 0, desconto = 0, meioPagamento, observacao, empresaId } = req.body;
-    const conta = await prisma.contaReceber.findFirst({ where: { id: contaId, empresaId: Number(empresaId) } });
+    if (Number(contaId) < 0) {
+      const caixaId = Math.abs(Number(contaId));
+      const legado = await prisma.caixa.findFirst({ where: { id: caixaId, empresaId: Number(empresaId), tipoOperacao: "ENTRADA" } });
+      if (!legado) return res.status(404).json({ error: "Conta antiga não encontrada." });
+      if (n(valor) !== n(legado.valor)) return res.status(400).json({ error: "Contas antigas devem ser recebidas pelo valor total. Para baixa parcial, crie uma nova conta profissional." });
+      const atualizada = await prisma.caixa.update({ where: { id: caixaId }, data: { status: "PAGO", valorPago: n(valor), meioPagamento, dataPagamento: new Date(), observacoes: observacao || legado.observacoes } });
+      return res.json({ message: "Conta antiga recebida e atualizada no caixa.", data: atualizada });
+    }
+    const conta = await prisma.contaReceber.findFirst({ where: { id: Number(contaId), empresaId: Number(empresaId) } });
     if (!conta || conta.status === "CANCELADO") return res.status(404).json({ error: "Conta não encontrada ou cancelada." });
     if (!meioPagamento || n(valor) <= 0) return res.status(400).json({ error: "Informe valor e forma de recebimento." });
     const liquido = n(valor) + n(juros) + n(multa) - n(desconto);
@@ -28,8 +45,8 @@ async function baixarConta(req, res) {
     const resultado = await prisma.$transaction(async tx => {
       const novoRecebido = conta.valorRecebido + liquido;
       const quitada = novoRecebido >= conta.valorOriginal + conta.juros + conta.multa - conta.desconto - 0.01;
-      const atualizada = await tx.contaReceber.update({ where: { id: contaId }, data: { valorRecebido: novoRecebido, juros: { increment: n(juros) }, multa: { increment: n(multa) }, desconto: { increment: n(desconto) }, recebidaEm: quitada ? new Date() : null, status: quitada ? "RECEBIDO" : "PARCIAL" } });
-      await tx.recebimentoConta.create({ data: { contaId, valor: n(valor), juros: n(juros), multa: n(multa), desconto: n(desconto), meioPagamento, observacao } });
+      const atualizada = await tx.contaReceber.update({ where: { id: Number(contaId) }, data: { valorRecebido: novoRecebido, juros: { increment: n(juros) }, multa: { increment: n(multa) }, desconto: { increment: n(desconto) }, recebidaEm: quitada ? new Date() : null, status: quitada ? "RECEBIDO" : "PARCIAL" } });
+      await tx.recebimentoConta.create({ data: { contaId: Number(contaId), valor: n(valor), juros: n(juros), multa: n(multa), desconto: n(desconto), meioPagamento, observacao } });
       await tx.caixa.create({ data: { empresaId: conta.empresaId, clienteId: conta.clienteId, tipoOperacao: "ENTRADA", meioPagamento, valor: liquido, valorPago: liquido, descricao: `Recebimento: ${conta.descricao}`, status: "PAGO", dataPagamento: new Date(), dataVencimento: conta.vencimento, observacoes: observacao } });
       return atualizada;
     });
