@@ -53,7 +53,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.querySelector(".mobile-overlay");
     const btnMenu = document.getElementById("menuToggleMobile");
 
-    if (!sidebar || !overlay || !btnMenu) return;
+    if (!sidebar) return;
+
+    // Item único de navegação financeira, inserido em todas as páginas que
+    // usam o menu compartilhado.
+    if (!sidebar.querySelector('a[href="contas-receber.html"]')) {
+
+        const referencia = sidebar.querySelector('a[href="centros-custo.html"]');
+        const item = document.createElement("li");
+
+        item.className = "nav-item";
+        item.innerHTML = `
+            <a class="nav-link" href="contas-receber.html">
+                <i class="fas fa-hand-holding-usd"></i>
+                <span>Contas a Receber</span>
+            </a>
+        `;
+
+        if (referencia?.parentElement) {
+            referencia.parentElement.insertAdjacentElement("afterend", item);
+        } else {
+            sidebar.appendChild(item);
+        }
+    }
+
+    if (!overlay || !btnMenu) return;
 
     //---------------------------------------------------
     // ABRIR MENU
