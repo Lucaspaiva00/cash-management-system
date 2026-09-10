@@ -193,6 +193,8 @@ document.addEventListener(
 
     if (!garantirSessao()) return;
 
+    configurarFormularioFinanceiro();
+
     garantirModalEdicao();
 
     if (form) {
@@ -232,6 +234,55 @@ document.addEventListener(
 
   }
 );
+
+function configurarFormularioFinanceiro() {
+  const formModal = document.querySelector("#caixaForm");
+  if (!formModal || document.querySelector("#camposAvancados")) return;
+
+  const tipo = document.querySelector("#tipoOperacao");
+  const status = document.querySelector("#status");
+  const valor = document.querySelector("#valor");
+  const valorPago = document.querySelector("#valorPago");
+  const fornecedor = document.querySelector("#fornecedor");
+  const cliente = document.querySelector("#clienteId");
+  const vencimento = document.querySelector("#dataVencimento");
+  const parcelas = document.querySelector("#parcelas");
+  const avancados = [valorPago, vencimento, fornecedor, document.querySelector("#jurosMaquina"), parcelas, document.querySelector("#recorrente"), document.querySelector("#tipoRecorrencia"), document.querySelector("#observacoes")];
+
+  const cabecalho = document.createElement("div");
+  cabecalho.className = "alert alert-light border mb-4";
+  cabecalho.innerHTML = '<div class="font-weight-bold text-primary mb-1">Novo lançamento financeiro</div><small>Preencha o essencial primeiro. Os detalhes avançados só aparecem quando necessários.</small>';
+  formModal.prepend(cabecalho);
+
+  const botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = "btn btn-link px-0 mb-3";
+  botao.id = "camposAvancados";
+  botao.innerHTML = '<i class="fas fa-sliders-h mr-2"></i>Mostrar detalhes avançados';
+  document.querySelector("#observacoes").closest(".col-md-12").after(botao);
+
+  let avancadoAberto = false;
+  function atualizar() {
+    const ehSaida = tipo.value === "SAIDA";
+    const ehPendente = status.value !== "PAGO";
+    cliente.closest(".col-md-3").style.display = ehSaida ? "none" : "";
+    fornecedor.closest(".col-md-3").style.display = ehSaida ? "" : "none";
+    fornecedor.placeholder = ehSaida ? "Fornecedor / destino" : "";
+    vencimento.closest(".col-md-3").style.display = ehPendente || avancadoAberto ? "" : "none";
+    parcelas.closest(".col-md-3").style.display = ehPendente || avancadoAberto ? "" : "none";
+    valorPago.closest(".col-md-3").style.display = status.value === "PAGO" || avancadoAberto ? "" : "none";
+    vencimento.required = ehPendente;
+    if (status.value === "PAGO" && !valorPago.value) valorPago.value = valor.value || "";
+  }
+  botao.addEventListener("click", () => {
+    avancadoAberto = !avancadoAberto;
+    avancados.forEach(campo => campo?.closest(".col-md-3, .col-md-12")?.classList.toggle("d-none", !avancadoAberto && ![valorPago, vencimento, parcelas].includes(campo)));
+    botao.innerHTML = avancadoAberto ? '<i class="fas fa-chevron-up mr-2"></i>Ocultar detalhes avançados' : '<i class="fas fa-sliders-h mr-2"></i>Mostrar detalhes avançados';
+    atualizar();
+  });
+  [tipo, status, valor].forEach(campo => campo.addEventListener("change", atualizar));
+  atualizar();
+}
 
 async function requestJson(url, options = {}) {
 
