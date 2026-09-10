@@ -77,6 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    if (!sidebar.querySelector('a[href="fechamento-caixa.html"]')) {
+        const referencia = sidebar.querySelector('a[href="movimentacoes.html"]');
+        const item = document.createElement("li");
+        item.className = "nav-item";
+        item.innerHTML = `<a class="nav-link" href="fechamento-caixa.html"><i class="fas fa-cash-register"></i><span>Fechamento de Caixa</span></a>`;
+        if (referencia?.parentElement) referencia.parentElement.insertAdjacentElement("afterend", item);
+        else sidebar.appendChild(item);
+    }
+
     if (!overlay || !btnMenu) return;
 
     //---------------------------------------------------
