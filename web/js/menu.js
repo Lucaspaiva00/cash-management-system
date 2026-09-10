@@ -55,6 +55,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!sidebar) return;
 
+    // Uma única fonte para o menu: evita páginas novas com menu reduzido.
+    // As páginas antigas já possuem os mesmos links; aqui só completa o que faltar.
+    const itensPadrao = [
+        ["index.html", "fas fa-fw fa-chart-pie", "Dashboard"],
+        ["movimentacoes.html", "fa fa-university", "Caixa"],
+        ["fechamento-caixa.html", "fas fa-cash-register", "Fechamento de Caixa"],
+        ["categorias-financeiras.html", "fas fa-tags", "Categorias Financeiras"],
+        ["centros-custo.html", "fas fa-sitemap", "Centros de Custo"],
+        ["contas-receber.html", "fas fa-hand-holding-usd", "Contas a Receber"],
+        ["pdvvenda.html", "fas fa-cash-register", "PDV"],
+        ["agenda.html", "fas fa-calendar-alt", "Agenda"],
+        ["relatorios.html", "fas fa-file-alt", "Relatórios Financeiros"],
+        ["vendas.html", "fas fa-chart-line", "Relatório de Vendas"],
+        ["criarCliente.html", "fas fa-users", "Clientes"],
+        ["produtos.html", "fas fa-boxes", "Produtos"],
+        ["propostas.html", "fas fa-file-invoice-dollar", "Propostas"],
+        ["empresa.html", "fas fa-building", "Minha Empresa"]
+    ];
+
+    if (window.location.pathname.endsWith("fechamento-caixa.html")) {
+        sidebar.innerHTML = `
+          <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html"><div class="sidebar-brand-icon"><i class="fas fa-layer-group"></i></div><div class="sidebar-brand-text mx-3">Paiva Tech</div></a>
+          <hr class="sidebar-divider my-0"><li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-fw fa-chart-pie"></i><span>Dashboard</span></a></li><hr class="sidebar-divider"><div class="sidebar-heading">Gestão</div>
+          ${itensPadrao.slice(1).map(([href, icone, texto]) => `<li class="nav-item"><a class="nav-link" href="${href}"><i class="${icone}"></i><span>${texto}</span></a></li>`).join("")}
+          <hr class="sidebar-divider d-none d-md-block"><li class="nav-item"><a class="nav-link" href="login.html"><i class="fas fa-sign-out-alt"></i><span>Sair</span></a></li>`;
+    }
+
+    const ancoraGestao = sidebar.querySelector(".sidebar-heading");
+    itensPadrao.forEach(([href, icone, texto]) => {
+        if (sidebar.querySelector(`a[href="${href}"]`)) return;
+        const item = document.createElement("li");
+        item.className = "nav-item";
+        item.innerHTML = `<a class="nav-link" href="${href}"><i class="${icone}"></i><span>${texto}</span></a>`;
+        if (ancoraGestao) ancoraGestao.insertAdjacentElement("afterend", item);
+        else sidebar.appendChild(item);
+    });
+
     // Item único de navegação financeira, inserido em todas as páginas que
     // usam o menu compartilhado.
     if (!sidebar.querySelector('a[href="contas-receber.html"]')) {
