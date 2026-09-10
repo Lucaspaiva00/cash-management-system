@@ -63,6 +63,27 @@ const indicadores = [
     moeda: true
   },
   {
+    id: "contasVencidas",
+    nome: "Contas Vencidas",
+    cor: "danger",
+    icone: "fa-exclamation-circle",
+    moeda: true
+  },
+  {
+    id: "aReceber30Dias",
+    nome: "A Receber (30 dias)",
+    cor: "primary",
+    icone: "fa-calendar-check",
+    moeda: true
+  },
+  {
+    id: "previsaoSaldo",
+    nome: "Previsão de Saldo",
+    cor: "success",
+    icone: "fa-chart-area",
+    moeda: true
+  },
+  {
     id: "aprovadas",
     nome: "Aprovadas",
     cor: "success",
@@ -801,6 +822,13 @@ async function carregarDashboard() {
     atualizarValor("pendentes", pendentes, false);
     atualizarValor("clientes", clientesCache.length, false);
     atualizarValor("empresas", 1, false);
+
+    const gerencial = await fetchJson(
+      API + "/financeiro/dashboard-gerencial?empresaId=" + usuario.empresaId
+    );
+    atualizarValor("contasVencidas", gerencial.contasVencidas);
+    atualizarValor("aReceber30Dias", gerencial.previsaoEntradas30Dias);
+    atualizarValor("previsaoSaldo", gerencial.previsaoSaldo30Dias);
 
     const heroReceita = document.getElementById("heroReceita");
     const heroLucro = document.getElementById("heroLucro");

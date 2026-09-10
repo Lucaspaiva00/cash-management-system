@@ -103,6 +103,7 @@ routes.put("/caixa/:id/cancelar", caixa.cancelar);
 routes.get("/contas-receber", financeiroProfissional.listarContas);
 routes.post("/contas-receber/:id/baixar", financeiroProfissional.baixarConta);
 routes.post("/caixa/abrir", financeiroProfissional.abrirCaixa);
+routes.get("/caixa/status", financeiroProfissional.statusCaixa);
 routes.post("/caixa/movimento", financeiroProfissional.movimentoCaixa);
 routes.post("/caixa/fechar", financeiroProfissional.fecharCaixa);
 routes.put("/produtos/:id/estoque", financeiroProfissional.ajustarEstoque);

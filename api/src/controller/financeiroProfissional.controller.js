@@ -58,6 +58,17 @@ async function abrirCaixa(req, res) {
   try { const { empresaId, usuarioId, valorAbertura, observacao } = req.body; if (!empresaId) return res.status(400).json({ error: "Informe a empresa." }); const aberto = await prisma.sessaoCaixa.findFirst({ where: { empresaId: Number(empresaId), status: "ABERTO" } }); if (aberto) return res.status(409).json({ error: "Já existe um caixa aberto.", data: aberto }); const sessao = await prisma.sessaoCaixa.create({ data: { empresaId: Number(empresaId), usuarioId: usuarioId ? Number(usuarioId) : null, valorAbertura: n(valorAbertura), observacaoAbertura: observacao } }); res.status(201).json({ message: "Caixa aberto.", data: sessao }); } catch (error) { console.error(error); res.status(500).json({ error: "Erro ao abrir caixa." }); }
 }
 
+async function statusCaixa(req, res) {
+  try {
+    const empresaId = Number(req.query.empresaId);
+    const sessao = await prisma.sessaoCaixa.findFirst({
+      where: { empresaId, status: "ABERTO" }, include: { movimentos: true },
+      orderBy: { abertoEm: "desc" }
+    });
+    res.json({ aberto: Boolean(sessao), data: sessao });
+  } catch (error) { console.error(error); res.status(500).json({ error: "Erro ao consultar caixa." }); }
+}
+
 async function movimentoCaixa(req, res) {
   try { const { empresaId, tipo, valor, descricao } = req.body; const sessao = await prisma.sessaoCaixa.findFirst({ where: { empresaId: Number(empresaId), status: "ABERTO" } }); if (!sessao) return res.status(409).json({ error: "Abra o caixa antes de registrar sangria ou suprimento." }); const movimento = await prisma.movimentoCaixa.create({ data: { sessaoId: sessao.id, tipo, valor: n(valor), descricao } }); res.status(201).json({ message: "Movimento registrado.", data: movimento }); } catch (error) { console.error(error); res.status(500).json({ error: "Erro no movimento de caixa." }); }
 }
@@ -72,4 +83,4 @@ async function ajustarEstoque(req, res) {
 
 async function dashboardGerencial(req, res) { try { const empresaId = Number(req.query.empresaId), hoje = new Date(), em30 = new Date(); em30.setDate(hoje.getDate() + 30); const [vendas, recebidas, despesas, contas] = await Promise.all([prisma.venda.aggregate({ where: { empresaId, statusNfe: { not: "CANCELADA" } }, _sum: { total: true, lucro: true } }), prisma.caixa.aggregate({ where: { empresaId, tipoOperacao: "ENTRADA", status: "PAGO" }, _sum: { valorPago: true } }), prisma.caixa.aggregate({ where: { empresaId, tipoOperacao: "SAIDA", status: "PAGO" }, _sum: { valorPago: true } }), prisma.contaReceber.findMany({ where: { empresaId, status: { in: ["PENDENTE", "PARCIAL", "VENCIDO"] } }, select: { valorOriginal: true, valorRecebido: true, vencimento: true } })]); const saldoPendente = contas.reduce((s,c)=>s+c.valorOriginal-c.valorRecebido,0), vencidas=contas.filter(c=>c.vencimento<hoje).reduce((s,c)=>s+c.valorOriginal-c.valorRecebido,0), previsao=contas.filter(c=>c.vencimento<=em30).reduce((s,c)=>s+c.valorOriginal-c.valorRecebido,0); res.json({ faturamento:n(vendas._sum.total), entradasRecebidas:n(recebidas._sum.valorPago), despesas:n(despesas._sum.valorPago), lucro:n(vendas._sum.lucro), contasVencidas:vencidas, contasAVencer:saldoPendente-vencidas, previsaoEntradas30Dias:previsao, previsaoSaldo30Dias:n(recebidas._sum.valorPago)-n(despesas._sum.valorPago)+previsao }); } catch(error) { console.error(error); res.status(500).json({ error:"Erro no dashboard gerencial." }); } }
 
-module.exports = { listarContas, baixarConta, abrirCaixa, movimentoCaixa, fecharCaixa, ajustarEstoque, dashboardGerencial };
+module.exports = { listarContas, baixarConta, statusCaixa, movimentoCaixa, fecharCaixa, ajustarEstoque, dashboardGerencial };
