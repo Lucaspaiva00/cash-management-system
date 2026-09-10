@@ -107,6 +107,7 @@ routes.get("/caixa/status", financeiroProfissional.statusCaixa);
 routes.post("/caixa/movimento", financeiroProfissional.movimentoCaixa);
 routes.post("/caixa/fechar", financeiroProfissional.fecharCaixa);
 routes.put("/produtos/:id/estoque", financeiroProfissional.ajustarEstoque);
+routes.get("/estoque/historico", financeiroProfissional.historicoEstoque);
 routes.get("/financeiro/dashboard-gerencial", financeiroProfissional.dashboardGerencial);
 
 routes.route("/agenda")
