@@ -47,6 +47,10 @@ model Empresa {
 
   operacoes Caixa[]
 
+  contasReceber ContaReceber[]
+  sessoesCaixa SessaoCaixa[]
+  movimentosEstoque MovimentoEstoque[]
+
   vendas Venda[]
 
   agendas Agenda[]
@@ -110,6 +114,7 @@ model Cliente {
   propostas Proposta[]
   vendas    Venda[]
   operacoes Caixa[]
+  contasReceber ContaReceber[]
   agendas   Agenda[]
 
   criadoEm     DateTime @default(now())
@@ -180,6 +185,7 @@ model Produto {
   empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   vendaItens VendaItem[]
+  movimentosEstoque MovimentoEstoque[]
 
   criadoEm DateTime @default(now())
 
@@ -337,10 +343,92 @@ model Venda {
   itens VendaItem[]
 
   lancamentoFinanceiro Caixa?
+  contasReceber ContaReceber[]
 
   criadoEm DateTime @default(now())
 
   atualizadoEm DateTime @updatedAt
+}
+
+model ContaReceber {
+  id Int @id @default(autoincrement())
+  descricao String @db.VarChar(255)
+  valorOriginal Float
+  valorRecebido Float @default(0)
+  juros Float @default(0)
+  multa Float @default(0)
+  desconto Float @default(0)
+  vencimento DateTime
+  recebidaEm DateTime?
+  status StatusContaReceber @default(PENDENTE)
+  parcela Int @default(1)
+  totalParcelas Int @default(1)
+  empresaId Int
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  clienteId Int?
+  cliente Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  vendaId Int?
+  venda Venda? @relation(fields: [vendaId], references: [id], onDelete: SetNull)
+  recebimentos RecebimentoConta[]
+  criadoEm DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model RecebimentoConta {
+  id Int @id @default(autoincrement())
+  contaId Int
+  conta ContaReceber @relation(fields: [contaId], references: [id], onDelete: Cascade)
+  valor Float
+  juros Float @default(0)
+  multa Float @default(0)
+  desconto Float @default(0)
+  meioPagamento MeioPagamento
+  dataRecebimento DateTime @default(now())
+  observacao String? @db.VarChar(500)
+  criadoEm DateTime @default(now())
+}
+
+model SessaoCaixa {
+  id Int @id @default(autoincrement())
+  empresaId Int
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  usuarioId Int?
+  abertoEm DateTime @default(now())
+  fechadoEm DateTime?
+  valorAbertura Float
+  valorEsperado Float?
+  valorContado Float?
+  diferenca Float?
+  status StatusSessaoCaixa @default(ABERTO)
+  observacaoAbertura String? @db.VarChar(500)
+  observacaoFechamento String? @db.VarChar(500)
+  movimentos MovimentoCaixa[]
+}
+
+model MovimentoCaixa {
+  id Int @id @default(autoincrement())
+  sessaoId Int
+  sessao SessaoCaixa @relation(fields: [sessaoId], references: [id], onDelete: Cascade)
+  tipo TipoMovimentoCaixa
+  valor Float
+  descricao String? @db.VarChar(255)
+  criadoEm DateTime @default(now())
+}
+
+model MovimentoEstoque {
+  id Int @id @default(autoincrement())
+  produtoId Int
+  produto Produto @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+  empresaId Int
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  tipo TipoMovimentoEstoque
+  quantidade Float
+  estoqueAnterior Float
+  estoquePosterior Float
+  custoUnitario Float?
+  motivo String @db.VarChar(255)
+  referencia String? @db.VarChar(100)
+  criadoEm DateTime @default(now())
 }
 
 model VendaItem {
@@ -426,6 +514,27 @@ enum StatusFinanceiro {
   PAGO
   ATRASADO
   CANCELADO
+}
+
+enum StatusContaReceber {
+  PENDENTE
+  PARCIAL
+  RECEBIDO
+  VENCIDO
+  CANCELADO
+}
+enum StatusSessaoCaixa {
+  ABERTO
+  FECHADO
+}
+enum TipoMovimentoCaixa {
+  SANGRIA
+  SUPRIMENTO
+}
+enum TipoMovimentoEstoque {
+  ENTRADA
+  SAIDA
+  AJUSTE_ESTORNO
 }
 
 enum TipoRecorrencia {

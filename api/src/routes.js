@@ -15,6 +15,7 @@ const centrosCusto = require("./controller/centroCusto.controller");
 const nfe = require("./controller/nfe.controller");
 const limparBanco = require("./controller/limpar-banco");
 const relatorios = require("./controller/relatorios.controller");
+const financeiroProfissional = require("./controller/financeiroProfissional.controller");
 
 routes.get("/", (req, res) => {
   res.status(200).json({
@@ -98,6 +99,14 @@ routes.route("/caixa/:id")
 
 routes.put("/caixa/:id/pagar", caixa.marcarComoPaga);
 routes.put("/caixa/:id/cancelar", caixa.cancelar);
+
+routes.get("/contas-receber", financeiroProfissional.listarContas);
+routes.post("/contas-receber/:id/baixar", financeiroProfissional.baixarConta);
+routes.post("/caixa/abrir", financeiroProfissional.abrirCaixa);
+routes.post("/caixa/movimento", financeiroProfissional.movimentoCaixa);
+routes.post("/caixa/fechar", financeiroProfissional.fecharCaixa);
+routes.put("/produtos/:id/estoque", financeiroProfissional.ajustarEstoque);
+routes.get("/financeiro/dashboard-gerencial", financeiroProfissional.dashboardGerencial);
 
 routes.route("/agenda")
   .get(agenda.read)

@@ -332,6 +332,17 @@ const create = async (req, res) => {
 
                     });
 
+                    await tx.movimentoEstoque.create({
+                        data: {
+                            produtoId: Number(item.produtoId), empresaId: Number(empresaId),
+                            tipo: "SAIDA", quantidade: Number(item.quantidade),
+                            estoqueAnterior: Number(produtos.find(p => p.id === Number(item.produtoId)).estoque),
+                            estoquePosterior: Number(produtos.find(p => p.id === Number(item.produtoId)).estoque) - Number(item.quantidade),
+                            custoUnitario: Number(produtos.find(p => p.id === Number(item.produtoId)).precoCompra || 0),
+                            motivo: `Venda PDV #${novaVenda.id}`, referencia: `VENDA-${novaVenda.id}`
+                        }
+                    });
+
                 }
 
                 await tx.caixa.create({
@@ -383,6 +394,16 @@ const create = async (req, res) => {
                     }
 
                 });
+
+                if (statusPagamento === "PENDENTE") {
+                    const qtdParcelas = Math.max(1, Number(req.body.parcelas || 1));
+                    const valorParcela = Number((total / qtdParcelas).toFixed(2));
+                    for (let parcela = 1; parcela <= qtdParcelas; parcela++) {
+                        const vencimentoParcela = new Date(vencimento);
+                        vencimentoParcela.setMonth(vencimentoParcela.getMonth() + (parcela - 1));
+                        await tx.contaReceber.create({ data: { empresaId: Number(empresaId), clienteId: Number(clienteId), vendaId: novaVenda.id, descricao: `Venda PDV #${novaVenda.id} - parcela ${parcela}/${qtdParcelas}`, valorOriginal: parcela === qtdParcelas ? Number((total - valorParcela * (qtdParcelas - 1)).toFixed(2)) : valorParcela, vencimento: vencimentoParcela, parcela, totalParcelas: qtdParcelas } });
+                    }
+                }
 
                 return novaVenda;
 
@@ -474,16 +495,24 @@ const remove = async (req, res) => {
 
     try {
 
-        const id =
-            parseInt(req.params.id);
-
-        await prisma.venda.delete({
-            where: { id }
+        const id = parseInt(req.params.id);
+        const empresaId = Number(req.body.empresaId);
+        const venda = await prisma.venda.findFirst({ where: { id, empresaId }, include: { itens: true, lancamentoFinanceiro: true } });
+        if (!venda) return res.status(404).json({ error: "Venda não encontrada." });
+        if (venda.statusNfe === "CANCELADA") return res.status(409).json({ error: "Venda já cancelada." });
+        await prisma.$transaction(async tx => {
+            for (const item of venda.itens) {
+                const produto = await tx.produto.update({ where: { id: item.produtoId }, data: { estoque: { increment: item.quantidade } } });
+                await tx.movimentoEstoque.create({ data: { produtoId: item.produtoId, empresaId, tipo: "AJUSTE_ESTORNO", quantidade: item.quantidade, estoqueAnterior: produto.estoque - item.quantidade, estoquePosterior: produto.estoque, custoUnitario: item.custoUnitario, motivo: `Estorno da venda #${id}`, referencia: `VENDA-${id}` } });
+            }
+            await tx.contaReceber.updateMany({ where: { vendaId: id }, data: { status: "CANCELADO" } });
+            if (venda.lancamentoFinanceiro) await tx.caixa.update({ where: { id: venda.lancamentoFinanceiro.id }, data: { status: "CANCELADO", observacoes: `Estornado em ${new Date().toISOString()}` } });
+            await tx.venda.update({ where: { id }, data: { statusNfe: "CANCELADA", observacoes: `${venda.observacoes || ""} | Venda cancelada.` } });
         });
 
         return res.status(200).json({
             message:
-                "Venda excluída com sucesso!"
+                "Venda cancelada, financeiro estornado e estoque devolvido."
         });
 
     } catch (error) {
