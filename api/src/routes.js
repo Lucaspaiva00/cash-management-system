@@ -63,6 +63,7 @@ routes.route("/propostas")
 routes.route("/propostas/:id")
   .put(proposta.update)
   .delete(proposta.remove);
+routes.post("/propostas/:id/faturar", proposta.faturar);
 
 routes.get("/vendas", vendas.read);
 routes.post("/vendas", vendas.create);

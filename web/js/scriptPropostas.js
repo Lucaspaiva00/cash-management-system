@@ -295,6 +295,8 @@ async function carregarPropostas() {
 
     );
 
+    adicionarBotoesFaturamento();
+
   }
 
   catch (erro) {
@@ -710,3 +712,40 @@ window.editarProposta =
 
 window.excluirProposta =
   excluirProposta;
+
+function adicionarBotoesFaturamento() {
+  tabela.querySelectorAll("tr").forEach((linha, indice) => {
+    const proposta = listaPropostas[indice];
+    if (!proposta || (proposta.status || "").toLowerCase() === "fechado") return;
+    const celula = linha.children[5];
+    if (!celula || celula.querySelector(".btn-faturar-proposta")) return;
+    const botao = document.createElement("button");
+    botao.className = "btn btn-success btn-sm mr-1 btn-faturar-proposta";
+    botao.title = "Aprovar e faturar";
+    botao.innerHTML = '<i class="fas fa-check"></i>';
+    botao.addEventListener("click", () => abrirFaturamento(proposta.id, proposta.valorTotal));
+    celula.prepend(botao);
+  });
+}
+
+function abrirFaturamento(id, valor) {
+  document.querySelector("#faturarPropostaId").value = id;
+  document.querySelector("#faturarValor").innerText = moeda(valor);
+  document.querySelector("#faturarData").value = new Date().toISOString().slice(0, 10);
+  $("#modalFaturarProposta").modal("show");
+}
+
+async function faturarProposta(event) {
+  event.preventDefault();
+  const id = document.querySelector("#faturarPropostaId").value;
+  const payload = { empresaId, statusPagamento: document.querySelector("#faturarPagamento").value, meioPagamento: document.querySelector("#faturarMeio").value, dataVencimento: document.querySelector("#faturarData").value, parcelas: document.querySelector("#faturarParcelas").value };
+  const resposta = await fetch(API + "/" + id + "/faturar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  const data = await resposta.json();
+  if (!resposta.ok) return toast(data.error || "Erro ao faturar.", "error");
+  $("#modalFaturarProposta").modal("hide"); toast(data.message); carregarPropostas();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.insertAdjacentHTML("beforeend", '<div class="modal fade" id="modalFaturarProposta"><div class="modal-dialog"><form class="modal-content" id="formFaturarProposta"><div class="modal-header"><h5 class="modal-title">Aprovar e faturar proposta</h5><button type="button" class="close" data-dismiss="modal">×</button></div><div class="modal-body"><input id="faturarPropostaId" type="hidden"><div class="alert alert-light border">Valor: <b id="faturarValor"></b></div><label>Recebimento</label><select id="faturarPagamento" class="form-control mb-3"><option value="PAGO">Recebido agora — Caixa</option><option value="PENDENTE">A prazo — Contas a Receber</option></select><label>Forma de pagamento</label><select id="faturarMeio" class="form-control mb-3"><option value="PIX">PIX</option><option value="DINHEIRO">Dinheiro</option><option value="CARTAO">Cartão</option><option value="BOLETO">Boleto</option><option value="TRANSFERENCIA">Transferência</option></select><label>Primeiro vencimento</label><input id="faturarData" type="date" class="form-control mb-3"><label>Parcelas</label><input id="faturarParcelas" type="number" min="1" value="1" class="form-control"></div><div class="modal-footer"><button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button><button class="btn btn-success">Aprovar e faturar</button></div></form></div></div>');
+  document.querySelector("#formFaturarProposta").addEventListener("submit", faturarProposta);
+});
