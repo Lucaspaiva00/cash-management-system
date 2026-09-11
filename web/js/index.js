@@ -29,16 +29,16 @@ let periodoSelecionado = "mes";
 const indicadores = [
   {
     id: "creditos",
-    nome: "Entradas",
+    nome: "Faturamento Vendido",
     cor: "primary",
     icone: "fa-arrow-up",
     moeda: true
   },
   {
     id: "debitos",
-    nome: "Saídas",
-    cor: "danger",
-    icone: "fa-arrow-down",
+    nome: "Dinheiro Recebido",
+    cor: "success",
+    icone: "fa-hand-holding-usd",
     moeda: true
   },
   {
@@ -50,9 +50,16 @@ const indicadores = [
   },
   {
     id: "lucroVendas",
-    nome: "Lucro Vendas",
+    nome: "Produtos Abaixo do Mínimo",
+    cor: "warning",
+    icone: "fa-box-open",
+    moeda: false
+  },
+  {
+    id: "previsaoSaldo",
+    nome: "Previsão de Saldo (30 dias)",
     cor: "info",
-    icone: "fa-coins",
+    icone: "fa-chart-area",
     moeda: true
   },
   {
@@ -74,13 +81,6 @@ const indicadores = [
     nome: "A Receber (30 dias)",
     cor: "primary",
     icone: "fa-calendar-check",
-    moeda: true
-  },
-  {
-    id: "previsaoSaldo",
-    nome: "Previsão de Saldo",
-    cor: "success",
-    icone: "fa-chart-area",
     moeda: true
   },
   {
@@ -826,6 +826,10 @@ async function carregarDashboard() {
     const gerencial = await fetchJson(
       API + "/financeiro/dashboard-gerencial?empresaId=" + usuario.empresaId
     );
+    atualizarValor("creditos", gerencial.faturamento);
+    atualizarValor("debitos", gerencial.entradasRecebidas);
+    atualizarValor("lucro", gerencial.saldoCaixa);
+    atualizarValor("lucroVendas", gerencial.produtosAbaixoMinimo, false);
     atualizarValor("contasVencidas", gerencial.contasVencidas);
     atualizarValor("aReceber30Dias", gerencial.previsaoEntradas30Dias);
     atualizarValor("previsaoSaldo", gerencial.previsaoSaldo30Dias);
