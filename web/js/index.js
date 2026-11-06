@@ -29,21 +29,21 @@ let periodoSelecionado = "mes";
 const indicadores = [
   {
     id: "creditos",
-    nome: "Faturamento Vendido",
+    nome: "Entradas registradas (período)",
     cor: "primary",
     icone: "fa-arrow-up",
     moeda: true
   },
   {
     id: "debitos",
-    nome: "Dinheiro Recebido",
+    nome: "Entradas recebidas (período)",
     cor: "success",
     icone: "fa-hand-holding-usd",
     moeda: true
   },
   {
     id: "lucro",
-    nome: "Saldo Caixa",
+    nome: "Saldo das movimentações pagas",
     cor: "success",
     icone: "fa-chart-line",
     moeda: true
@@ -61,6 +61,12 @@ const indicadores = [
     cor: "info",
     icone: "fa-chart-area",
     moeda: true
+  },
+  {
+    id: "previstoMes", nome: "Entradas previstas (período)", cor: "info", icone: "fa-calendar-alt", moeda: true
+  },
+  {
+    id: "novasRecebidas", nome: "Vendas novas recebidas (bruto)", cor: "success", icone: "fa-plus-circle", moeda: true
   },
   {
     id: "propostas",
@@ -300,7 +306,7 @@ function atualizarTitulos() {
 
   tituloFluxo.innerText = `Fluxo Financeiro - ${texto}`;
   tituloDistribuicao.innerText = "Distribuição Financeira";
-  tituloLucro.innerText = `Lucro Líquido - ${texto}`;
+  tituloLucro.innerText = `Saldo das movimentações pagas - ${texto}`;
 }
 
 function destruirGraficos() {
@@ -672,7 +678,7 @@ function montarGraficoLucroPorPeriodo(caixaFiltrado, inicio, fim) {
       labels,
       datasets: [
         {
-          label: "Lucro Líquido",
+          label: "Saldo de entradas - saídas",
           data: lucros,
           borderColor: "#22c55e",
           backgroundColor: gradient,
@@ -720,7 +726,7 @@ function montarGraficoLucroPorPeriodo(caixaFiltrado, inicio, fim) {
           },
           callbacks: {
             label(context) {
-              return `Lucro: ${formatarMoeda(context.raw)}`;
+              return `Saldo: ${formatarMoeda(context.raw)}`;
             }
           }
         }
@@ -781,7 +787,22 @@ async function carregarDashboard() {
       <strong>${periodo.fim.toLocaleDateString("pt-BR")}</strong>
     `;
 
-    const caixaFiltrado = filtrarPeriodo(caixaCache, "dataOperacao");
+    // Somente lançamentos pagos entram nas entradas realizadas.
+    // Contas futuras são calculadas separadamente usando o vencimento.
+    const caixaPago = caixaCache.filter(item => item.status === "PAGO")
+      .map(item => ({...item, dataOperacao: item.dataPagamento || item.dataOperacao,
+        valor: item.valorPago == null ? item.valor : item.valorPago}));
+    const caixaFiltrado = filtrarPeriodo(caixaPago, "dataOperacao");
+    const previstoPeriodo = filtrarPeriodo(
+      caixaCache.filter(item => item.status === "PENDENTE" || item.status === "ATRASADO")
+        .filter(item => item.tipoOperacao === "ENTRADA")
+        .map(item => ({...item, dataVencimento: item.dataVencimento || item.dataOperacao})),
+      "dataVencimento"
+    ).reduce((sum,item) => sum + Number(item.valor || 0), 0);
+    const novasRecebidas = caixaFiltrado.filter(item =>
+      item.tipoOperacao === "ENTRADA" &&
+      (item.categoria?.nome || "").toLowerCase().includes("venda nova")
+    ).reduce((sum,item) => sum + Number(item.valor || 0), 0);
     const propostasFiltradas = filtrarPeriodo(propostasCache, "data");
     const vendasFiltradas = filtrarPeriodo(vendasCache, "data");
 
@@ -814,7 +835,9 @@ async function carregarDashboard() {
     ).length;
 
     atualizarValor("creditos", entrada);
-    atualizarValor("debitos", saida);
+    atualizarValor("debitos", entrada);
+    atualizarValor("previstoMes", previstoPeriodo);
+    atualizarValor("novasRecebidas", novasRecebidas);
     atualizarValor("lucro", lucro);
     atualizarValor("lucroVendas", lucroVendas);
     atualizarValor("propostas", totalPropostas);
@@ -826,9 +849,7 @@ async function carregarDashboard() {
     const gerencial = await fetchJson(
       API + "/financeiro/dashboard-gerencial?empresaId=" + usuario.empresaId
     );
-    atualizarValor("creditos", gerencial.faturamento);
-    atualizarValor("debitos", gerencial.entradasRecebidas);
-    atualizarValor("lucro", gerencial.saldoCaixa);
+    // Indicadores com filtro por período não devem ser substituídos por totais históricos.
     atualizarValor("lucroVendas", gerencial.produtosAbaixoMinimo, false);
     atualizarValor("contasVencidas", gerencial.contasVencidas);
     atualizarValor("aReceber30Dias", gerencial.previsaoEntradas30Dias);
@@ -843,7 +864,7 @@ async function carregarDashboard() {
     }
 
     if (heroLucro) {
-      heroLucro.innerText = `Lucro vendas: ${formatarMoeda(lucroVendas)} · Saldo caixa: ${formatarMoeda(lucro)}`;
+      heroLucro.innerText = `Recebido: ${formatarMoeda(entrada)} · Saídas pagas: ${formatarMoeda(saida)} · Saldo: ${formatarMoeda(lucro)}`;
     }
 
     if (ultimaAtualizacao) {
