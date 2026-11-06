@@ -13,7 +13,6 @@ const configuracaoFiscal = require("./controller/configuracaoFiscal.controller")
 const categorias = require("./controller/categoriaFinanceira.controller");
 const centrosCusto = require("./controller/centroCusto.controller");
 const nfe = require("./controller/nfe.controller");
-const limparBanco = require("./controller/limpar-banco");
 const relatorios = require("./controller/relatorios.controller");
 const financeiroProfissional = require("./controller/financeiroProfissional.controller");
 
@@ -29,7 +28,6 @@ routes.post("/auth/signup", usuario.signup);
 
 routes.post("/usuarios/login", usuario.login);
 
-routes.post("/limpar-banco", limparBanco.limparBanco);
 
 routes.route("/usuarios")
   .get(usuario.read)
